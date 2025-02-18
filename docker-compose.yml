@@ -1,0 +1,53 @@
+services:
+  php:
+    build:
+      context: ./docker/php
+    volumes:
+      - ./:/var/www/html
+    working_dir: /var/www/html
+    ports:
+      - "8000:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mysql
+    networks:
+      - appquilar
+
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony
+      MYSQL_USER: symfony_user
+      MYSQL_PASSWORD: symfony_pass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - appquilar
+
+  mysql_integration:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: symfony_test
+      MYSQL_USER: symfony_test_user
+      MYSQL_PASSWORD: symfony_test_pass
+    volumes:
+      - mysql_data_integration:/var/lib/mysql
+    ports:
+      - "3307:3306"
+    networks:
+      - appquilar
+
+
+volumes:
+  mysql_data:
+  mysql_data_integration:
+
+networks:
+  appquilar:
