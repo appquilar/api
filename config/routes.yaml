@@ -1,5 +1,4 @@
+# Loads routes from controllers that use PHP attributes
 controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
+  resource: ../src/
+  type: attribute

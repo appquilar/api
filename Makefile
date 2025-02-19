@@ -1,6 +1,6 @@
 PROJECT_NAME=symfony-docker
 
-.PHONY: build start stop restart purge shell apache-shell db-shell integration-db-shell
+.PHONY: build start stop restart purge shell apache-shell db-shell integration-db-shell unit-tests integration-tests all-tests clean-integration
 
 ## Build the Docker images
 build:
@@ -40,3 +40,21 @@ db-shell:
 integration-db-shell:
 	@echo "Entering MySQL integration database shell..."
 	docker exec -it $$(docker-compose ps -q mysql_integration) mysql -u symfony_test_user -p
+
+unit-tests:
+	@echo "Running Unit Tests..."
+	docker exec -it $$(docker-compose ps -q php) bin/phpunit --testsuite=Unit --testdox
+
+integration-tests:
+	@echo "Running Integration Tests..."
+	docker exec -it $$(docker-compose ps -q php) bin/phpunit --testsuite=Integration --testdox
+
+all-tests:
+	@echo "Running All Tests..."
+	docker exec -it $$(docker-compose ps -q php) bin/phpunit --testdox
+
+clean-integration:
+	@echo "Resetting database..."
+	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:drop --force --if-exists --env=test
+	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:create --env=test
+	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:migrations:migrate --no-interaction --env=test

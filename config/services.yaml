@@ -16,9 +16,20 @@ services:
     App\:
         resource: '../src/'
         exclude:
-            - '../src/DependencyInjection/'
-            - '../src/Entity/'
-            - '../src/Kernel.php'
+            - '../src/Shared/Infrastructure/Framework/Kernel.php'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Controllers
+    App\User\Infrastructure\Controller\:
+        resource: '../src/User/Infrastructure/Controller/'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    # Symfony kernel listeners
+    App\Shared\Infrastructure\EventListener\RequestDtoListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.controller_arguments }
