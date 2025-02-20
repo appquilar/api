@@ -8,6 +8,8 @@ use App\Shared\Application\Command\CommandBus;
 use App\Shared\Infrastructure\Service\JsonResponseService;
 use App\User\Application\Command\RegisterUser\RegisterUserCommand;
 use App\User\Infrastructure\Request\RegisterUserDto;
+use Nelmio\ApiDocBundle\Model\Model;
+use OpenApi\Attributes as OA;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 

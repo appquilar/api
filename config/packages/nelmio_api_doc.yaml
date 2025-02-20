@@ -1,0 +1,58 @@
+nelmio_api_doc:
+    documentation:
+        info:
+            title: "Appquilar API"
+            description: "API for Appquilar platform"
+            version: "0.1.0"
+        areas:
+            exclude_path_patterns:
+                - ^/_error
+        paths:
+            /api/auth/register:
+                post:
+                    summary: "Register a new user"
+                    tags:
+                        - Authentication
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/RegisterUserDTO"
+                    responses:
+                        "201":
+                            description: "User registered successfully"
+                        "400":
+                            description: "Validation error"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success:
+                                                type: boolean
+                                                example: false
+                                            errors:
+                                                type: object
+                                                example:
+                                                    email: ["Email cannot be empty."]
+                                                    password: ["Password must be at least 6 characters long."]
+        components:
+            schemas:
+                RegisterUserDTO:
+                    type: object
+                    required:
+                        - userId
+                        - email
+                        - password
+                    properties:
+                        userId:
+                            type: string
+                            format: uuid
+                            example: "cdd52b98-9183-41b9-8e27-4d12c5ddcf3c"
+                        email:
+                            type: string
+                            example: "testuser@example.com"
+                        password:
+                            type: string
+                            example: "SecurePass123"

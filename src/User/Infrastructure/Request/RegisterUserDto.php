@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\Infrastructure\Request;
 
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
+use OpenApi\Attributes as OA;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
