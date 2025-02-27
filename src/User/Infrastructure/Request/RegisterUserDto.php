@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Infrastructure\Request;
 
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
-use OpenApi\Attributes as OA;
+use App\User\Infrastructure\Request\Constraint\EmailIsUnique;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,6 +18,7 @@ class RegisterUserDto implements RequestDtoInterface
 
         #[Assert\NotBlank(message: "auth.register.email.not_blank")]
         #[Assert\Email(message: "auth.register.email.email")]
+        #[EmailIsUnique(message: "auth.register.email.unique")]
         public ?string $email = '',
 
         #[Assert\NotBlank(message: "auth.register.password.not_blank")]

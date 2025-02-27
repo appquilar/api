@@ -6,5 +6,5 @@ namespace App\Shared\Application\Query;
 
 interface QueryHandlerInterface
 {
-    public function handle(QueryInterface $query): mixed;
+    public function __invoke(QueryInterface $query): QueryResultInterface;
 }

@@ -6,6 +6,7 @@ namespace App\Shared\Domain\Entity;
 
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\MappedSuperclass]
@@ -13,7 +14,7 @@ use Symfony\Component\Uid\Uuid;
 abstract class Entity
 {
     #[ORM\Id]
-    #[ORM\Column(type: 'uuid', unique: true)]
+    #[ORM\Column(type: UuidType::NAME, unique: true)]
     private Uuid $id;
     #[ORM\Column(type: 'datetime_immutable')]
     private DateTimeImmutable $createdAt;

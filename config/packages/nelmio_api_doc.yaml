@@ -37,6 +37,37 @@ nelmio_api_doc:
                                                 example:
                                                     email: ["Email cannot be empty."]
                                                     password: ["Password must be at least 6 characters long."]
+            /api/auth/login:
+                post:
+                    summary: "Login a user"
+                    tags: ["Authentication"]
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/LoginUserDTO"
+                    responses:
+                        "200":
+                            description: "Successful login"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            token:
+                                                type: string
+                                                example: "eyJhbGciOiJIUzI1NiIsIn..."
+                        "400":
+                            description: "Invalid credentials"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Invalid credentials"
         components:
             schemas:
                 RegisterUserDTO:
@@ -53,6 +84,16 @@ nelmio_api_doc:
                         email:
                             type: string
                             example: "testuser@example.com"
+                        password:
+                            type: string
+                            example: "SecurePass123"
+                LoginUserDTO:
+                    type: object
+                    required: ["email", "password"]
+                    properties:
+                        email:
+                            type: string
+                            example: "user@example.com"
                         password:
                             type: string
                             example: "SecurePass123"

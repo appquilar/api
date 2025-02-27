@@ -33,3 +33,13 @@ services:
     App\Shared\Infrastructure\EventListener\RequestDtoListener:
         tags:
             - { name: kernel.event_listener, event: kernel.controller_arguments }
+
+    # Factories
+    App\Tests\Factories\User\Domain\Entity\UserFactory:
+        autowire: true
+        autoconfigure: true
+        public: true
+        arguments:
+            - '@security.password_hasher'
+        tags:
+            - { name : 'foundry.factory'}

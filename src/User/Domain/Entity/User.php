@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping\Index;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
@@ -18,13 +17,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 class User extends Entity implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Column(type: 'string', unique: true)]
-    #[Assert\NotBlank]
-    #[Assert\Email]
     private string $email;
 
     #[ORM\Column(type: 'string')]
-    #[Assert\NotBlank]
     private string $password;
+
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $wordpressPassword = null;
 
     #[ORM\Column(type: 'json')]
     private array $roles = [];
@@ -70,6 +69,16 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
     public function setPassword(string $password): void
     {
         $this->password = $password;
+    }
+
+    public function getWordpressPassword(): ?string
+    {
+        return $this->wordpressPassword;
+    }
+
+    public function setWordpressPassword(?string $wordpressPassword): void
+    {
+        $this->wordpressPassword = $wordpressPassword;
     }
 
     public function setRoles(array $roles): void

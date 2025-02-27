@@ -10,4 +10,5 @@ use App\User\Domain\Entity\User;
 interface UserRepositoryInterface extends RepositoryInterface
 {
     public function findByEmail(string $email): ?User;
+    public function updateUserPassword(User $user, string $newPassword): void;
 }

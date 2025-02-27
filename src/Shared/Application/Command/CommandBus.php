@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Shared\Application\Command;
 
 use Symfony\Component\Messenger\Exception\ExceptionInterface;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 class CommandBus
@@ -18,6 +19,10 @@ class CommandBus
      */
     public function dispatch(CommandInterface $command): void
     {
-        $this->bus->dispatch($command);
+        try {
+            $this->bus->dispatch($command);
+        } catch (HandlerFailedException $e) {
+            throw $e->getPrevious();
+        }
     }
 }

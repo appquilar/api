@@ -19,4 +19,11 @@ class UserRepository extends DoctrineRepository implements UserRepositoryInterfa
     {
         return $this->repository->findOneBy(['email' => $email]);
     }
+
+    public function updateUserPassword(User $user, string $newPassword): void
+    {
+        $user->setPassword($newPassword);
+        $user->setWordPressPassword(null); // 🔹 Remove old hash after migration
+        $this->save($user);
+    }
 }
