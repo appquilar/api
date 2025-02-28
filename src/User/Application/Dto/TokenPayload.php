@@ -15,7 +15,8 @@ class TokenPayload
     public function __construct(
         private Uuid $userId,
         private string $email,
-        ?int $expirationTime = null
+        ?int $expirationTime = null,
+        private bool $revoked = false
     ) {
         $this->expirationTime = $expirationTime !== null ? $expirationTime : time() + self::EXPIRATION_TIME;
     }
@@ -30,8 +31,18 @@ class TokenPayload
         return $this->email;
     }
 
-    public function getExpirationTime(): int
+    public function isRevoked(): bool
+    {
+        return $this->revoked;
+    }
+
+    public function getExpirationTime(): ?int
     {
         return $this->expirationTime;
+    }
+
+    public function isExpired(): bool
+    {
+        return $this->expirationTime < time();
     }
 }

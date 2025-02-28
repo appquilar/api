@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\User\Domain\Entity;
 
 use App\Shared\Domain\Entity\Entity;
+use App\Shared\Infrastructure\Security\UserRole;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -25,14 +26,14 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $wordpressPassword = null;
 
-    #[ORM\Column(type: 'json')]
+    #[ORM\Column(type: 'json', enumType: UserRole::class)]
     private array $roles = [];
 
     public function __construct(
         Uuid $userId,
         string $email,
         string $password,
-        array $roles = ['ROLE_USER']
+        array $roles = [UserRole::REGULAR_USER]
     ) {
         parent::__construct($userId);
 
@@ -51,9 +52,20 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
         return $this->password;
     }
 
+    /**
+     * @return UserRole[]
+     */
     public function getRoles(): array
     {
         return $this->roles;
+    }
+
+    /**
+     * @param UserRole[] $roles
+     */
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
     }
 
     public function eraseCredentials(): void
@@ -79,10 +91,5 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
     public function setWordpressPassword(?string $wordpressPassword): void
     {
         $this->wordpressPassword = $wordpressPassword;
-    }
-
-    public function setRoles(array $roles): void
-    {
-        $this->roles = $roles;
     }
 }

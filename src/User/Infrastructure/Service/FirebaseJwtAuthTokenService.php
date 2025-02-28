@@ -4,26 +4,60 @@ declare(strict_types=1);
 
 namespace App\User\Infrastructure\Service;
 
+use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\User\Application\Dto\TokenPayload;
 use App\User\Application\Service\AuthTokenServiceInterface;
+use App\User\Infrastructure\Persistence\AccessTokenRepository;
 use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Symfony\Component\Uid\Uuid;
 
 class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
 {
-    public function encode(TokenPayload $payload): string
+    public function __construct(
+        private AccessTokenRepository $accessTokenRepository
+    ) {
+    }
+
+    public function encode(TokenPayload $tokenPayload): string
     {
         $payload = [
-            'user_id' => $payload->getUserId()->toString(),
-            'email' => $payload->getEmail(),
-            'site_id' => 'xxx',
-            'exp' => $payload->getExpirationTime()
+            'user_id' => $tokenPayload->getUserId()->toString(),
+            'email' => $tokenPayload->getEmail(),
+            'site_id' => Uuid::v4(),
+            'exp' => $tokenPayload->getExpirationTime()
         ];
 
-        return JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
+        $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
+
+        $this->accessTokenRepository->storeToken($tokenPayload, $payload['site_id'], $token);
+
+        return $token;
     }
 
     public function decode(string $token): TokenPayload
     {
-        // TODO: Implement decode() method.
+        try {
+            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+        } catch (\Throwable $e) {
+            throw new UnauthorizedException('Invalid access token');
+        }
+
+        $accessToken = $this->accessTokenRepository->getToken($token);
+        if ($accessToken === null) {
+            throw new UnauthorizedException('Unexistent access token');
+        }
+
+        return new TokenPayload(
+            Uuid::fromString($decoded->user_id),
+            $decoded->email,
+            $decoded->exp,
+            $accessToken->isRevoked()
+        );
+    }
+
+    public function revoke(string $token): void
+    {
+        $this->accessTokenRepository->revokeToken($token);
     }
 }

@@ -7,7 +7,6 @@ namespace App\Shared\Infrastructure\EventListener;
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
 use App\Shared\Infrastructure\Service\JsonResponseService;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;

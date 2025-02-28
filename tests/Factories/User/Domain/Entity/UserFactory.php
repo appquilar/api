@@ -2,6 +2,7 @@
 
 namespace App\Tests\Factories\User\Domain\Entity;
 
+use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Domain\Entity\User;
 use Hautelook\Phpass\PasswordHash;
 use phpDocumentor\Reflection\Types\Self_;
@@ -43,7 +44,7 @@ final class UserFactory extends PersistentProxyObjectFactory
             'userId' => Uuid::v4(),
             'email' => self::faker()->text(),
             'password' => self::faker()->text(),
-            'roles' => ['REGULAR_USER'],
+            'roles' => [UserRole::REGULAR_USER],
         ];
     }
 

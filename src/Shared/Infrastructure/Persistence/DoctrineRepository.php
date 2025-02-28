@@ -8,6 +8,7 @@ use App\Shared\Application\Repository\RepositoryInterface;
 use App\Shared\Domain\Entity\Entity;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Uid\Uuid;
 
 abstract class DoctrineRepository implements RepositoryInterface
 {
@@ -24,7 +25,7 @@ abstract class DoctrineRepository implements RepositoryInterface
 
     abstract public function getClass(): string;
 
-    public function findById(string $id): ?Entity
+    public function findById(Uuid $id): ?Entity
     {
         return $this->repository->find($id);
     }

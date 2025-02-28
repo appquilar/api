@@ -68,6 +68,36 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Invalid credentials"
+            /api/auth/logout:
+                post:
+                    summary: "Logout a user"
+                    description: "Revokes the user's access token, effectively logging them out."
+                    tags:
+                        - Authentication
+                    security:
+                        - BearerAuth: [ ]
+                    responses:
+                        "200":
+                            description: "Logout successful"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success:
+                                                type: boolean
+                                                example: "true"
+                        "401":
+                            description: "Unauthorized - Missing or invalid token"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Invalid token"
+
         components:
             schemas:
                 RegisterUserDTO:

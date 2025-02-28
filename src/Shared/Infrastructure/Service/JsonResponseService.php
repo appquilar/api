@@ -9,10 +9,18 @@ class JsonResponseService
 {
     private function success(array $data = [], int $status = Response::HTTP_OK): JsonResponse
     {
-        return new JsonResponse(['success' => true, 'data' => $data], $status);
+        $response = [
+            'success' => true,
+        ];
+
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+
+        return new JsonResponse($response, $status);
     }
 
-    public function ok(array $message): JsonResponse
+    public function ok(array $message = []): JsonResponse
     {
         return $this->success($message, Response::HTTP_OK);
     }
@@ -39,8 +47,8 @@ class JsonResponseService
         );
     }
 
-    public function unauthorized(): JsonResponse
+    public function unauthorized(string $message = null): JsonResponse
     {
-        return $this->error(status: Response::HTTP_UNAUTHORIZED);
+        return $this->error([$message], Response::HTTP_UNAUTHORIZED);
     }
 }
