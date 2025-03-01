@@ -17,7 +17,7 @@ class CommandBus
     /**
      * @throws ExceptionInterface
      */
-    public function dispatch(CommandInterface $command): void
+    public function dispatch(Command $command): void
     {
         try {
             $this->bus->dispatch($command);

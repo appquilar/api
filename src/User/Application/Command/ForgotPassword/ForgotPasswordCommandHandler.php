@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\User\Application\Command\ForgotPassword;
 
-use App\Shared\Application\Command\CommandHandlerInterface;
-use App\Shared\Application\Command\CommandInterface;
+use App\Shared\Application\Command\CommandHandler;
+use App\Shared\Application\Command\Command;
 use App\Shared\Application\Exception\BadRequest\BadRequestException;
 use App\User\Application\Event\ForgotPasswordTokenCreated;
 use App\User\Application\Repository\UserRepositoryInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: ForgotPasswordCommand::class)]
-class ForgotPasswordCommandHandler implements CommandHandlerInterface
+class ForgotPasswordCommandHandler implements CommandHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
@@ -23,7 +23,7 @@ class ForgotPasswordCommandHandler implements CommandHandlerInterface
     ){
     }
 
-    public function __invoke(ForgotPasswordCommand|CommandInterface $command): void
+    public function __invoke(ForgotPasswordCommand|Command $command): void
     {
         $user = $this->userRepository->findByEmail($command->getEmail());
         if ($user === null) {

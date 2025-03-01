@@ -140,6 +140,58 @@ nelmio_api_doc:
                                                 type: object
                                                 example:
                                                     email: ["Invalid email format."]
+            /api/auth/change-password:
+                post:
+                    summary: "Change password using the forgot password token"
+                    tags: ["Authentication"]
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        email:
+                                            type: string
+                                            example: "user@example.com"
+                                        token:
+                                            type: string
+                                            format: uuid
+                                            example: "cdd52b98-9183-41b9-8e27-4d12c5ddcf3c"
+                                        password:
+                                            type: string
+                                            example: "NewSecurePass123"
+                    responses:
+                        204:
+                            description: "Password changed successfully"
+                        400:
+                            description: "Validation error"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success:
+                                                type: boolean
+                                                example: false
+                                            errors:
+                                                type: object
+                                                example:
+                                                    - "Token cannot be empty."
+                                                    - "Password must be at least 6 characters long."
+                        401:
+                            description: "Invalid or expired token"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success:
+                                                type: boolean
+                                                example: false
+                                            errors:
+                                                type: object
+                                                example: "Invalid or expired token"
 
         components:
             schemas:

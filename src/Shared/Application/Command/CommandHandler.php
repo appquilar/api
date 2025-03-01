@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Application\Command;
 
-interface CommandInterface
+interface CommandHandler
 {
-    // Empty interface to enforce Command structure
+    public function __invoke(Command $command): void;
 }

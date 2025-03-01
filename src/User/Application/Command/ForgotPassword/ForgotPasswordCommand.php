@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\User\Application\Command\ForgotPassword;
 
-use App\Shared\Application\Command\CommandInterface;
+use App\Shared\Application\Command\Command;
 
-class ForgotPasswordCommand implements CommandInterface
+class ForgotPasswordCommand implements Command
 {
     public function __construct(
         private string $email

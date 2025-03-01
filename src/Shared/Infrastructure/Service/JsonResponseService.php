@@ -30,6 +30,11 @@ class JsonResponseService
         return $this->success(status: Response::HTTP_CREATED);
     }
 
+    public function noContent(): JsonResponse
+    {
+        return $this->success(status: Response::HTTP_NO_CONTENT);
+    }
+
     private function error(?array $message = [], int $status = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse
     {
         $data = null;

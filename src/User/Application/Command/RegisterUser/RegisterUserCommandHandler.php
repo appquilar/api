@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace App\User\Application\Command\RegisterUser;
 
-use App\Shared\Application\Command\CommandHandlerInterface;
-use App\Shared\Application\Command\CommandInterface;
+use App\Shared\Application\Command\CommandHandler;
+use App\Shared\Application\Command\Command;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Application\Service\UserPasswordHasher;
 use App\User\Domain\Entity\User;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: RegisterUserCommand::class)]
-class RegisterUserCommandHandler implements CommandHandlerInterface
+class RegisterUserCommandHandler implements CommandHandler
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
@@ -20,7 +20,7 @@ class RegisterUserCommandHandler implements CommandHandlerInterface
     ) {
     }
 
-    public function __invoke(RegisterUserCommand|CommandInterface $command): void
+    public function __invoke(RegisterUserCommand|Command $command): void
     {
         $user = new User(
             $command->userId,
