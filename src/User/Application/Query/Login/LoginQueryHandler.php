@@ -10,17 +10,17 @@ use App\Shared\Application\Query\QueryInterface;
 use App\User\Application\Dto\TokenPayload;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Application\Service\AuthTokenServiceInterface;
+use App\User\Application\Service\UserPasswordHasher;
 use App\User\Domain\Entity\User;
 use Hautelook\Phpass\PasswordHash;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[AsMessageHandler(handles: LoginQuery::class)]
 class LoginQueryHandler implements QueryHandlerInterface
 {
     public function __construct(
         private UserRepositoryInterface $userRepository,
-        private UserPasswordHasherInterface $passwordHasher,
+        private UserPasswordHasher $passwordHasher,
         private AuthTokenServiceInterface $authTokenService,
     ) {
     }
@@ -37,10 +37,16 @@ class LoginQueryHandler implements QueryHandlerInterface
 
         if ($user->getWordPressPassword()) {
             $this->validateWordpressPassword($query, $user);
-        } else {
-            if (!$this->passwordHasher->isPasswordValid($user, $query->getPassword())) {
-                throw new UnauthorizedException('Invalid password');
-            }
+
+            return new LoginQueryResult(
+                $this->authTokenService->encode(
+                    new TokenPayload($user->getId(), $user->getEmail())
+                )
+            );
+        }
+
+        if (!$this->passwordHasher->verifyPassword($query->getPassword(), $user->getPassword())) {
+            throw new UnauthorizedException('Invalid password');
         }
 
         return new LoginQueryResult(
@@ -57,8 +63,10 @@ class LoginQueryHandler implements QueryHandlerInterface
     {
         $wpHasher = new PasswordHash(8, true);
         if ($wpHasher->CheckPassword($query->getPassword(), $user->getWordPressPassword())) {
-            $newPasswordHash = $this->passwordHasher->hashPassword($user, $query->getPassword());
-            $this->userRepository->updateUserPassword($user, $newPasswordHash);
+            $this->userRepository->updateUserPassword(
+                $user,
+                $this->passwordHasher->hashPassword($query->getPassword())
+            );
         } else {
             throw new UnauthorizedException();
         }

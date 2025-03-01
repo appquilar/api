@@ -1,0 +1,18 @@
+{% extends '@!NelmioApiDoc/SwaggerUi/index.html.twig' %}
+
+{% block meta %}
+    {{ parent() }}
+    <link rel="icon" type="image/x-icon" href="/images/favicon.png">
+{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="/css/custom-swagger-styles.css">
+{% endblock stylesheets %}
+
+
+{% block header %}
+    <a id="logo" href="">
+        <img src="/images/logo_transparent_horizontal.png" alt="Appquilar logo">
+    </a>
+{% endblock %}

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Context;
 
-use App\Tests\Factories\User\Domain\Entity\UserFactory;
+use App\Tests\Factories\User\Domain\Entity\PersistingUserFactory;
 use function Zenstruck\Foundry\faker;
 
 trait UserContext
@@ -13,17 +13,17 @@ trait UserContext
 
     protected function givenAnUserWithEmail(string $email): void
     {
-        UserFactory::createOne(['email' => $email]);
+        PersistingUserFactory::createOne(['email' => $email]);
     }
 
     protected function givenAnUserWithEmailAndPassword(string $email, string $password): void
     {
-        UserFactory::createOne(['email' => $email, 'password' => $password]);
+        PersistingUserFactory::createOne(['email' => $email, 'password' => $password]);
     }
 
     protected function givenAnUserWithEmailAndWordpressPassword(string $email, string $password): void
     {
-        UserFactory::createOne(['email' => $email, 'password' => faker()->password(), 'wordpress_password' => $password]);
+        PersistingUserFactory::createOne(['email' => $email, 'password' => faker()->password(), 'wordpress_password' => $password]);
     }
 
     protected function givenImLoggedInAsRegularUserWithEmail(string $email): void

@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Tests\Unit\User\Application\Command\Logout;
 
 use App\Shared\Application\Context\UserGranted;
+use App\Tests\Unit\UnitTestCase;
 use App\User\Application\Command\Logout\LogoutCommand;
 use App\User\Application\Command\Logout\LogoutCommandHandler;
 use App\User\Application\Service\AuthTokenServiceInterface;
-use PHPUnit\Framework\TestCase;
 
-class LogoutCommandHandlerTest extends TestCase
+class LogoutCommandHandlerTest extends UnitTestCase
 {
     public function testHandleRevokesToken(): void
     {

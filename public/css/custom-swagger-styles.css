@@ -1,0 +1,11 @@
+header:before {
+    background-color: #f0f0f0 !important;
+}
+
+header #logo img {
+    background-color: #f0f0f0 !important;
+}
+
+#swagger-ui.api-platform .info .title {
+    color: #F19D70;
+}

@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\User\Application\Command\RegisterUser;
 
+use App\Tests\Unit\UnitTestCase;
 use App\User\Application\Command\RegisterUser\RegisterUserCommand;
 use App\User\Application\Command\RegisterUser\RegisterUserCommandHandler;
 use App\User\Application\Repository\UserRepositoryInterface;
+use App\User\Application\Service\UserPasswordHasher;
 use App\User\Domain\Entity\User;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
-class RegisterUserCommandHandlerTest extends TestCase
+class RegisterUserCommandHandlerTest extends UnitTestCase
 {
     public function testHandle(): void
     {
         $userRepository = $this->createMock(UserRepositoryInterface::class);
-        $passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
+        $passwordHasher = $this->createMock(UserPasswordHasher::class);
 
         $passwordHasher->method('hashPassword')->willReturn('hashed_password');
 

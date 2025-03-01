@@ -8,38 +8,41 @@ use App\Shared\Domain\Entity\Entity;
 use App\Shared\Infrastructure\Security\UserRole;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: 'users')]
 #[Index(name: "email_idx", columns: ["email"])]
-class User extends Entity implements UserInterface, PasswordAuthenticatedUserInterface
+class User extends Entity
 {
     #[ORM\Column(type: 'string', unique: true)]
     private string $email;
-
     #[ORM\Column(type: 'string')]
     private string $password;
-
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $wordpressPassword = null;
-
     #[ORM\Column(type: 'json', enumType: UserRole::class)]
     private array $roles = [];
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $firstName;
+    #[ORM\Column(type: 'string', nullable: true)]
+    private ?string $lastName;
 
     public function __construct(
         Uuid $userId,
         string $email,
         string $password,
-        array $roles = [UserRole::REGULAR_USER]
+        array $roles = [UserRole::REGULAR_USER],
+        string $firstName = null,
+        string $lastName = null,
     ) {
         parent::__construct($userId);
 
         $this->email = $email;
         $this->password = $password;
         $this->roles = $roles;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
     }
 
     public function getEmail(): string
@@ -60,24 +63,6 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
         return $this->roles;
     }
 
-    /**
-     * @param UserRole[] $roles
-     */
-    public function setRoles(array $roles): void
-    {
-        $this->roles = $roles;
-    }
-
-    public function eraseCredentials(): void
-    {
-        // No temporary sensitive data stored
-    }
-
-    public function getUserIdentifier(): string
-    {
-        return $this->email;
-    }
-
     public function setPassword(string $password): void
     {
         $this->password = $password;
@@ -91,5 +76,15 @@ class User extends Entity implements UserInterface, PasswordAuthenticatedUserInt
     public function setWordpressPassword(?string $wordpressPassword): void
     {
         $this->wordpressPassword = $wordpressPassword;
+    }
+
+    public function getFirstName(): ?string
+    {
+        return $this->firstName;
+    }
+
+    public function getLastName(): ?string
+    {
+        return $this->lastName;
     }
 }

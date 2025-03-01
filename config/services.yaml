@@ -38,11 +38,47 @@ services:
     App\Shared\Application\Context\UserGranted:
         factory: [ App\Shared\Application\Context\UserGranted, me ]
 
+    App\Tests\Factories\User\Domain\Entity\PersistingUserFactory:
+        autowire: true
+        autoconfigure: true
+        public: true
+        arguments:
+            - '@App\User\Application\Service\UserPasswordHasher'
+        tags:
+            - { name: 'foundry.factory' }
+
+
     App\Tests\Factories\User\Domain\Entity\UserFactory:
         autowire: true
         autoconfigure: true
         public: true
         arguments:
-            - '@security.password_hasher'
+            - '@App\User\Application\Service\UserPasswordHasher'
         tags:
             - { name : 'foundry.factory'}
+
+    # Services
+    App\User\Application\Service\UserPasswordHasher:
+
+    App\User\Infrastructure\Service\FirebaseJwtAuthTokenService:
+        arguments:
+            $secret: '%env(JWT_SECRET)%'
+
+    App\User\Infrastructure\Service\FirebaseJwtForgotPasswordTokenService:
+        arguments:
+            $secret: '%env(JWT_FORGOT_PASSWORD_SECRET)%'
+
+    App\Notification\Infrastructure\Service\MailerEmailService:
+        arguments:
+            $env: '%env(APP_ENV)%'
+            $fromEmail: '%env(MAIL_FROM_EMAIL)%'
+            $fromName: '%env(MAIL_FROM_NAME)%'
+            $devToEmail: '%env(DEV_TO_EMAIL)%'
+
+    App\User\Infrastructure\Controller\Auth\ForgotPasswordController:
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        autowire: true
+        autoconfigure: true
+        arguments:
+            $env: '%env(APP_ENV)%'

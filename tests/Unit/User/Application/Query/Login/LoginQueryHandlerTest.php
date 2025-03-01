@@ -4,29 +4,29 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\User\Application\Query\Login;
 
+use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
+use App\Tests\Unit\UnitTestCase;
 use App\User\Application\Query\Login\LoginQuery;
 use App\User\Application\Query\Login\LoginQueryHandler;
 use App\User\Application\Query\Login\LoginQueryResult;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Application\Service\AuthTokenServiceInterface;
+use App\User\Application\Service\UserPasswordHasher;
 use App\User\Domain\Entity\User;
-use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use Hautelook\Phpass\PasswordHash;
-use PHPUnit\Framework\TestCase;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Uid\Uuid;
 
-class LoginQueryHandlerTest extends TestCase
+class LoginQueryHandlerTest extends UnitTestCase
 {
     private UserRepositoryInterface $userRepository;
-    private UserPasswordHasherInterface $passwordHasher;
+    private UserPasswordHasher $passwordHasher;
     private AuthTokenServiceInterface $authTokenService;
     private LoginQueryHandler $queryHandler;
 
     protected function setUp(): void
     {
         $this->userRepository = $this->createMock(UserRepositoryInterface::class);
-        $this->passwordHasher = $this->createMock(UserPasswordHasherInterface::class);
+        $this->passwordHasher = $this->createMock(UserPasswordHasher::class);
         $this->authTokenService = $this->createMock(AuthTokenServiceInterface::class);
         $this->queryHandler = new LoginQueryHandler($this->userRepository, $this->passwordHasher, $this->authTokenService);
     }
@@ -45,8 +45,8 @@ class LoginQueryHandlerTest extends TestCase
             ->willReturn($user);
 
         $this->passwordHasher->expects($this->once())
-            ->method('isPasswordValid')
-            ->with($user, 'SymfonyPassword123')
+            ->method('verifyPassword')
+            ->with('SymfonyPassword123', $user->getPassword())
             ->willReturn(true);
 
         $this->authTokenService->expects($this->once())
@@ -77,8 +77,8 @@ class LoginQueryHandlerTest extends TestCase
 
         $this->passwordHasher->expects($this->once())
             ->method('hashPassword')
-            ->with($user, 'WordPressPass123')
-            ->willReturn(password_hash('WordPressPass123', PASSWORD_BCRYPT));
+            ->with('WordPressPass123')
+            ->willReturn(password_hash('WordPressPass123', PASSWORD_ARGON2ID));
 
         $this->userRepository->expects($this->once())
             ->method('updateUserPassword');

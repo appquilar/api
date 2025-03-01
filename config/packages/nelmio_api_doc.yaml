@@ -1,4 +1,6 @@
 nelmio_api_doc:
+    html_config:
+        assets_mode: 'offline'
     documentation:
         info:
             title: "Appquilar API"
@@ -97,6 +99,47 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Invalid token"
+
+            /api/auth/forgot-password:
+                post:
+                    summary: "Request a password reset link"
+                    tags: ["Authentication"]
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    required: ["email"]
+                                    properties:
+                                        email:
+                                            type: string
+                                            example: "user@example.com"
+                    responses:
+                        "200":
+                            description: "Forgot password email sent successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            message:
+                                                type: string
+                                                example: "Forgot password email sent successfully"
+                        "400":
+                            description: "Validation error"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            success:
+                                                type: boolean
+                                                example: false
+                                            errors:
+                                                type: object
+                                                example:
+                                                    email: ["Invalid email format."]
 
         components:
             schemas:

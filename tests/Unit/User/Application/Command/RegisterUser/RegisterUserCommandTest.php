@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace App\Tests\Unit\User\Application\Command\RegisterUser;
 
 
+use App\Tests\Unit\UnitTestCase;
 use App\User\Application\Command\RegisterUser\RegisterUserCommand;
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Uid\Uuid;
 
-class RegisterUserCommandTest extends TestCase
+class RegisterUserCommandTest extends UnitTestCase
 {
     public function testRegisterUserCommandStoresData(): void
     {

@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace App\Tests\Integration\User;
 
 use App\Tests\Integration\IntegrationTestCase;
-use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Uid\Uuid;
 
 class RegisterApiTest extends IntegrationTestCase
 {
     public function testRegisterUserSuccess(): void
     {
         $response = $this->request('POST', '/api/auth/register', [
-            'user_id' => Uuid::uuid4()->toString(),
+            'user_id' => Uuid::v4()->toString(),
             'email' => 'testuser@example.com',
             'password' => 'SecurePass123'
         ]);
@@ -55,7 +55,7 @@ class RegisterApiTest extends IntegrationTestCase
         $this->givenAnUserWithEmail('testuser@example.com');
 
         $response = $this->request('POST', '/api/auth/register', [
-            'user_id' => Uuid::uuid4()->toString(),
+            'user_id' => Uuid::v4()->toString(),
             'email' => 'testuser@example.com',
             'password' => 'SecurePass123'
         ]);

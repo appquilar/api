@@ -15,7 +15,8 @@ use Symfony\Component\Uid\Uuid;
 class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
 {
     public function __construct(
-        private AccessTokenRepository $accessTokenRepository
+        private AccessTokenRepository $accessTokenRepository,
+        private string $secret,
     ) {
     }
 
@@ -28,7 +29,7 @@ class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
             'exp' => $tokenPayload->getExpirationTime()
         ];
 
-        $token = JWT::encode($payload, $_ENV['JWT_SECRET'], 'HS256');
+        $token = JWT::encode($payload, $this->secret, 'HS256');
 
         $this->accessTokenRepository->storeToken($tokenPayload, $payload['site_id'], $token);
 
@@ -38,14 +39,14 @@ class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
     public function decode(string $token): TokenPayload
     {
         try {
-            $decoded = JWT::decode($token, new Key($_ENV['JWT_SECRET'], 'HS256'));
+            $decoded = JWT::decode($token, new Key($this->secret, 'HS256'));
         } catch (\Throwable $e) {
             throw new UnauthorizedException('Invalid access token');
         }
 
         $accessToken = $this->accessTokenRepository->getToken($token);
         if ($accessToken === null) {
-            throw new UnauthorizedException('Unexistent access token');
+            throw new UnauthorizedException('Nonexistent access token');
         }
 
         return new TokenPayload(
