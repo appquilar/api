@@ -29,12 +29,11 @@ class LoginApiTest extends IntegrationTestCase
         $email = 'wpuser@example.com';
         $password = 'WordpressPassword123';
         $this->givenAnUserWithEmailAndWordpressPassword($email, $password);
-        $this->client->request('POST', '/api/auth/login', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+
+        $response = $this->request('POST', '/api/auth/login', [
             'email' => $email,
             'password' => $password
-        ]));
-
-        $response = $this->client->getResponse();
+        ]);
         $responseData = json_decode($response->getContent(), true);
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
@@ -44,13 +43,14 @@ class LoginApiTest extends IntegrationTestCase
 
     public function testLoginFailsWithWrongPassword(): void
     {
-        $this->client->request('POST', '/api/auth/login', [], [], ['CONTENT_TYPE' => 'application/json'], json_encode([
+        $email = 'wpuser@example.com';
+        $password = 'WordpressPassword123';
+        $this->givenAnUserWithEmailAndPassword($email, $password);
+
+        $response = $this->request('POST', '/api/auth/login',[
             'email' => 'wpuser@example.com',
             'password' => 'WrongPassword'
-        ]));
-
-        $response = $this->client->getResponse();
-        $responseData = json_decode($response->getContent(), true);
+        ]);
 
         $this->assertEquals(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }

@@ -33,16 +33,6 @@ abstract class Entity
         return $this->id;
     }
 
-    public function getCreatedAt(): DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): ?DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {

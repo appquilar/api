@@ -266,16 +266,43 @@ nelmio_api_doc:
                         "404":
                             description: "User not found"
 
+            /api/users/{user_id}/change-password:
+                patch:
+                    summary: "Change the user's password"
+                    description: "Allows an authenticated user to update their password."
+                    tags:
+                        - "User"
+                    parameters:
+                        - name: "user_id"
+                          in: "path"
+                          required: true
+                          schema:
+                              type: "string"
+                          example: "cdd52b98-9183-41b9-8e27-4d12c5ddcf3c"
+                    security:
+                        - bearerAuth: []
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/UpdateUserPasswordDTO"
+                    responses:
+                        "204":
+                            description: "Password changed successfully"
+                        "401":
+                            description: "Unauthorized - Invalid credentials or not authenticated"
+
         components:
             schemas:
                 RegisterUserDTO:
                     type: object
                     required:
-                        - userId
+                        - user_id
                         - email
                         - password
                     properties:
-                        userId:
+                        user_id:
                             type: string
                             format: uuid
                             example: "cdd52b98-9183-41b9-8e27-4d12c5ddcf3c"
@@ -308,6 +335,16 @@ nelmio_api_doc:
                             type: array
                             items:
                                 $ref: "#/components/schemas/UserRoles"
+                UpdateUserPasswordDTO:
+                    type: object
+                    required: ["old_password", "new_password"]
+                    properties:
+                        old_password:
+                            type: string
+                            example: "OldPassword123"
+                        new_password:
+                            type: string
+                            example: "NewSecurePassword456"
                 UserRoles:
                     type: string
                     enum:

@@ -41,20 +41,4 @@ class FirebaseJwtForgotPasswordTokenService implements ForgotPasswordTokenServic
 
         return $forgotPasswordToken;
     }
-
-    public function decodeToken(string $token): ForgotPasswordToken
-    {
-        try {
-            $decoded = JWT::decode($token, new Key($this->secret, 'HS256'));
-        } catch (\Throwable $e) {
-            throw new UnauthorizedException('Token can\'t be decoded');
-        }
-
-        $forgotPasswordToken = $this->forgotPasswordTokenRepository->getToken($token);
-        if ($forgotPasswordToken === null) {
-            throw new UnauthorizedException('Nonexistent forgot password token');
-        }
-
-        return $forgotPasswordToken;
-    }
 }

@@ -10,5 +10,4 @@ use Symfony\Component\Uid\Uuid;
 interface ForgotPasswordTokenServiceInterface
 {
     public function generateToken(Uuid $userId): ForgotPasswordToken;
-    public function decodeToken(string $token): ForgotPasswordToken;
 }

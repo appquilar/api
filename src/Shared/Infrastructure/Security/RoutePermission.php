@@ -13,6 +13,7 @@ enum RoutePermission: string
     case USER_ME = '/api/me';
     case USER_GET_BY_ID = 'users_get_user_by_id';
     case USER_UPDATE_USER = 'users_update_user';
+    case USER_CHANGE_PASSWORD = 'users_change_password';
 
     /**
      * @return UserRole[]
@@ -24,6 +25,7 @@ enum RoutePermission: string
             self::USER_ME,
             self::USER_GET_BY_ID,
             self::USER_UPDATE_USER,
+            self::USER_CHANGE_PASSWORD,
                 => [UserRole::REGULAR_USER],
         };
     }

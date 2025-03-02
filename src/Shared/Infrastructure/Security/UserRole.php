@@ -19,16 +19,4 @@ enum UserRole: string
             self::REGULAR_USER => in_array(self::REGULAR_USER, $requiredRoles)
         };
     }
-
-    /**
-     * @param UserRole[] $roles
-     * @return bool
-     */
-    public function isAdmin(array $roles): bool
-    {
-        return match ($this) {
-            self::ADMIN => in_array(self::ADMIN, $roles),
-            default => false
-        };
-    }
 }

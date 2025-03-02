@@ -41,6 +41,11 @@ trait UserContext
         PersistingUserFactory::createOne(['userId' => $userId, 'roles' => [UserRole::REGULAR_USER]]);
     }
 
+    protected function givenARegularUserWithUserIdAndPassword(Uuid $userId, string $password): void
+    {
+        PersistingUserFactory::createOne(['userId' => $userId, 'password' => $password, 'roles' => [UserRole::REGULAR_USER]]);
+    }
+
     protected function givenAnAdminUserWithUserId(Uuid $userId): void
     {
         PersistingUserFactory::createOne(['userId' => $userId, 'roles' => [UserRole::ADMIN]]);
@@ -58,6 +63,13 @@ trait UserContext
     protected function givenImLoggedInAsRegularUserWithUserId(Uuid $userId): void
     {
         $this->givenARegularUserWithUserId($userId);
+
+        $this->login($userId);
+    }
+
+    protected function givenImLoggedInAsRegularUserWithUserIdAndPassword(Uuid $userId, string $password): void
+    {
+        $this->givenARegularUserWithUserIdAndPassword($userId, $password);
 
         $this->login($userId);
     }
