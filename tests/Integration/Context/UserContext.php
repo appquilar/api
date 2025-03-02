@@ -6,7 +6,9 @@ namespace App\Tests\Integration\Context;
 
 use App\Shared\Infrastructure\Security\UserRole;
 use App\Tests\Factories\User\Domain\Entity\PersistingUserFactory;
+use App\Tests\Factories\User\Infrastructure\Entity\AccessToken\PersistingAccessTokenFactory;
 use App\Tests\Factories\User\Infrastructure\Entity\ForgotPasswordToken\PersistingForgotPasswordTokenFactory;
+use App\User\Infrastructure\Entity\AccessToken\AccessToken;
 use Symfony\Component\Uid\Uuid;
 use function Zenstruck\Foundry\faker;
 
@@ -34,9 +36,14 @@ trait UserContext
         PersistingUserFactory::createOne(['email' => $email, 'password' => faker()->password(), 'wordpress_password' => $password]);
     }
 
-    protected function givenAnAdminUserWithEmailAndPassword(string $email, string $password): void
+    protected function givenARegularUserWithUserId(Uuid $userId): void
     {
-        PersistingUserFactory::createOne(['email' => $email, 'password' => $password, 'roles' => [UserRole::ADMIN]]);
+        PersistingUserFactory::createOne(['userId' => $userId, 'roles' => [UserRole::REGULAR_USER]]);
+    }
+
+    protected function givenAnAdminUserWithUserId(Uuid $userId): void
+    {
+        PersistingUserFactory::createOne(['userId' => $userId, 'roles' => [UserRole::ADMIN]]);
     }
 
     protected function givenAForgotPasswordTokenWithUserIdAndTokenAndExpirationDate(
@@ -48,27 +55,24 @@ trait UserContext
         PersistingForgotPasswordTokenFactory::createOne(['userId' => $userId, 'token' => $token, 'expiresAt' => $expiresAt]);
     }
 
-    protected function givenImLoggedInAsRegularUserWithEmail(string $email): void
+    protected function givenImLoggedInAsRegularUserWithUserId(Uuid $userId): void
     {
-        $password = 'test123';
-        $this->givenAnUserWithEmailAndPassword($email, $password);
-        $payload = ['email' => $email, 'password' => $password];
+        $this->givenARegularUserWithUserId($userId);
 
-        $this->login($payload);
+        $this->login($userId);
     }
 
-    protected function givenImLoggedInAsAdminUserWithEmail(string $email): void
+    protected function givenImLoggedInAsAdmin(): void
     {
-        $password = 'test123';
-        $this->givenAnAdminUserWithEmailAndPassword($email, $password);
-        $payload = ['email' => $email, 'password' => $password];
+        $userId = Uuid::v4();
+        $this->givenAnAdminUserWithUserId($userId);
 
-        $this->login($payload);
+        $this->login($userId);
     }
 
-    private function login(array $payload): void
+    private function login(Uuid $userId): void
     {
-        $response = $this->request('POST', '/api/auth/login', $payload);
-        $this->accessToken = json_decode($response->getContent(), true)['data']['token'];
+        $accessToken = PersistingAccessTokenFactory::createOne(['userId' => $userId]);
+        $this->accessToken = $accessToken->getToken();
     }
 }

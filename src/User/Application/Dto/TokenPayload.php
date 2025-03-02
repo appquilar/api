@@ -14,7 +14,6 @@ class TokenPayload
 
     public function __construct(
         private Uuid $userId,
-        private string $email,
         int $expirationTime = null,
         private bool $revoked = false
     ) {
@@ -24,11 +23,6 @@ class TokenPayload
     public function getUserId(): Uuid
     {
         return $this->userId;
-    }
-
-    public function getEmail(): string
-    {
-        return $this->email;
     }
 
     public function isRevoked(): bool

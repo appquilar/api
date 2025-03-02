@@ -41,19 +41,19 @@ class AccessToken
         $this->createdAt = new \DateTimeImmutable();
     }
 
-    public function getToken(): string
-    {
-        return $this->token;
-    }
-
     public function getUserId(): Uuid
     {
         return $this->userId;
     }
 
-    public function getSiteId(): Uuid
+    public function getToken(): string
     {
-        return $this->siteId;
+        return $this->token;
+    }
+
+    public function setToken(string $token): void
+    {
+        $this->token = $token;
     }
 
     public function isRevoked(): bool
@@ -61,8 +61,8 @@ class AccessToken
         return $this->revoked;
     }
 
-    public function revoke(): void
+    public function setRevoked(bool $revoked): void
     {
-        $this->revoked = true;
+        $this->revoked = $revoked;
     }
 }

@@ -67,6 +67,14 @@ class User extends Entity
         return $this->roles;
     }
 
+    /**
+     * @param UserRole[] $roles
+     */
+    public function setRoles(array $roles): void
+    {
+        $this->roles = $roles;
+    }
+
     public function setPassword(string $password): void
     {
         $this->password = $password;
@@ -100,5 +108,27 @@ class User extends Entity
     public function setLastName(?string $lastName): void
     {
         $this->lastName = $lastName;
+    }
+
+    public function update(
+        string $email,
+        string $firstName = null,
+        string $lastName = null,
+    ): void
+    {
+        $this->email = $email;
+        $this->firstName = $firstName;
+        $this->lastName = $lastName;
+    }
+
+    public function hasDifferentRoles(array $newRoles): bool
+    {
+        $currentRoles = array_map(fn (UserRole $role) => $role->value, $this->roles);
+        $incomingRoles = array_map(fn (UserRole $role) => $role->value, $newRoles);
+
+        sort($currentRoles);
+        sort($incomingRoles);
+
+        return $currentRoles !== $incomingRoles;
     }
 }

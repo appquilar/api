@@ -10,10 +10,9 @@ use Symfony\Component\Uid\Uuid;
 
 class GetUserByIdApiTest extends IntegrationTestCase
 {
-    public function testGetMeReturnsUserDataForRegularUser(): void
+    public function testGetUserByIdReturnsUserDataForRegularUserWithoutEmail(): void
     {
-        $email = 'user@example.com';
-        $this->givenImLoggedInAsRegularUserWithEmail($email);
+        $this->givenImLoggedInAsRegularUserWithUserId(Uuid::v4());
         $expectedUserId = Uuid::v4();
         $expectedEmail = 'test@example.com';
         $this->givenAnUserWithIdAndEmail($expectedUserId, $expectedEmail);
@@ -32,8 +31,7 @@ class GetUserByIdApiTest extends IntegrationTestCase
 
     public function testGetMeReturnsAdminDataForAdminUser(): void
     {
-        $email = 'admin@example.com';
-        $this->givenImLoggedInAsAdminUserWithEmail($email);
+        $this->givenImLoggedInAsAdmin();
         $expectedUserId = Uuid::v4();
         $expectedEmail = 'test@example.com';
         $this->givenAnUserWithIdAndEmail($expectedUserId, $expectedEmail);

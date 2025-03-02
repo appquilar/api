@@ -6,13 +6,13 @@ namespace App\Tests\Integration\User;
 
 use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Uid\Uuid;
 
 class LogoutApiTest extends IntegrationTestCase
 {
     public function testLogoutSuccess(): void
     {
-        $email = 'symfonyuser@example.com';
-        $this->givenImLoggedInAsRegularUserWithEmail($email);
+        $this->givenImLoggedInAsRegularUserWithUserId(Uuid::v4());
 
         $response = $this->request('POST', '/api/auth/logout');
 
@@ -39,8 +39,7 @@ class LogoutApiTest extends IntegrationTestCase
 
     public function testLogoutTwoTimesWillFail(): void
     {
-        $email = 'symfonyuser@example.com';
-        $this->givenImLoggedInAsRegularUserWithEmail($email);
+        $this->givenImLoggedInAsRegularUserWithUserId(Uuid::v4());
 
         $response = $this->request('POST', '/api/auth/logout');
 

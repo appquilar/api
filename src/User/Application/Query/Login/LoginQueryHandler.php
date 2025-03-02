@@ -40,7 +40,7 @@ class LoginQueryHandler implements QueryHandler
 
             return new LoginQueryResult(
                 $this->authTokenService->encode(
-                    new TokenPayload($user->getId(), $user->getEmail())
+                    new TokenPayload($user->getId())
                 )
             );
         }
@@ -51,7 +51,7 @@ class LoginQueryHandler implements QueryHandler
 
         return new LoginQueryResult(
             $this->authTokenService->encode(
-                new TokenPayload($user->getId(), $user->getEmail())
+                new TokenPayload($user->getId())
             )
         );
     }

@@ -31,16 +31,17 @@ class AccessTokenRepository
             ->findOneBy(['token' => $token]);
 
         if ($accessToken) {
-            $accessToken->revoke();
+            $accessToken->setRevoked(true);
             $this->entityManager->flush();
         }
     }
 
-    public function isTokenRevoked(string $token): bool
+    public function revokeTokensByUserId(Uuid $userId): void
     {
-        $accessToken = $this->entityManager->getRepository(AccessToken::class)
-            ->findOneBy(['token' => $token]);
-
-        return $accessToken ? $accessToken->isRevoked() : false;
+        $this->entityManager->createQuery(
+            'UPDATE ' . AccessToken::class . ' t 
+             SET t.revoked = true 
+             WHERE t.userId = :userId'
+        )->setParameter('userId', $userId->toBinary())->execute();
     }
 }

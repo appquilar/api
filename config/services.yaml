@@ -51,6 +51,15 @@ services:
     App\Tests\Factories\User\Domain\Entity\UserFactory:
         parent: App\Tests\Factories\User\Domain\Entity\PersistingUserFactory
 
+    App\Tests\Factories\User\Infrastructure\Entity\AccessToken\PersistingAccessTokenFactory:
+        autowire: true
+        autoconfigure: true
+        public: true
+        arguments:
+            - '@App\User\Infrastructure\Service\FirebaseJwtAuthTokenService'
+        tags:
+            - { name: 'foundry.factory' }
+
     # Services
     App\User\Application\Service\UserPasswordHasher:
 

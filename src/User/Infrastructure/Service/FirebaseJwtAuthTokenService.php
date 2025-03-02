@@ -24,7 +24,6 @@ class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
     {
         $payload = [
             'user_id' => $tokenPayload->getUserId()->toString(),
-            'email' => $tokenPayload->getEmail(),
             'site_id' => Uuid::v4(),
             'exp' => $tokenPayload->getExpirationTime()
         ];
@@ -51,7 +50,6 @@ class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
 
         return new TokenPayload(
             Uuid::fromString($decoded->user_id),
-            $decoded->email,
             $decoded->exp,
             $accessToken->isRevoked()
         );
@@ -60,5 +58,10 @@ class FirebaseJwtAuthTokenService implements AuthTokenServiceInterface
     public function revoke(string $token): void
     {
         $this->accessTokenRepository->revokeToken($token);
+    }
+
+    public function revokeTokensByUserId(Uuid $userId): void
+    {
+        $this->accessTokenRepository->revokeTokensByUserId($userId);
     }
 }
