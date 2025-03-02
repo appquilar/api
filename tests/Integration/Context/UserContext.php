@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Context;
 
+use App\Shared\Infrastructure\Security\UserRole;
 use App\Tests\Factories\User\Domain\Entity\PersistingUserFactory;
 use App\Tests\Factories\User\Infrastructure\Entity\ForgotPasswordToken\PersistingForgotPasswordTokenFactory;
 use Symfony\Component\Uid\Uuid;
@@ -33,6 +34,11 @@ trait UserContext
         PersistingUserFactory::createOne(['email' => $email, 'password' => faker()->password(), 'wordpress_password' => $password]);
     }
 
+    protected function givenAnAdminUserWithEmailAndPassword(string $email, string $password): void
+    {
+        PersistingUserFactory::createOne(['email' => $email, 'password' => $password, 'roles' => [UserRole::ADMIN]]);
+    }
+
     protected function givenAForgotPasswordTokenWithUserIdAndTokenAndExpirationDate(
         Uuid $userId,
         string $token,
@@ -48,6 +54,20 @@ trait UserContext
         $this->givenAnUserWithEmailAndPassword($email, $password);
         $payload = ['email' => $email, 'password' => $password];
 
+        $this->login($payload);
+    }
+
+    protected function givenImLoggedInAsAdminUserWithEmail(string $email): void
+    {
+        $password = 'test123';
+        $this->givenAnAdminUserWithEmailAndPassword($email, $password);
+        $payload = ['email' => $email, 'password' => $password];
+
+        $this->login($payload);
+    }
+
+    private function login(array $payload): void
+    {
         $response = $this->request('POST', '/api/auth/login', $payload);
         $this->accessToken = json_decode($response->getContent(), true)['data']['token'];
     }

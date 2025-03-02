@@ -9,16 +9,13 @@ use Hautelook\Phpass\PasswordHash;
 use Symfony\Component\Uid\Uuid;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
-/**
- * @extends PersistentProxyObjectFactory<User>
- */
-final class PersistingUserFactory extends PersistentProxyObjectFactory
+class PersistingUserFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      */
     public function __construct(
-        private UserPasswordHasher $passwordHasher
+        protected UserPasswordHasher $passwordHasher
     )
     {
         parent::__construct();
@@ -36,9 +33,11 @@ final class PersistingUserFactory extends PersistentProxyObjectFactory
     {
         return [
             'userId' => Uuid::v4(),
-            'email' => self::faker()->text(),
+            'email' => self::faker()->email(),
             'password' => self::faker()->text(),
             'roles' => [UserRole::REGULAR_USER],
+            'first_name' => self::faker()->name(),
+            'last_name' => self::faker()->lastName()
         ];
     }
 

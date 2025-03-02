@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\User\Application\Query\Login;
 
-use App\Shared\Application\Query\QueryInterface;
+use App\Shared\Application\Query\Query;
 
-class LoginQuery implements QueryInterface
+class LoginQuery implements Query
 {
     public function __construct(
         private string $email,

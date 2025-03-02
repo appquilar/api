@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\User\Application\Query\Login;
 
-use App\Shared\Application\Query\QueryResultInterface;
+use App\Shared\Application\Query\QueryResult;
 
-class LoginQueryResult implements QueryResultInterface
+class LoginQueryResult implements QueryResult
 {
     public function __construct(
         private string $token

@@ -17,7 +17,7 @@ class QueryBus
     ) {
     }
 
-    public function query(QueryInterface $query): QueryResultInterface
+    public function query(Query $query): QueryResult
     {
         try {
             $result = $this->handle($query);

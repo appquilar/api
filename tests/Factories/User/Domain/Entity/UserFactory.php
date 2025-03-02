@@ -4,43 +4,11 @@ declare(strict_types=1);
 
 namespace App\Tests\Factories\User\Domain\Entity;
 
-use App\Shared\Infrastructure\Security\UserRole;
-use App\User\Application\Service\UserPasswordHasher;
 use App\User\Domain\Entity\User;
 use Hautelook\Phpass\PasswordHash;
-use Symfony\Component\Uid\Uuid;
-use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
-class UserFactory extends PersistentProxyObjectFactory
+final class UserFactory extends PersistingUserFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     */
-    public function __construct(
-        private UserPasswordHasher $passwordHasher
-    )
-    {
-        parent::__construct();
-    }
-
-    public static function class(): string
-    {
-        return User::class;
-    }
-
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     */
-    protected function defaults(): array|callable
-    {
-        return [
-            'userId' => Uuid::v4(),
-            'email' => self::faker()->text(),
-            'password' => self::faker()->text(),
-            'roles' => [UserRole::REGULAR_USER],
-        ];
-    }
-
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */

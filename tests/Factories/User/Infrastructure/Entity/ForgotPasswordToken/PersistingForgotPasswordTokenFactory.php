@@ -9,7 +9,7 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<ForgotPasswordToken>
  */
-final class PersistingForgotPasswordTokenFactory extends PersistentProxyObjectFactory
+class PersistingForgotPasswordTokenFactory extends PersistentProxyObjectFactory
 {
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services

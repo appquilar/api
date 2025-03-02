@@ -10,6 +10,7 @@ nelmio_api_doc:
             exclude_path_patterns:
                 - ^/_error
         paths:
+            # Authentication
             /api/auth/register:
                 post:
                     summary: "Register a new user"
@@ -192,6 +193,52 @@ nelmio_api_doc:
                                             errors:
                                                 type: object
                                                 example: "Invalid or expired token"
+            # User
+            /api/me:
+                get:
+                    summary: "Get the authenticated user's details"
+                    description: "Fetch the details of the currently authenticated user"
+                    tags:
+                        - "User"
+                    security:
+                        - bearerAuth: [ ]
+                    responses:
+                        "200":
+                            description: "User details retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/User"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Unauthorized"
+            /api/users/{user_id}:
+                get:
+                    summary: "Get the specific user's details"
+                    description: "Fetch the details of an user by its ID"
+                    tags:
+                        - "User"
+                    parameters:
+                        - in: path
+                          name: user_id
+                          schema:
+                              type: uuid
+                          required: true
+                          description: UUID of the user to get
+                    responses:
+                        "200":
+                            description: "User details retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/User"
 
         components:
             schemas:
@@ -222,3 +269,29 @@ nelmio_api_doc:
                         password:
                             type: string
                             example: "SecurePass123"
+                UserRoles:
+                    type: string
+                    enum:
+                        - ROLE_USER
+                        - ROLE_ADMIN
+                User:
+                    type: object
+                    properties:
+                        id:
+                            type: string
+                            format: uuid
+                            example: "cdd52b98-9183-41b9-8e27-4d12c5ddcf3c"
+                        first_name:
+                            type: string
+                            example: "John"
+                        last_name:
+                            type: string
+                            example: "Doe"
+                        email:
+                            type: string
+                            format: email
+                            example: "testuser@example.com"
+                        roles:
+                            type: array
+                            items:
+                                $ref: "#/components/schemas/UserRoles"

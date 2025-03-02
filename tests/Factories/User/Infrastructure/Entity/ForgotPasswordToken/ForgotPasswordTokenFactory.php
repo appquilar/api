@@ -9,33 +9,8 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 /**
  * @extends PersistentProxyObjectFactory<ForgotPasswordToken>
  */
-final class ForgotPasswordTokenFactory extends PersistentProxyObjectFactory
+final class ForgotPasswordTokenFactory extends PersistingForgotPasswordTokenFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     */
-    public function __construct()
-    {
-    }
-
-    public static function class(): string
-    {
-        return ForgotPasswordToken::class;
-    }
-
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories
-     */
-    protected function defaults(): array|callable
-    {
-        return [
-            'expiresAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTime()),
-            'siteId' => Uuid::v4(),
-            'token' => self::faker()->text(300),
-            'userId' => Uuid::v4(),
-        ];
-    }
-
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
      */

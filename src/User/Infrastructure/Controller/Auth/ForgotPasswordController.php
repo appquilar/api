@@ -18,7 +18,6 @@ class ForgotPasswordController
     public function __construct(
         private CommandBus          $commandBus,
         private JsonResponseService $jsonResponseService,
-        private string $env,
     ) {
     }
 
@@ -32,11 +31,7 @@ class ForgotPasswordController
                 new ForgotPasswordCommand($request->email)
             );
         } catch (\Exception $e) {
-            if ($this->env === 'prod') {
-                error_log($e->getMessage());
-            } else {
-                throw $e;
-            }
+            error_log($e->getMessage());
         } finally {
             return $this->jsonResponseService->ok();
         }

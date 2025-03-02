@@ -30,7 +30,12 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
 
         $route = RoutePermission::tryFrom($path);
         if (!$route) {
-            return;
+            $routeName = $request->attributes->get('_route');
+            $routeByRouteName = RoutePermission::tryFrom($routeName);
+            if (!$routeByRouteName) {
+                return;
+            }
+            $route = $routeByRouteName;
         }
 
         $token = $request->headers->get('Authorization');

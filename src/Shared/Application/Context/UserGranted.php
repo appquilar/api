@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Application\Context;
 
+use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Domain\Entity\User;
 use Zeelo\API\Domain\Common\Constants;
 
@@ -50,5 +51,10 @@ class UserGranted
     {
         static::$me = null;
         $this->user = null;
+    }
+
+    public function isAdmin(): bool
+    {
+        return in_array(UserRole::ADMIN, $this->user->getRoles());
     }
 }

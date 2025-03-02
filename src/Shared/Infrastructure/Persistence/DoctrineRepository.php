@@ -25,9 +25,14 @@ abstract class DoctrineRepository implements RepositoryInterface
 
     abstract public function getClass(): string;
 
-    public function findById(Uuid $id): ?Entity
+    public function findById(Uuid $id): Entity|null
     {
         return $this->repository->find($id);
+    }
+
+    public function findOneBy(array $params): Entity|null
+    {
+        return $this->repository->findOneBy($params);
     }
 
     public function save(Entity $entity): void

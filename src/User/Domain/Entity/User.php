@@ -21,6 +21,7 @@ class User extends Entity
     private string $password;
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $wordpressPassword = null;
+    /** @var UserRole[] */
     #[ORM\Column(type: 'json', enumType: UserRole::class)]
     private array $roles = [];
     #[ORM\Column(type: 'string', nullable: true)]
@@ -28,6 +29,9 @@ class User extends Entity
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $lastName;
 
+    /**
+     * @param UserRole[] $roles
+     */
     public function __construct(
         Uuid $userId,
         string $email,
@@ -83,8 +87,18 @@ class User extends Entity
         return $this->firstName;
     }
 
+    public function setFirstName(?string $firstName): void
+    {
+        $this->firstName = $firstName;
+    }
+
     public function getLastName(): ?string
     {
         return $this->lastName;
+    }
+
+    public function setLastName(?string $lastName): void
+    {
+        $this->lastName = $lastName;
     }
 }

@@ -6,7 +6,9 @@ namespace App\Shared\Infrastructure\Security;
 
 enum RoutePermission: string
 {
-    case LOGOUT = '/api/auth/logout';
+    case AUTH_LOGOUT = '/api/auth/logout';
+    case USER_ME = '/api/me';
+    case USER_GET_BY_ID = 'users_get_user_by_id';
 
     /**
      * @return UserRole[]
@@ -14,7 +16,10 @@ enum RoutePermission: string
     public function getRequiredRoles(): array
     {
         return match ($this) {
-            self::LOGOUT => [UserRole::REGULAR_USER],
+            self::AUTH_LOGOUT,
+            self::USER_ME,
+            self::USER_GET_BY_ID,
+                => [UserRole::REGULAR_USER],
         };
     }
 }

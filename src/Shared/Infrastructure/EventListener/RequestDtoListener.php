@@ -65,7 +65,8 @@ class RequestDtoListener
 
         // Merge all request sources
         $requestData = array_merge(
-            json_decode($request->getContent(), true) ?? [], // Body data
+            json_decode($request->getContent(), true) ?? [],
+            $request->attributes->all(),
             $request->query->all(),
             $request->request->all(),
             $request->files->all()

@@ -10,12 +10,12 @@ class TokenPayload
 {
     private const EXPIRATION_TIME = 60*60*24*30; // 1 month
 
-    private ?int $expirationTime;
+    private int $expirationTime;
 
     public function __construct(
         private Uuid $userId,
         private string $email,
-        ?int $expirationTime = null,
+        int $expirationTime = null,
         private bool $revoked = false
     ) {
         $this->expirationTime = $expirationTime !== null ? $expirationTime : time() + self::EXPIRATION_TIME;
@@ -36,7 +36,7 @@ class TokenPayload
         return $this->revoked;
     }
 
-    public function getExpirationTime(): ?int
+    public function getExpirationTime(): int
     {
         return $this->expirationTime;
     }

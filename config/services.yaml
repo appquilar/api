@@ -49,13 +49,7 @@ services:
 
 
     App\Tests\Factories\User\Domain\Entity\UserFactory:
-        autowire: true
-        autoconfigure: true
-        public: true
-        arguments:
-            - '@App\User\Application\Service\UserPasswordHasher'
-        tags:
-            - { name : 'foundry.factory'}
+        parent: App\Tests\Factories\User\Domain\Entity\PersistingUserFactory
 
     # Services
     App\User\Application\Service\UserPasswordHasher:
@@ -74,11 +68,3 @@ services:
             $fromEmail: '%env(MAIL_FROM_EMAIL)%'
             $fromName: '%env(MAIL_FROM_NAME)%'
             $devToEmail: '%env(DEV_TO_EMAIL)%'
-
-    App\User\Infrastructure\Controller\Auth\ForgotPasswordController:
-        tags: [ 'controller.service_arguments' ]
-        public: true
-        autowire: true
-        autoconfigure: true
-        arguments:
-            $env: '%env(APP_ENV)%'
