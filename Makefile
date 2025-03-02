@@ -43,7 +43,7 @@ integration-db-shell:
 
 ci-migrations:
 	@echo "Generating integration environment..."
-	bin/console doctrine:database:create
+	bin/console doctrine:database:create --if-not-exists --no-interaction
 	bin/console doctrine:migrations:migrate --no-interaction
 
 run-ci-unit-tests:
