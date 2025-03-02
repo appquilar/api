@@ -1,6 +1,6 @@
 PROJECT_NAME=symfony-docker
 
-.PHONY: build start stop restart purge shell apache-shell db-shell integration-db-shell unit-tests integration-tests all-tests clean-integration
+.PHONY: build start stop restart purge shell apache-shell db-shell integration-db-shell unit-tests integration-tests all-tests clean-integration ci-copy-env ci-migrations run-ci-unit-tests run-ci-integration-tests
 
 ## Build the Docker images
 build:
@@ -41,6 +41,19 @@ integration-db-shell:
 	@echo "Entering MySQL integration database shell..."
 	docker exec -it $$(docker-compose ps -q mysql_integration) mysql -u symfony_test_user -p
 
+ci-migrations:
+	@echo "Generating integration environment..."
+	bin/console doctrine:database:create
+	bin/console doctrine:migrations:migrate --no-interaction
+
+run-ci-unit-tests:
+	@echo "Running Unit Tests..."
+	bin/phpunit --testsuite=Unit --testdox
+
+run-ci-integration-tests:
+	@echo "Running Unit Tests..."
+	bin/phpunit --testsuite=Unit --testdox
+
 unit-tests:
 	@echo "Running Unit Tests..."
 	docker exec -it $$(docker-compose ps -q php) bin/phpunit --testsuite=Unit --testdox
@@ -58,3 +71,6 @@ clean-integration:
 	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:drop --force --if-exists --env=test
 	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:create --env=test
 	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:migrations:migrate --no-interaction --env=test
+
+ci-copy-env:
+	cp .env.integration .env
