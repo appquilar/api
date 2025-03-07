@@ -29,6 +29,14 @@ services:
         autowire: true
         autoconfigure: true
 
+
+    App\Company\Infrastructure\Controller\:
+        resource: '../src/Company/Infrastructure/Controller/'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        autowire: true
+        autoconfigure: true
+
     # Symfony kernel listeners
     App\Shared\Infrastructure\EventListener\RequestDtoListener:
         tags:

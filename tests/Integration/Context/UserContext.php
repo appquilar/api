@@ -8,7 +8,6 @@ use App\Shared\Infrastructure\Security\UserRole;
 use App\Tests\Factories\User\Domain\Entity\PersistingUserFactory;
 use App\Tests\Factories\User\Infrastructure\Entity\AccessToken\PersistingAccessTokenFactory;
 use App\Tests\Factories\User\Infrastructure\Entity\ForgotPasswordToken\PersistingForgotPasswordTokenFactory;
-use App\User\Infrastructure\Entity\AccessToken\AccessToken;
 use Symfony\Component\Uid\Uuid;
 use function Zenstruck\Foundry\faker;
 

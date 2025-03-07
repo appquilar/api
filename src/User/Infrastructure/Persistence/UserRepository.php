@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\User\Infrastructure\Persistence;
 
-use App\Shared\Domain\Entity\Entity;
 use App\Shared\Infrastructure\Persistence\DoctrineRepository;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Domain\Entity\User;

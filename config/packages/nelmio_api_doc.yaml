@@ -30,16 +30,7 @@ nelmio_api_doc:
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success:
-                                                type: boolean
-                                                example: false
-                                            errors:
-                                                type: object
-                                                example:
-                                                    email: ["Email cannot be empty."]
-                                                    password: ["Password must be at least 6 characters long."]
+                                        $ref: "#/components/schemas/ValidationError"
             /api/auth/login:
                 post:
                     summary: "Login a user"
@@ -132,15 +123,7 @@ nelmio_api_doc:
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success:
-                                                type: boolean
-                                                example: false
-                                            errors:
-                                                type: object
-                                                example:
-                                                    email: ["Invalid email format."]
+                                        $ref: "#/components/schemas/ValidationError"
             /api/auth/change-password:
                 post:
                     summary: "Change password using the forgot password token"
@@ -170,16 +153,7 @@ nelmio_api_doc:
                             content:
                                 application/json:
                                     schema:
-                                        type: object
-                                        properties:
-                                            success:
-                                                type: boolean
-                                                example: false
-                                            errors:
-                                                type: object
-                                                example:
-                                                    - "Token cannot be empty."
-                                                    - "Password must be at least 6 characters long."
+                                        $ref: "#/components/schemas/ValidationError"
                         401:
                             description: "Invalid or expired token"
                             content:
@@ -293,6 +267,71 @@ nelmio_api_doc:
                         "401":
                             description: "Unauthorized - Invalid credentials or not authenticated"
 
+            /api/companies:
+                post:
+                    tags:
+                        - Company
+                    summary: "Create a new company"
+                    description: "Creates a new company and assigns an owner."
+                    security:
+                        - bearerAuth: []
+                    operationId: createCompany
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/CreateCompanyDto"
+                    responses:
+                        "201":
+                            description: "Company successfully created"
+                        "400":
+                            description: "Validation error"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/ValidationError"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Unauthorized"
+
+            /api/companies/{company_id}:
+                get:
+                    summary: "Get details of a company"
+                    tags:
+                        - Company
+                    parameters:
+                        - in: path
+                          name: companyId
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                    responses:
+                        200:
+                            description: "Company details retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/Company"
+                        404:
+                            description: "Company not found"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            error:
+                                                type: string
+                                                example: "Company with id xxxx-xxx-xxx-xx-xxxx not found"
+
         components:
             schemas:
                 RegisterUserDTO:
@@ -371,3 +410,111 @@ nelmio_api_doc:
                             type: array
                             items:
                                 $ref: "#/components/schemas/UserRoles"
+                Company:
+                    type: object
+                    properties:
+                        company_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Acme Inc."
+                        owner_id:
+                            type: string
+                            format: uuid
+                            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        description:
+                            type: string
+                            example: "Leading provider of innovative solutions"
+                        fiscal_identifier:
+                            type: string
+                            description: "In Spain, the CIF"
+                            example: "123456789"
+                        address:
+                            type: string
+                            example: "1234 Elm Street, Springfield"
+                        postal_code:
+                            type: string
+                            example: "12345"
+                        city:
+                            type: string
+                            example: "Springfield"
+                        contact_email:
+                            type: string
+                            format: email
+                            example: "contact@acme.com"
+                        phone_number:
+                            $ref: "#/components/schemas/PhoneNumber"
+                PhoneNumber:
+                    type: object
+                    properties:
+                        prefix:
+                            type: string
+                            example: "+34"
+                        country_code:
+                            type: string
+                            example: "ES"
+                        number:
+                            type: string
+                            example: "666000000"
+                ValidationError:
+                    type: object
+                    properties:
+                        success:
+                            type: boolean
+                            example: false
+                        error:
+                            type: object
+                            properties:
+                                errors:
+                                    type: array
+                                    items:
+                                        type: array
+                                        items:
+                                            field:
+                                                type: string
+                                                example: "auth.register.user_id.not_blank"
+                CreateCompanyDto:
+                    type: object
+                    properties:
+                        company_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Acme Inc."
+                        owner_id:
+                            type: string
+                            format: uuid
+                            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                        description:
+                            type: string
+                            example: "Leading provider of innovative solutions"
+                        fiscal_identifier:
+                            type: string
+                            description: "In Spain, the CIF"
+                            example: "123456789"
+                        address:
+                            type: string
+                            example: "1234 Elm Street, Springfield"
+                        postal_code:
+                            type: string
+                            example: "12345"
+                        city:
+                            type: string
+                            example: "Springfield"
+                        contact_email:
+                            type: string
+                            format: email
+                            example: "contact@acme.com"
+                        phone_number_country_code:
+                            type: string
+                            example: "ES"
+                        phone_number_prefix:
+                            type: string
+                            example: "+34"
+                        phone_number_number:
+                            type: string
+                            example: "666000000"

@@ -4,14 +4,17 @@ declare(strict_types=1);
 
 namespace App\Shared\Application\Context;
 
+use App\Company\Domain\Entity\Company;
 use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Domain\Entity\User;
+use Symfony\Component\Uid\Uuid;
 use Zeelo\API\Domain\Common\Constants;
 
 class UserGranted
 {
     private static ?UserGranted $me = null;
     private ?User $user;
+    private ?Company $company;
     private ?string $token;
 
     private function __construct() {
@@ -37,6 +40,16 @@ class UserGranted
         $this->user = $user;
     }
 
+    public function getCompany(): ?Company
+    {
+        return $this->company;
+    }
+
+    public function setCompany(?Company $company): void
+    {
+        $this->company = $company;
+    }
+
     public function getToken(): ?string
     {
         return $this->token;
@@ -51,10 +64,16 @@ class UserGranted
     {
         static::$me = null;
         $this->user = null;
+        $this->company = null;
     }
 
     public function isAdmin(): bool
     {
         return in_array(UserRole::ADMIN, $this->user->getRoles());
+    }
+
+    public function worksAtThisCompany(Uuid $id): bool
+    {
+        return $this->company !== null && $this->company->getId()->equals($id);
     }
 }

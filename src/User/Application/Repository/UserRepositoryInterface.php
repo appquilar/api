@@ -9,7 +9,7 @@ use App\User\Domain\Entity\User;
 use Symfony\Component\Uid\Uuid;
 
 /**
- * @method User findById(Uuid $id)
+ * @method User|null findById(Uuid $id)
  */
 interface UserRepositoryInterface extends RepositoryInterface
 {

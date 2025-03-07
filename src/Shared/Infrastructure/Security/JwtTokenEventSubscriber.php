@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Security;
 
+use App\Company\Application\Repository\CompanyRepositoryInterface;
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Shared\Infrastructure\Service\JsonResponseService;
@@ -11,6 +12,7 @@ use App\User\Application\Dto\TokenPayload;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Application\Service\AuthTokenServiceInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 
 class JwtTokenEventSubscriber implements EventSubscriberInterface
@@ -18,6 +20,7 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
     public function __construct(
         private AuthTokenServiceInterface $authTokenService,
         private UserRepositoryInterface   $userRepository,
+        private CompanyRepositoryInterface $companyRepository,
         private UserGranted               $userGranted,
         private JsonResponseService       $jsonResponseService
     ) {
@@ -28,36 +31,20 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
         $request = $event->getRequest();
         $path = $request->getPathInfo();
 
-        $route = RoutePermission::tryFrom($path);
-        if (!$route) {
-            $routeName = $request->attributes->get('_route');
-            $routeByRouteName = RoutePermission::tryFrom($routeName);
-            if (!$routeByRouteName) {
-                return;
-            }
-            $route = $routeByRouteName;
-        }
-
-        $token = $request->headers->get('Authorization');
-        if (!$token) {
-            $event->setResponse($this->jsonResponseService->unauthorized('Nonexistent token'));
-            return;
-        }
-
-        $token = str_replace('Bearer ', '', $token);
+        $route = $this->getRoute($path, $request);
 
         try {
-            $decodedToken = $this->authTokenService->decode($token);
-            $this->validateToken($decodedToken);
+            $this->processAccessToken($request, $event);
         } catch (UnauthorizedException $e) {
-            $event->setResponse($this->jsonResponseService->unauthorized($e->getMessage()));
-            return;
+            if ($route) {
+                $event->setResponse($this->jsonResponseService->unauthorized($e->getMessage()));
+                return;
+            }
         }
 
-        $this->userGranted->setUser(
-            $this->userRepository->findById($decodedToken->getUserId())
-        );
-        $this->userGranted->setToken($token);
+        if (!$route) {
+            return;
+        }
 
         try {
             $this->validatePermissions($route);
@@ -65,6 +52,22 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
             $event->setResponse($this->jsonResponseService->unauthorized($e->getMessage()));
             return;
         }
+    }
+
+    private function processAccessToken(Request $request, RequestEvent $event): void
+    {
+        $token = $request->headers->get('Authorization');
+        if (!$token) {
+            throw new UnauthorizedException('Nonexistent token');
+        }
+
+        $token = str_replace('Bearer ', '', $token);
+        $decodedToken = $this->authTokenService->decode($token);
+        $this->validateToken($decodedToken);
+
+        $this->userGranted->setUser($this->userRepository->findById($decodedToken->getUserId()));
+        $this->userGranted->setCompany($this->companyRepository->findOneByOwnerId($decodedToken->getUserId()));
+        $this->userGranted->setToken($token);
     }
 
     public static function getSubscribedEvents(): array
@@ -93,5 +96,20 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
         ) {
             throw new UnauthorizedException('Token is revoked or expired');
         }
+    }
+
+    /**
+     * @param string $path
+     * @param Request $request
+     * @return RoutePermission|null
+     */
+    public function getRoute(string $path, Request $request): ?RoutePermission
+    {
+        $route = RoutePermission::tryFrom($path);
+        if (!$route) {
+            $routeName = $request->attributes->get('_route');
+            $route = RoutePermission::tryFrom($routeName);
+        }
+        return $route;
     }
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration;
 
+use App\Tests\Integration\Context\CompanyContext;
 use App\Tests\Integration\Context\UserContext;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -14,7 +15,7 @@ class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
 
-    use UserContext;
+    use UserContext,CompanyContext;
 
     protected KernelBrowser $client;
     protected array $customHeaders = [];

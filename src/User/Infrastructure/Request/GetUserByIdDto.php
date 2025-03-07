@@ -10,10 +10,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class GetUserByIdDto implements RequestDtoInterface
 {
-
     public function __construct(
-        #[Assert\NotBlank(message: "user.get_by_id.user_id.not_blank")]
-        #[Assert\Uuid(message: "user.get_by_id.user_id.uuid")]
+        #[Assert\Sequentially([
+            new Assert\NotBlank(message: "user.get_by_id.user_id.not_blank"),
+            new Assert\Uuid(message: "user.get_by_id.user_id.uuid")
+        ])]
         public ?Uuid $userId = null
     ) {
     }

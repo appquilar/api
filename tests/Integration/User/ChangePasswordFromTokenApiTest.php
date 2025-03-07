@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\User;
 
-use App\Tests\Factories\User\Domain\Entity\PersistingUserFactory;
-use App\Tests\Factories\User\Infrastructure\Entity\ForgotPasswordToken\PersistingForgotPasswordTokenFactory;
 use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;

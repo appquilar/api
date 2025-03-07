@@ -1,0 +1,17 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Company\Application\Repository;
+
+use App\Company\Domain\Entity\Company;
+use App\Shared\Application\Repository\RepositoryInterface;
+use Symfony\Component\Uid\Uuid;
+
+/**
+ * @method Company|null findById(Uuid $id)
+ */
+interface CompanyRepositoryInterface extends RepositoryInterface
+{
+    public function findOneByOwnerId(Uuid $ownerId): ?Company;
+}

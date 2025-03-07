@@ -1,6 +1,6 @@
 PROJECT_NAME=symfony-docker
 
-.PHONY: build start stop restart purge shell apache-shell db-shell integration-db-shell unit-tests integration-tests all-tests clean-integration ci-copy-env ci-migrations run-ci-unit-tests run-ci-integration-tests
+.PHONY: build start stop restart purge shell apache-shell db-shell integration-db-shell unit-tests integration-tests all-tests clean-integration ci-copy-env ci-migrations run-ci-unit-tests run-ci-integration-tests setup
 
 ## Build the Docker images
 build:
@@ -74,3 +74,6 @@ clean-integration:
 
 ci-copy-env:
 	cp .env.integration .env
+
+setup:
+	cp .env.dev .env

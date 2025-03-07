@@ -56,4 +56,14 @@ class JsonResponseService
     {
         return $this->error([$message], Response::HTTP_UNAUTHORIZED);
     }
+
+    public function notFound(string $message = null): JsonResponse
+    {
+        return $this->error([$message], Response::HTTP_NOT_FOUND);
+    }
+
+    public function genericError(string $message = null): JsonResponse
+    {
+        return $this->error([$message], Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
 }

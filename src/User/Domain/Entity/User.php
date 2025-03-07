@@ -28,6 +28,8 @@ class User extends Entity
     private ?string $firstName;
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $lastName;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $wordpressId;
 
     /**
      * @param UserRole[] $roles
@@ -52,6 +54,11 @@ class User extends Entity
     public function getEmail(): string
     {
         return $this->email;
+    }
+
+    public function setEmail(string $email): void
+    {
+        $this->email = $email;
     }
 
     public function getPassword(): string
