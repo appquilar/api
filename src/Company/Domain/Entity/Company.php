@@ -11,7 +11,6 @@ use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: "companies")]
-#[ORM\UniqueConstraint(name: 'unique_owner_id', columns: ['owner_id'])]
 class Company extends Entity
 {
     #[ORM\Column(type: "string", length: 255)]
@@ -19,9 +18,6 @@ class Company extends Entity
 
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description;
-
-    #[ORM\Column(type: "uuid")]
-    private Uuid $ownerId;
 
     #[ORM\Column(type: "string", length: 255, nullable: true)]
     private ?string $fiscalIdentifier;
@@ -45,7 +41,6 @@ class Company extends Entity
         Uuid $companyId,
         string $name,
         ?string $description,
-        Uuid $ownerId,
         ?string $fiscalIdentifier = null,
         ?string $address = null,
         ?string $postalCode = null,
@@ -57,7 +52,6 @@ class Company extends Entity
 
         $this->name = $name;
         $this->description = $description;
-        $this->ownerId = $ownerId;
         $this->fiscalIdentifier = $fiscalIdentifier;
         $this->address = $address;
         $this->postalCode = $postalCode;
@@ -74,11 +68,6 @@ class Company extends Entity
     public function getDescription(): ?string
     {
         return $this->description;
-    }
-
-    public function getOwnerId(): Uuid
-    {
-        return $this->ownerId;
     }
 
     public function getFiscalIdentifier(): ?string

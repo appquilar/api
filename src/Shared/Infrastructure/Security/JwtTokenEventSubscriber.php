@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Shared\Infrastructure\Security;
 
 use App\Company\Application\Repository\CompanyRepositoryInterface;
+use App\Company\Application\Repository\CompanyUserRepositoryInterface;
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Shared\Infrastructure\Service\JsonResponseService;
@@ -21,8 +22,9 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
         private AuthTokenServiceInterface $authTokenService,
         private UserRepositoryInterface   $userRepository,
         private CompanyRepositoryInterface $companyRepository,
+        private CompanyUserRepositoryInterface $companyUserRepository,
         private UserGranted               $userGranted,
-        private JsonResponseService       $jsonResponseService
+        private JsonResponseService       $jsonResponseService,
     ) {
     }
 
@@ -66,7 +68,14 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
         $this->validateToken($decodedToken);
 
         $this->userGranted->setUser($this->userRepository->findById($decodedToken->getUserId()));
-        $this->userGranted->setCompany($this->companyRepository->findOneByOwnerId($decodedToken->getUserId()));
+        $this->userGranted->setCompanyUser(
+            $this->companyUserRepository->findOneBy(['userId' => $decodedToken->getUserId()])
+        );
+        if ($this->userGranted->getCompanyUser() !== null) {
+            $this->userGranted->setCompany(
+                $this->companyRepository->findById($this->userGranted->getCompanyUser()->getCompanyId())
+            );
+        }
         $this->userGranted->setToken($token);
     }
 

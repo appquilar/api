@@ -15,9 +15,4 @@ class CompanyRepository extends DoctrineRepository implements CompanyRepositoryI
     {
         return Company::class;
     }
-
-    public function findOneByOwnerId(Uuid $ownerId): ?Company
-    {
-        return $this->findOneBy(['ownerId' => $ownerId]);
-    }
 }

@@ -23,7 +23,6 @@ class GetCompanyByIdApiTest extends IntegrationTestCase
         $this->assertArrayHasKey('data', $responseContent);
         $this->assertArrayHasKey('phone_number', $responseContent['data']);
         $this->assertEquals($companyId->toString(), $responseContent['data']['company_id']);
-        $this->assertEquals($ownerId->toString(), $responseContent['data']['owner_id']);
     }
 
     public function testRetrieveOtherOwnerCompanyAsAdmin(): void
@@ -40,7 +39,6 @@ class GetCompanyByIdApiTest extends IntegrationTestCase
         $this->assertArrayHasKey('data', $responseContent);
         $this->assertArrayHasKey('phone_number', $responseContent['data']);
         $this->assertEquals($companyId->toString(), $responseContent['data']['company_id']);
-        $this->assertEquals($ownerId->toString(), $responseContent['data']['owner_id']);
     }
 
     public function testRetrieveOtherOwnerCompanyAsRegularUser(): void
@@ -58,6 +56,5 @@ class GetCompanyByIdApiTest extends IntegrationTestCase
         $this->assertArrayHasKey('data', $responseContent);
         $this->assertArrayNotHasKey('phone_number', $responseContent['data']);
         $this->assertEquals($companyId->toString(), $responseContent['data']['company_id']);
-        $this->assertEquals($ownerId->toString(), $responseContent['data']['owner_id']);
     }
 }

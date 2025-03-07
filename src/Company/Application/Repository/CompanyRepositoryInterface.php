@@ -13,5 +13,4 @@ use Symfony\Component\Uid\Uuid;
  */
 interface CompanyRepositoryInterface extends RepositoryInterface
 {
-    public function findOneByOwnerId(Uuid $ownerId): ?Company;
 }

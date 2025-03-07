@@ -22,7 +22,6 @@ class CompanyTransformer implements Transformer
             'company_id' => $entity->getId(),
             'name' => $entity->getName(),
             'description' => $entity->getDescription(),
-            'owner_id' => $entity->getOwnerId()->toString(),
             'address' => $entity->getAddress(),
             'postal_code' => $entity->getPostalCode(),
             'city' => $entity->getCity()

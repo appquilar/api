@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Company\Infrastructure\Request\Constraint;
 
 use App\Company\Application\Repository\CompanyRepositoryInterface;
+use App\Company\Application\Repository\CompanyUserRepositoryInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class UniqueOwnerIdValidator extends ConstraintValidator
 {
     public function __construct(
-        private CompanyRepositoryInterface $companyRepository,
+        private CompanyUserRepositoryInterface $companyUserRepository,
     ) {
     }
 
@@ -22,9 +23,9 @@ class UniqueOwnerIdValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, UniqueOwnerId::class);
         }
 
-        $company = $this->companyRepository->findOneByOwnerId($value);
+        $companyUser = $this->companyUserRepository->findCompanyIdByUserId($value);
 
-        if ($company !== null) {
+        if ($companyUser !== null) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }

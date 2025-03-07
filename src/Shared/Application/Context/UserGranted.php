@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace App\Shared\Application\Context;
 
 use App\Company\Domain\Entity\Company;
+use App\Company\Domain\Entity\CompanyUser;
+use App\Company\Domain\Enum\CompanyUserRole;
 use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Domain\Entity\User;
 use Symfony\Component\Uid\Uuid;
-use Zeelo\API\Domain\Common\Constants;
 
 class UserGranted
 {
     private static ?UserGranted $me = null;
     private ?User $user;
     private ?Company $company;
+    private ?CompanyUser $companyUser;
     private ?string $token;
 
     private function __construct() {
@@ -50,6 +52,16 @@ class UserGranted
         $this->company = $company;
     }
 
+    public function getCompanyUser(): ?CompanyUser
+    {
+        return $this->companyUser;
+    }
+
+    public function setCompanyUser(?CompanyUser $companyUser): void
+    {
+        $this->companyUser = $companyUser;
+    }
+
     public function getToken(): ?string
     {
         return $this->token;
@@ -65,6 +77,7 @@ class UserGranted
         static::$me = null;
         $this->user = null;
         $this->company = null;
+        $this->companyUser = null;
     }
 
     public function isAdmin(): bool
@@ -75,5 +88,13 @@ class UserGranted
     public function worksAtThisCompany(Uuid $id): bool
     {
         return $this->company !== null && $this->company->getId()->equals($id);
+    }
+
+    public function isAdminAtThisCompany(Uuid $id): bool
+    {
+        return $this->company !== null &&
+            $this->companyUser !== null &&
+            $this->company->getId()->equals($id) &&
+            $this->companyUser->getCompanyUserRole() === CompanyUserRole::ADMIN;
     }
 }

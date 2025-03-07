@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Company\Application\Repository;
+
+use App\Company\Domain\Entity\CompanyUser;
+use App\Shared\Application\Repository\RepositoryInterface;
+use Symfony\Component\Uid\Uuid;
+
+interface CompanyUserRepositoryInterface extends RepositoryInterface
+{
+    public function findCompanyIdByUserId(Uuid $userId): ?CompanyUser;
+}

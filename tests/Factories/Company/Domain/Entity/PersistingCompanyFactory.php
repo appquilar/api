@@ -26,7 +26,6 @@ class PersistingCompanyFactory extends PersistentProxyObjectFactory
             'companyId' => Uuid::v4(),
             'name' => self::faker()->company(),
             'description' => self::faker()->text(),
-            'ownerId' => Uuid::v4(),
             'fiscalIdentifier' => self::faker()->ean13(),
             'address' => self::faker()->streetAddress(),
             'postalCode' => self::faker()->postcode(),

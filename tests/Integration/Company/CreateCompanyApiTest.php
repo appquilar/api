@@ -12,15 +12,16 @@ class CreateCompanyApiTest extends IntegrationTestCase
 {
     public function testCreateCompanySuccess(): void
     {
-        $this->givenImLoggedInAsRegularUserWithUserId(Uuid::v4());
+        $userId = Uuid::v4();
+        $this->givenImLoggedInAsRegularUserWithUserId($userId);
 
         $response = $this->request(
             'POST',
             '/api/companies',
             [
-                'company_id' => Uuid::v4()->toRfc4122(),
+                'company_id' => Uuid::v4()->toString(),
                 'name' => 'Acme Inc.',
-                'owner_id' => Uuid::v4()->toRfc4122(),
+                'owner_id' => $userId->toString(),
                 'description' => 'An innovative company',
                 'fiscal_identifier' => '123456789',
                 'address' => '1234 Elm Street',

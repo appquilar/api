@@ -10,6 +10,7 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @method User|null findById(Uuid $id)
+ * @method User|null findOneBy(Uuid $id)
  */
 interface UserRepositoryInterface extends RepositoryInterface
 {
