@@ -439,6 +439,71 @@ nelmio_api_doc:
 
                         "404":
                             description: "Company not found."
+            /api/companies/{company_id}/users/{user_id}:
+                patch:
+                    tags:
+                        - Company
+                    summary: "Update a user's role in a company"
+                    description: "Allows admins to change the role of a user in a company."
+                    parameters:
+                        - in: path
+                          name: company_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the company."
+                        - in: path
+                          name: user_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the user."
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        role:
+                                            type: string
+                                            enum: [ ADMIN, CONTRIBUTOR ]
+                                            example: "ADMIN"
+                    responses:
+                        "204":
+                            description: "User role updated successfully."
+                        "401":
+                            description: "Unauthorized - User lacks necessary permissions."
+                        "404":
+                            description: "User not found in the company."
+                delete:
+                    summary: Remove a user from a company
+                    tags:
+                        - Company
+                    parameters:
+                        - name: company_id
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                        - name: user_id
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                    responses:
+                        "204":
+                            description: User removed from company successfully.
+                        "400":
+                            description: You can't remove yourself.
+                        "401":
+                            description: Unauthorized to perform this action.
+                        "404":
+                            description: User is not part of this company
         components:
             schemas:
                 RegisterUserDTO:

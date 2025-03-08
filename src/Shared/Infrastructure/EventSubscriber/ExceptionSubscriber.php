@@ -12,6 +12,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Serializer\Exception\InvalidArgumentException;
 
 class ExceptionSubscriber
 {
@@ -40,6 +41,10 @@ class ExceptionSubscriber
     public function processException(ExceptionEvent $event): void
     {
         $exception = $event->getThrowable();
+        if ($exception instanceof InvalidArgumentException && str_contains($exception->getMessage(), 'must belong to a backed enumeration')) {
+            $exception = new BadRequestException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
         $config = self::EXCEPTIONS[$exception::class] ?? ['handlers' => 'genericError'];
 
         $response = $this->jsonResponse->{$config['handlers']}($exception->getMessage());

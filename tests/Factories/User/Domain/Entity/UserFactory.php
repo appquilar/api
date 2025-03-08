@@ -7,6 +7,9 @@ namespace App\Tests\Factories\User\Domain\Entity;
 use App\User\Domain\Entity\User;
 use Hautelook\Phpass\PasswordHash;
 
+/**
+ * @method static User createOne(array $attributes = [])
+ */
 final class UserFactory extends PersistingUserFactory
 {
     /**

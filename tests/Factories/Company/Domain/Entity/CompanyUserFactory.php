@@ -8,7 +8,7 @@ use Symfony\Component\Uid\Uuid;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
 /**
- * @extends PersistentProxyObjectFactory<CompanyUser>
+ * @method static CompanyUser createOne(array $attributes = [])
  */
 final class CompanyUserFactory extends PersistingCompanyUserFactory
 {

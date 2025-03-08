@@ -8,6 +8,10 @@ use App\Company\Domain\Entity\CompanyUser;
 use App\Shared\Application\Repository\RepositoryInterface;
 use Symfony\Component\Uid\Uuid;
 
+/**
+ * @method CompanyUser|null findById(Uuid $id)
+ * @method CompanyUser|null findOneBy(array $params)
+ */
 interface CompanyUserRepositoryInterface extends RepositoryInterface
 {
     public function findCompanyIdByUserId(Uuid $userId): ?CompanyUser;
