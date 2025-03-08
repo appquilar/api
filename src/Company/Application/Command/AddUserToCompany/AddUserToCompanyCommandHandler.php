@@ -11,6 +11,7 @@ use App\Company\Application\Repository\CompanyUserRepositoryInterface;
 use App\Company\Application\Service\UserServiceInterface;
 use App\Company\Domain\Entity\Company;
 use App\Company\Domain\Entity\CompanyUser;
+use App\Company\Domain\Enum\CompanyUserRole;
 use App\Company\Domain\Enum\CompanyUserStatus;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
@@ -53,7 +54,7 @@ class AddUserToCompanyCommandHandler implements CommandHandler
             $command->getRole(),
             $command->getEmail(),
             $user?->getId(),
-            $user !== null ? CompanyUserStatus::ACCEPTED : CompanyUserStatus::PENDING
+            $command->getStatus()
         );
 
         $this->companyUserRepository->save($companyUser);
@@ -62,10 +63,17 @@ class AddUserToCompanyCommandHandler implements CommandHandler
             new CompanyUserCreated(
                 $command->getCompanyId(),
                 $command->getEmail(),
-                $user !== null,
+                $this->isOwner($command),
                 $companyUser->getInvitationToken()
             )
         );
+    }
+
+    private function isOwner(AddUserToCompanyCommand $command): bool
+    {
+        return $command->getUserId() !== null &&
+            $command->getRole() === CompanyUserRole::ADMIN &&
+            $command->getStatus() === CompanyUserStatus::ACCEPTED;
     }
 
     private function getUser(Command|AddUserToCompanyCommand $command): ?User

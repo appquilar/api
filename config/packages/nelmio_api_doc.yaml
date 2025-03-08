@@ -386,6 +386,59 @@ nelmio_api_doc:
                             description: "Unauthorized - User is not logged in"
                         "404":
                             description: "Company not found"
+                post:
+                    summary: "Invite a User to a Company"
+                    description: >
+                        Assign an existing user to a company or send an invitation to a new user.
+                        Only a company admin or platform admin can perform this action.
+                    operationId: addUserToCompany
+                    tags:
+                        - Company
+                    security:
+                        - BearerAuth: [ ]
+                    parameters:
+                        - name: company_id
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "The ID of the company where the user will be added."
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        userId:
+                                            type: string
+                                            format: uuid
+                                            nullable: true
+                                            description: "The existing user's ID (if assigning an existing user). If null, an invitation will be sent."
+                                        email:
+                                            type: string
+                                            format: email
+                                            example: "user@example.com"
+                                            description: "The email of the user (required for both existing and new users)."
+                                        role:
+                                            type: string
+                                            enum: [ ADMIN, CONTRIBUTOR ]
+                                            example: "CONTRIBUTOR"
+                                            description: "The role assigned to the user within the company."
+                                    required:
+                                        - email
+                                        - role
+                    responses:
+                        "201":
+                            description: "User successfully added to the company (or invited)."
+                        "400":
+                            description: "Invalid request. Possible reasons: malformed UUID, missing required fields, or the user already belongs to another company."
+                        "401":
+                            description: "Unauthorized - Only a company admin or platform admin can perform this action."
+
+                        "404":
+                            description: "Company not found."
         components:
             schemas:
                 RegisterUserDTO:

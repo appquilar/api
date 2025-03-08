@@ -90,7 +90,7 @@ class AddUserToCompanyCommandHandlerTest extends UnitTestCase
                     && $companyUser->getUserId()->equals($userId)
                     && $companyUser->getRole() === $role
                     && $companyUser->getEmail() === $email
-                    && $companyUser->getStatus() === CompanyUserStatus::ACCEPTED;
+                    && $companyUser->getStatus() === CompanyUserStatus::PENDING;
             }));
 
         // Expect the event dispatcher to be called with a CompanyUserCreated event.

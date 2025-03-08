@@ -41,7 +41,7 @@ class GetCompanyByIdApiTest extends IntegrationTestCase
         $this->assertEquals($companyId->toString(), $responseContent['data']['company_id']);
     }
 
-    public function testRetrieveOtherOwnerCompanyAsRegularUser(): void
+    public function testRetrieveOtherUsersCompanyAsRegularUser(): void
     {
         $userId = Uuid::v4();
         $ownerId = Uuid::v4();

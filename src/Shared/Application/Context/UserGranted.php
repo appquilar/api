@@ -7,6 +7,7 @@ namespace App\Shared\Application\Context;
 use App\Company\Domain\Entity\Company;
 use App\Company\Domain\Entity\CompanyUser;
 use App\Company\Domain\Enum\CompanyUserRole;
+use App\Company\Domain\Enum\CompanyUserStatus;
 use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Domain\Entity\User;
 use Symfony\Component\Uid\Uuid;
@@ -87,14 +88,18 @@ class UserGranted
 
     public function worksAtThisCompany(Uuid $id): bool
     {
-        return $this->company !== null && $this->company->getId()->equals($id);
+        return $this->company !== null &&
+            $this->companyUser !== null &&
+            $this->companyUser->getCompanyId()->equals($id) &&
+            $this->companyUser->getStatus() === CompanyUserStatus::ACCEPTED;
     }
 
     public function isAdminAtThisCompany(Uuid $id): bool
     {
         return $this->company !== null &&
             $this->companyUser !== null &&
-            $this->company->getId()->equals($id) &&
-            $this->companyUser->getRole() === CompanyUserRole::ADMIN;
+            $this->companyUser->getCompanyId()->equals($id) &&
+            $this->companyUser->getRole() === CompanyUserRole::ADMIN &&
+            $this->companyUser->getStatus() === CompanyUserStatus::ACCEPTED;
     }
 }

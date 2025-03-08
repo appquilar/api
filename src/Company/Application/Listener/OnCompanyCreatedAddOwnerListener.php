@@ -7,6 +7,7 @@ namespace App\Company\Application\Listener;
 use App\Company\Application\Command\AddUserToCompany\AddUserToCompanyCommand;
 use App\Company\Application\Event\CompanyCreated;
 use App\Company\Domain\Enum\CompanyUserRole;
+use App\Company\Domain\Enum\CompanyUserStatus;
 use App\Shared\Application\Command\CommandBus;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
@@ -26,7 +27,8 @@ class OnCompanyCreatedAddOwnerListener
                 $event->getCompanyId(),
                 CompanyUserRole::ADMIN,
                 $event->getOwnerId(),
-                $event->getOwnerEmail()
+                $event->getOwnerEmail(),
+                CompanyUserStatus::ACCEPTED
             )
         );
     }
