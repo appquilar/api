@@ -5,15 +5,23 @@ declare(strict_types=1);
 namespace App\Tests\Integration\Context;
 
 use App\Company\Domain\Enum\CompanyUserRole;
+use App\Company\Domain\Enum\CompanyUserStatus;
 use App\Tests\Factories\Company\Domain\Entity\PersistingCompanyFactory;
 use App\Tests\Factories\Company\Domain\Entity\PersistingCompanyUserFactory;
 use Symfony\Component\Uid\Uuid;
 
 trait CompanyContext
 {
-    public function givenACompanyWithOwnerAndId(Uuid $ownerId, Uuid $companyId): void
+    use CompanyUserContext;
+
+    public function givenACompanyWithId(Uuid $companyId): void
     {
         PersistingCompanyFactory::createOne(['companyId' => $companyId]);
-        PersistingCompanyUserFactory::createOne(['companyId' => $companyId, 'userId' => $ownerId, 'companyUserRole' => CompanyUserRole::ADMIN]);
+    }
+
+    public function givenACompanyWithOwnerAndId(Uuid $ownerId, Uuid $companyId): void
+    {
+        $this->givenACompanyWithId($companyId);
+        $this->aCompanyHasAnUser($companyId, CompanyUserRole::ADMIN, CompanyUserStatus::ACCEPTED, $ownerId);
     }
 }

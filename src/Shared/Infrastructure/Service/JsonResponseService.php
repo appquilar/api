@@ -25,6 +25,13 @@ class JsonResponseService
         return $this->success($message, Response::HTTP_OK);
     }
 
+    public function okList(array $data = [], int $status = Response::HTTP_OK): JsonResponse
+    {
+        $data['success'] = true;
+
+        return new JsonResponse($data, $status);
+    }
+
     public function created(): JsonResponse
     {
         return $this->success(status: Response::HTTP_CREATED);

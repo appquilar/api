@@ -9,7 +9,7 @@ use Symfony\Component\Uid\Uuid;
 
 class GetCompanyByIdApiTest extends IntegrationTestCase
 {
-    public function testRetrieveCompanyAsOwner(): void
+    public function testRetrieveCompanyAsWorker(): void
     {
         $ownerId = Uuid::v4();
         $companyId = Uuid::v4();

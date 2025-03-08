@@ -115,4 +115,33 @@ class MailerEmailServiceTest extends UnitTestCase
 
         $testMailerService->sendForgotPasswordEmail($email, $name, $token);
     }
+
+    public function testSendCompanyUserInvitationEmail(): void
+    {
+        $email = 'user@example.com';
+        $companyName = 'Acme, inc';
+        $token = 'test-token-123';
+        $htmlContent = '<html>Mocked Email Content</html>';
+        $emailToBeSent = (new Email())
+            ->from(new Address('noreply@appquilar.com', 'Appquilar Support'))
+            ->to(new Address($email))
+            ->subject('Activación cuenta para ' . $companyName,)
+            ->html($htmlContent);
+
+        $this->twigMock
+            ->expects($this->once())
+            ->method('render')
+            ->with('emails/company_user_invitation.html.twig', [
+                'companyName' => $companyName,
+                'token' => $token
+            ])
+            ->willReturn($htmlContent);
+
+        $this->mailerMock
+            ->expects($this->once())
+            ->method('send')
+            ->with($emailToBeSent);
+
+        $this->mailerService->sendCompanyUserInvitationEmail($companyName, $email, $token);
+    }
 }

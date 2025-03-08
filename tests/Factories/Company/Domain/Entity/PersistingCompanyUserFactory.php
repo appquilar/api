@@ -4,6 +4,7 @@ namespace App\Tests\Factories\Company\Domain\Entity;
 
 use App\Company\Domain\Entity\CompanyUser;
 use App\Company\Domain\Enum\CompanyUserRole;
+use App\Company\Domain\Enum\CompanyUserStatus;
 use Symfony\Component\Uid\Uuid;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -12,13 +13,6 @@ use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
  */
 class PersistingCompanyUserFactory extends PersistentProxyObjectFactory
 {
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
-     */
-    public function __construct()
-    {
-    }
-
     public static function class(): string
     {
         return CompanyUser::class;
@@ -31,8 +25,11 @@ class PersistingCompanyUserFactory extends PersistentProxyObjectFactory
     {
         return [
             'companyId' => Uuid::v4(),
-            'companyUserRole' => self::faker()->randomElement(CompanyUserRole::cases()),
             'userId' => Uuid::v4(),
+            'role' => CompanyUserRole::CONTRIBUTOR,
+            'email' => self::faker()->email(),
+            'status' => CompanyUserStatus::PENDING,
+            'invitationExpiresAt' => \DateTimeImmutable::createFromMutable(self::faker()->dateTimeBetween('+1 day', '+1 month')),
         ];
     }
 

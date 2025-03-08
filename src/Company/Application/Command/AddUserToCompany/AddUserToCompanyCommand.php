@@ -11,14 +11,14 @@ use Symfony\Component\Uid\Uuid;
 class AddUserToCompanyCommand implements Command
 {
     public function __construct(
-        private Uuid $userId,
         private Uuid $companyId,
         private CompanyUserRole $role,
-        private bool $owner = false
+        private ?Uuid $userId = null,
+        private ?string $email = null
     ) {
     }
 
-    public function getUserId(): Uuid
+    public function getUserId(): ?Uuid
     {
         return $this->userId;
     }
@@ -33,8 +33,8 @@ class AddUserToCompanyCommand implements Command
         return $this->role;
     }
 
-    public function isOwner(): bool
+    public function getEmail(): ?string
     {
-        return $this->owner;
+        return $this->email;
     }
 }

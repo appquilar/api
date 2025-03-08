@@ -95,6 +95,6 @@ class UserGranted
         return $this->company !== null &&
             $this->companyUser !== null &&
             $this->company->getId()->equals($id) &&
-            $this->companyUser->getCompanyUserRole() === CompanyUserRole::ADMIN;
+            $this->companyUser->getRole() === CompanyUserRole::ADMIN;
     }
 }

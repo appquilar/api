@@ -17,6 +17,7 @@ enum RoutePermission: string
 
     /** COMPANY */
     case COMPANY_CREATE = 'company_create';
+    case COMPANY_LIST_USERS = 'company_list_users';
 
     /**
      * @return UserRole[]
@@ -29,7 +30,8 @@ enum RoutePermission: string
             self::USER_GET_BY_ID,
             self::USER_UPDATE_USER,
             self::USER_CHANGE_PASSWORD,
-            self::COMPANY_CREATE
+            self::COMPANY_CREATE,
+            self::COMPANY_LIST_USERS,
                 => [UserRole::REGULAR_USER],
         };
     }

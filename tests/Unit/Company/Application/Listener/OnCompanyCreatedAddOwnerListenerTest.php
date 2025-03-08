@@ -28,8 +28,9 @@ class OnCompanyCreatedAddOwnerListenerTest extends UnitTestCase
 
     public function testOnCompanyCreatedAddOwnerListener(): void
     {
-        $event = new CompanyCreated(Uuid::v4(), Uuid::v4());
-        $command = new AddUserToCompanyCommand($event->getOwnerId(), $event->getCompanyId(), CompanyUserRole::ADMIN, true);
+        $email = 'user@test.com';
+        $event = new CompanyCreated(Uuid::v4(), Uuid::v4(), $email);
+        $command = new AddUserToCompanyCommand($event->getCompanyId(), CompanyUserRole::ADMIN, $event->getOwnerId(), $email);
 
         $this->commandBusMock->expects($this->once())
             ->method('dispatch')

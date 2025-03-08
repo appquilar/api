@@ -25,19 +25,6 @@ class MailerEmailService implements EmailServiceInterface
         $this->from = new Address($this->fromEmail, $this->fromName);
     }
 
-    public function sendForgotPasswordEmail(string $email, string $name, string $token): void
-    {
-        $this->send(
-            new Address($email, $name),
-            'Recuperar contraseña',
-            'emails/forgot_password.html.twig',
-            [
-                'resetLink' => 'https://appquilar.com/reset-password?token=' . $token,
-                'name' => $name
-            ]
-        );
-    }
-
     private function send(
         Address $to,
         string $subject,
@@ -62,5 +49,31 @@ class MailerEmailService implements EmailServiceInterface
         if ($this->env !== 'test') {
             $this->mailer->send($message);
         }
+    }
+
+    public function sendForgotPasswordEmail(string $email, string $name, string $token): void
+    {
+        $this->send(
+            new Address($email, $name),
+            'Recuperar contraseña',
+            'emails/forgot_password.html.twig',
+            [
+                'resetLink' => 'https://appquilar.com/reset-password?token=' . $token,
+                'name' => $name
+            ]
+        );
+    }
+
+    public function sendCompanyUserInvitationEmail(string $companyName, string $email, string $token): void
+    {
+        $this->send(
+            new Address($email),
+            'Activación cuenta para ' . $companyName,
+            'emails/company_user_invitation.html.twig',
+            [
+                'companyName' => $companyName,
+                'token' => $token
+            ]
+        );
     }
 }

@@ -23,10 +23,10 @@ class OnCompanyCreatedAddOwnerListener
     {
         $this->commandBus->dispatch(
             new AddUserToCompanyCommand(
-                $event->getOwnerId(),
                 $event->getCompanyId(),
                 CompanyUserRole::ADMIN,
-                true
+                $event->getOwnerId(),
+                $event->getOwnerEmail()
             )
         );
     }

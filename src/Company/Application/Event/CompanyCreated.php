@@ -10,7 +10,8 @@ class CompanyCreated
 {
     public function __construct(
         private Uuid $companyId,
-        private Uuid $ownerId
+        private Uuid $ownerId,
+        private string $ownerEmail
     ) {
     }
 
@@ -22,5 +23,10 @@ class CompanyCreated
     public function getOwnerId(): Uuid
     {
         return $this->ownerId;
+    }
+
+    public function getOwnerEmail(): string
+    {
+        return $this->ownerEmail;
     }
 }

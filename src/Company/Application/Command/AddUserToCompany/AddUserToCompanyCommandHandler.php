@@ -4,18 +4,21 @@ declare(strict_types=1);
 
 namespace App\Company\Application\Command\AddUserToCompany;
 
+use App\Company\Application\Event\CompanyUserCreated;
 use App\Company\Application\Exception\BadRequest\UserAlreadyBelongsToACompanyException;
 use App\Company\Application\Repository\CompanyRepositoryInterface;
 use App\Company\Application\Repository\CompanyUserRepositoryInterface;
 use App\Company\Application\Service\UserServiceInterface;
 use App\Company\Domain\Entity\Company;
 use App\Company\Domain\Entity\CompanyUser;
+use App\Company\Domain\Enum\CompanyUserStatus;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\User\Domain\Entity\User;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Uid\Uuid;
 
@@ -27,6 +30,7 @@ class AddUserToCompanyCommandHandler implements CommandHandler
         private CompanyUserRepositoryInterface $companyUserRepository,
         private UserServiceInterface $userService,
         private UserGranted $userGranted,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
@@ -37,7 +41,7 @@ class AddUserToCompanyCommandHandler implements CommandHandler
         $user = $this->getUser($command);
 
         if (
-            !$command->isOwner() &&
+            $user === null &&
             !$this->userGranted->isAdmin() &&
             !$this->userGranted->isAdminAtThisCompany($company->getId())
         ) {
@@ -46,15 +50,30 @@ class AddUserToCompanyCommandHandler implements CommandHandler
 
         $companyUser = new CompanyUser(
             $company->getId(),
-            $user->getId(),
-            $command->getRole()
+            $command->getRole(),
+            $command->getEmail(),
+            $user?->getId(),
+            $user !== null ? CompanyUserStatus::ACCEPTED : CompanyUserStatus::PENDING
         );
 
         $this->companyUserRepository->save($companyUser);
+
+        $this->eventDispatcher->dispatch(
+            new CompanyUserCreated(
+                $command->getCompanyId(),
+                $command->getEmail(),
+                $user !== null,
+                $companyUser->getInvitationToken()
+            )
+        );
     }
 
-    private function getUser(Command|AddUserToCompanyCommand $command): User
+    private function getUser(Command|AddUserToCompanyCommand $command): ?User
     {
+        if ($command->getUserId() === null) {
+            return null;
+        }
+
         $user = $this->userService->getUserById($command->getUserId());
         if ($user === null) {
             throw new EntityNotFoundException($command->getUserId());
@@ -74,8 +93,11 @@ class AddUserToCompanyCommandHandler implements CommandHandler
         return $company;
     }
 
-    private function validateUserDoesntAlreadyBelongToCompany(Uuid $userId): void
+    private function validateUserDoesntAlreadyBelongToCompany(?Uuid $userId): void
     {
+        if ($userId === null) {
+            return;
+        }
         $companyUser = $this->companyUserRepository->findCompanyIdByUserId($userId);
         if ($companyUser !== null) {
             throw new UserAlreadyBelongsToACompanyException();

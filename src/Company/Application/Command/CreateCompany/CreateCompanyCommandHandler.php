@@ -9,6 +9,7 @@ use App\Company\Application\Repository\CompanyRepositoryInterface;
 use App\Company\Domain\Entity\Company;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
+use App\Shared\Application\Context\UserGranted;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
@@ -17,7 +18,8 @@ class CreateCompanyCommandHandler implements CommandHandler
 {
     public function __construct(
         private CompanyRepositoryInterface $companyRepository,
-        private EventDispatcherInterface $eventDispatcher
+        private EventDispatcherInterface   $eventDispatcher,
+        private readonly UserGranted $userGranted
     ) {
     }
 
@@ -38,7 +40,11 @@ class CreateCompanyCommandHandler implements CommandHandler
         $this->companyRepository->save($company);
 
         $this->eventDispatcher->dispatch(
-            new CompanyCreated($company->getId(), $command->getOwnerId())
+            new CompanyCreated(
+                $company->getId(),
+                $command->getOwnerId(),
+                $this->userGranted->getUser()->getEmail()
+            )
         );
     }
 }

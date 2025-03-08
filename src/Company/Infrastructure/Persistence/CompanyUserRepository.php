@@ -20,4 +20,29 @@ class CompanyUserRepository extends DoctrineRepository implements CompanyUserRep
     {
         return $this->findOneBy(['userId' => $userId]);
     }
+
+    public function findPaginatedUsersByCompanyId(Uuid $companyId, int $page, int $perPage): array
+    {
+        $qb = $this->entityManager->createQueryBuilder()
+            ->select('cu')
+            ->from(CompanyUser::class, 'cu')
+            ->where('cu.companyId = :companyId')
+            ->orderBy('cu.createdAt', 'DESC')
+            ->setParameter('companyId', $companyId->toBinary())
+            ->setFirstResult(($page - 1) * $perPage)
+            ->setMaxResults($perPage);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function countUsersByCompanyId(Uuid $companyId): int
+    {
+        return (int) $this->entityManager->createQueryBuilder()
+            ->select('COUNT(cu.id)')
+            ->from(CompanyUser::class, 'cu')
+            ->where('cu.companyId = :companyId')
+            ->setParameter('companyId', $companyId->toBinary())
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
