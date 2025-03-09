@@ -51,6 +51,7 @@ class OnCompanyUserCreatedSendInvitationListenerTest extends UnitTestCase
         $this->emailServiceMock->expects($this->once())
             ->method('sendCompanyUserInvitationEmail')
             ->with(
+                $company->getId(),
                 $company->getName(),
                 $event->getEmail(),
                 $event->getToken()

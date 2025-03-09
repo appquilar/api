@@ -25,7 +25,7 @@ class RegisterUserController
         $this->commandBus->dispatch(
             new RegisterUserCommand(
                 $dto->userId,
-                $dto->email,
+                strtolower($dto->email),
                 $dto->password
             )
         );

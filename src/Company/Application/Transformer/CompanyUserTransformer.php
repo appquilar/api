@@ -30,7 +30,7 @@ class CompanyUserTransformer implements Transformer
             'company_id' => $entity->getCompanyId()->toString(),
             'user_id' => $entity->getUserId()?->toString(),
             'role' => $entity->getRole()->value,
-            'status' => $entity->getStatus()->getStatus($entity->getInvitationExpiresAt())->value
+            'status' => $entity->getStatus()->value
         ];
     }
 }

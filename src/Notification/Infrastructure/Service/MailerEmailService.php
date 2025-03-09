@@ -8,6 +8,7 @@ use App\Notification\Application\Service\EmailServiceInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Uid\Uuid;
 use Twig\Environment;
 
 class MailerEmailService implements EmailServiceInterface
@@ -64,13 +65,14 @@ class MailerEmailService implements EmailServiceInterface
         );
     }
 
-    public function sendCompanyUserInvitationEmail(string $companyName, string $email, string $token): void
+    public function sendCompanyUserInvitationEmail(Uuid $companyId, string $companyName, string $email, string $token): void
     {
         $this->send(
             new Address($email),
             'Activación cuenta para ' . $companyName,
             'emails/company_user_invitation.html.twig',
             [
+                'companyId' => $companyId->toString(),
                 'companyName' => $companyName,
                 'token' => $token
             ]

@@ -9,6 +9,7 @@ use App\Tests\Unit\UnitTestCase;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Uid\Uuid;
 use Twig\Environment;
 
 class MailerEmailServiceTest extends UnitTestCase
@@ -121,6 +122,7 @@ class MailerEmailServiceTest extends UnitTestCase
         $email = 'user@example.com';
         $companyName = 'Acme, inc';
         $token = 'test-token-123';
+        $companyId = Uuid::v4();
         $htmlContent = '<html>Mocked Email Content</html>';
         $emailToBeSent = (new Email())
             ->from(new Address('noreply@appquilar.com', 'Appquilar Support'))
@@ -132,6 +134,7 @@ class MailerEmailServiceTest extends UnitTestCase
             ->expects($this->once())
             ->method('render')
             ->with('emails/company_user_invitation.html.twig', [
+                'companyId' => $companyId,
                 'companyName' => $companyName,
                 'token' => $token
             ])
@@ -142,6 +145,6 @@ class MailerEmailServiceTest extends UnitTestCase
             ->method('send')
             ->with($emailToBeSent);
 
-        $this->mailerService->sendCompanyUserInvitationEmail($companyName, $email, $token);
+        $this->mailerService->sendCompanyUserInvitationEmail($companyId, $companyName, $email, $token);
     }
 }

@@ -20,4 +20,9 @@ class UserService implements UserServiceInterface
     {
         return $this->userRepository->findById($userId);
     }
+
+    public function getUserByEmail(string $email): ?User
+    {
+        return $this->userRepository->findByEmail($email);
+    }
 }

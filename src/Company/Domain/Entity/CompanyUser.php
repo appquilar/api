@@ -110,7 +110,13 @@ class CompanyUser extends Entity
 
     public function getStatus(): CompanyUserStatus
     {
-        return $this->status;
+        return match(
+            $this->status !== CompanyUserStatus::ACCEPTED &&
+            $this->invitationExpiresAt > new \DateTimeImmutable()
+        ) {
+            true => CompanyUserStatus::EXPIRED,
+            false => $this->status
+        };
     }
 
     public function setStatus(CompanyUserStatus $status): void

@@ -38,13 +38,13 @@ class JwtTokenEventSubscriber implements EventSubscriberInterface
         try {
             $this->processAccessToken($request, $event);
         } catch (UnauthorizedException $e) {
-            if ($route) {
+            if ($route && $route->getRequiredRoles() !== []) {
                 $event->setResponse($this->jsonResponseService->unauthorized($e->getMessage()));
                 return;
             }
         }
 
-        if (!$route) {
+        if (!$route || $route->getRequiredRoles() === []) {
             return;
         }
 

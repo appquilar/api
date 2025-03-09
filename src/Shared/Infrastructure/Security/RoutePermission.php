@@ -21,6 +21,7 @@ enum RoutePermission: string
     case COMPANY_ADD_USER = 'company_add_user';
     case COMPANY_UPDATE_USER_ROLE = 'company_update_user_role';
     case COMPANY_REMOVE_USER = 'company_remove_user';
+    case COMPANY_USER_ACCEPTS_INVITATION = 'company_user_accepts_invitation';
 
     /**
      * @return UserRole[]

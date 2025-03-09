@@ -12,8 +12,8 @@ use Symfony\Component\Uid\Uuid;
 
 trait CompanyUserContext
 {
-    public function aCompanyHasAnUser(Uuid $companyId, CompanyUserRole $role, CompanyUserStatus $status, ?Uuid $userId = null): void
+    public function aCompanyHasAnUser(Uuid $companyId, CompanyUserRole $role, CompanyUserStatus $status, ?Uuid $userId = null, ?string $token = '1234'): void
     {
-        PersistingCompanyUserFactory::createOne(['companyId' => $companyId, 'role' => $role, 'status' => $status, 'userId' => $userId]);
+        PersistingCompanyUserFactory::createOne(['companyId' => $companyId, 'role' => $role, 'status' => $status, 'userId' => $userId, 'invitationToken' => $token]);
     }
 }

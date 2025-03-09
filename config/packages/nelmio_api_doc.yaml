@@ -504,6 +504,47 @@ nelmio_api_doc:
                             description: Unauthorized to perform this action.
                         "404":
                             description: User is not part of this company
+
+            /api/companies/{company_id}/invitations/{token}/accept:
+                post:
+                    summary: Accept an invitation to join a company
+                    description: If the user does not exist, they are created. Otherwise, they are linked to the company.
+                    tags:
+                        - Company
+                    parameters:
+                        - name: company_id
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: The ID of the company
+                        - name: token
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                          description: The invitation token
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        email:
+                                            type: string
+                                            format: email
+                                        password:
+                                            type: string
+                                            format: password
+                    responses:
+                        "204":
+                            description: Invitation accepted successfully.
+                        "400":
+                            description: Invalid token, expired invitation, or user already exists.
+                        "401":
+                            description: Unauthorized access.
         components:
             schemas:
                 RegisterUserDTO:

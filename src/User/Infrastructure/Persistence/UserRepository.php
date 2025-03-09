@@ -17,7 +17,7 @@ class UserRepository extends DoctrineRepository implements UserRepositoryInterfa
 
     public function findByEmail(string $email): ?User
     {
-        return $this->findOneBy(['email' => $email]);
+        return $this->findOneBy(['email' => strtolower($email)]);
     }
 
     public function updateUserPassword(User $user, string $newPassword): void

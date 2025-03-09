@@ -27,6 +27,7 @@ class OnCompanyUserCreatedSendInvitationListener
         $company = $this->companyRepository->findById($event->getCompanyId());
 
         $this->emailService->sendCompanyUserInvitationEmail(
+            $company->getId(),
             $company->getName(),
             $event->getEmail(),
             $event->getToken()

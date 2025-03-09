@@ -22,7 +22,7 @@ class EmailIsUniqueValidator extends ConstraintValidator
             throw new UnexpectedTypeException($constraint, EmailIsUnique::class);
         }
 
-        $userWithEmail = $this->userRepository->findByEmail($value);
+        $userWithEmail = $this->userRepository->findByEmail(strtolower($value));
 
         if ($userWithEmail !== null) {
             $this->context->buildViolation($constraint->message)

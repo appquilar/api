@@ -27,19 +27,19 @@ use Symfony\Component\Uid\Uuid;
 class AddUserToCompanyCommandHandler implements CommandHandler
 {
     public function __construct(
-        private CompanyRepositoryInterface $companyRepository,
+        private CompanyRepositoryInterface     $companyRepository,
         private CompanyUserRepositoryInterface $companyUserRepository,
-        private UserServiceInterface $userService,
-        private UserGranted $userGranted,
-        private EventDispatcherInterface $eventDispatcher,
+        private UserServiceInterface           $userService,
+        private UserGranted                    $userGranted,
+        private EventDispatcherInterface       $eventDispatcher,
     ) {
     }
 
     public function __invoke(AddUserToCompanyCommand|Command $command): void
     {
-        $this->validateUserDoesntAlreadyBelongToCompany($command->getUserId());
-        $company = $this->getCompany($command);
         $user = $this->getUser($command);
+        $this->validateUserDoesntAlreadyBelongToCompany($user);
+        $company = $this->getCompany($command);
 
         if (
             $user === null &&
@@ -78,6 +78,10 @@ class AddUserToCompanyCommandHandler implements CommandHandler
 
     private function getUser(Command|AddUserToCompanyCommand $command): ?User
     {
+        $user = $this->userService->getUserByEmail($command->getEmail());
+        if ($user !== null) {
+            return $user;
+        }
         if ($command->getUserId() === null) {
             return null;
         }
@@ -101,12 +105,12 @@ class AddUserToCompanyCommandHandler implements CommandHandler
         return $company;
     }
 
-    private function validateUserDoesntAlreadyBelongToCompany(?Uuid $userId): void
+    private function validateUserDoesntAlreadyBelongToCompany(?User $user): void
     {
-        if ($userId === null) {
+        if ($user === null) {
             return;
         }
-        $companyUser = $this->companyUserRepository->findCompanyIdByUserId($userId);
+        $companyUser = $this->companyUserRepository->findCompanyIdByUserId($user->getId());
         if ($companyUser !== null) {
             throw new UserAlreadyBelongsToACompanyException();
         }

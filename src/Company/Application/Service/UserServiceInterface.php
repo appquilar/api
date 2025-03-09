@@ -10,4 +10,5 @@ use Symfony\Component\Uid\Uuid;
 interface UserServiceInterface
 {
     public function getUserById(Uuid $userId): ?User;
+    public function getUserByEmail(string $email): ?User;
 }
