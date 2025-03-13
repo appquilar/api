@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Infrastructure\Controller\Auth;
 
 use App\Shared\Application\Command\CommandBus;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Command\ForgotPassword\ForgotPasswordCommand;
 use App\User\Infrastructure\Request\ForgotPasswordDto;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,8 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class ForgotPasswordController
 {
     public function __construct(
-        private CommandBus          $commandBus,
-        private JsonResponseService $jsonResponseService,
+        private CommandBus      $commandBus,
+        private ResponseService $jsonResponseService,
     ) {
     }
 

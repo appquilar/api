@@ -37,7 +37,7 @@ class AddUserToCompanyCommand implements Command
 
     public function getEmail(): ?string
     {
-        return $this->email;
+        return strtolower($this->email);
     }
 
     public function getStatus(): CompanyUserStatus

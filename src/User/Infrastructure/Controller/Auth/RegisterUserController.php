@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Infrastructure\Controller\Auth;
 
 use App\Shared\Application\Command\CommandBus;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Command\RegisterUser\RegisterUserCommand;
 use App\User\Infrastructure\Request\RegisterUserDto;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,7 +16,7 @@ class RegisterUserController
 {
     public function __construct(
         private CommandBus $commandBus,
-        private JsonResponseService $jsonResponseService
+        private ResponseService $jsonResponseService
     ) {
     }
 

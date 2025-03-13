@@ -8,7 +8,7 @@ use App\Company\Application\Repository\CompanyRepositoryInterface;
 use App\Company\Application\Repository\CompanyUserRepositoryInterface;
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Dto\TokenPayload;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Application\Service\AuthTokenServiceInterface;
@@ -19,12 +19,12 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 class JwtTokenEventSubscriber implements EventSubscriberInterface
 {
     public function __construct(
-        private AuthTokenServiceInterface $authTokenService,
-        private UserRepositoryInterface   $userRepository,
-        private CompanyRepositoryInterface $companyRepository,
+        private AuthTokenServiceInterface      $authTokenService,
+        private UserRepositoryInterface        $userRepository,
+        private CompanyRepositoryInterface     $companyRepository,
         private CompanyUserRepositoryInterface $companyUserRepository,
-        private UserGranted               $userGranted,
-        private JsonResponseService       $jsonResponseService,
+        private UserGranted                    $userGranted,
+        private ResponseService                $jsonResponseService,
     ) {
     }
 

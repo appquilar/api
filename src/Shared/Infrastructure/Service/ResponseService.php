@@ -2,10 +2,13 @@
 
 namespace App\Shared\Infrastructure\Service;
 
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class JsonResponseService
+class ResponseService
 {
     private function success(array $data = [], int $status = Response::HTTP_OK): JsonResponse
     {
@@ -40,6 +43,11 @@ class JsonResponseService
     public function noContent(): JsonResponse
     {
         return $this->success(status: Response::HTTP_NO_CONTENT);
+    }
+
+    public function respondImage(string $path): BinaryFileResponse
+    {
+        return new BinaryFileResponse($path);
     }
 
     private function error(?array $message = [], int $status = Response::HTTP_INTERNAL_SERVER_ERROR): JsonResponse

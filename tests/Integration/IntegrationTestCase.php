@@ -6,6 +6,7 @@ namespace App\Tests\Integration;
 
 use App\Tests\Integration\Context\CompanyContext;
 use App\Tests\Integration\Context\CompanyUserContext;
+use App\Tests\Integration\Context\ImageContext;
 use App\Tests\Integration\Context\UserContext;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -16,12 +17,13 @@ class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
 
-    use UserContext,CompanyContext,CompanyUserContext;
+    use UserContext,CompanyContext,CompanyUserContext,ImageContext;
 
     protected KernelBrowser $client;
     protected array $customHeaders = [];
-
     private const REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];
+
+    protected string $testRootPath;
 
     protected function setUp(): void
     {
@@ -30,6 +32,12 @@ class IntegrationTestCase extends WebTestCase
         if (!static::$booted) {
             $this->client = static::createClient();
         }
+        $this->testRootPath = self::$kernel->getContainer()->getParameter('kernel.project_dir') . '/tests';
+        $this->testStoragePath = self::$kernel->getContainer()->getParameter('kernel.project_dir') . '/var/uploads/test';
+
+        if (!is_dir($this->testStoragePath)) {
+            mkdir($this->testStoragePath, 0777, true);
+        }
     }
 
     private function getHeaders(): array
@@ -37,22 +45,23 @@ class IntegrationTestCase extends WebTestCase
         if ($this->accessToken === null) {
             return array_merge(
                 self::REQUEST_HEADERS,
-                $this->customHeaders
+                $this->customHeaders,
             );
         }
 
         return array_merge(
             self::REQUEST_HEADERS,
             ['HTTP_AUTHORIZATION' => 'Bearer ' . $this->accessToken],
-            $this->customHeaders
+            $this->customHeaders,
         );
     }
 
-    protected function request(string $method, string $uri, array $payload = null): object
+    protected function request(string $method, string $uri, array $payload = null, array $files = []): object
     {
         $this->client->request(
             method: $method,
             uri: $uri,
+            files: $files,
             server: $this->getHeaders(),
             content: $payload !== null ? json_encode($payload) : null
         );

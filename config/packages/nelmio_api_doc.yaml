@@ -445,6 +445,8 @@ nelmio_api_doc:
                         - Company
                     summary: "Update a user's role in a company"
                     description: "Allows admins to change the role of a user in a company."
+                    security:
+                        - bearerAuth: [ ]
                     parameters:
                         - in: path
                           name: company_id
@@ -482,6 +484,8 @@ nelmio_api_doc:
                     summary: Remove a user from a company
                     tags:
                         - Company
+                    security:
+                        - bearerAuth: [ ]
                     parameters:
                         - name: company_id
                           in: path
@@ -545,6 +549,97 @@ nelmio_api_doc:
                             description: Invalid token, expired invitation, or user already exists.
                         "401":
                             description: Unauthorized access.
+            /api/media/images/upload:
+                post:
+                    tags:
+                        - Media
+                    summary: "Upload an image"
+                    description: "Uploads an image file to the storage system."
+                    security:
+                        - bearerAuth: [ ]
+                    requestBody:
+                        required: true
+                        content:
+                            multipart/form-data:
+                                schema:
+                                    type: object
+                                    properties:
+                                        file:
+                                            type: string
+                                            format: binary
+                                            description: "The image file to upload"
+                    responses:
+                        "201":
+                            description: "Image uploaded successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            image_id:
+                                                type: string
+                                                format: uuid
+                                                description: "The unique identifier of the uploaded image"
+                        "400":
+                            description: "Invalid file type or missing file"
+                        "500":
+                            description: "Unexpected server error"
+
+            /api/media/images/{image_id}/{size}:
+                get:
+                    tags:
+                        - Media
+                    summary: "Retrieve an image with specified size"
+                    description: "Fetches an image by its ID and resizes it to the requested size."
+                    parameters:
+                        - name: image_id
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "Unique identifier of the image"
+                        - name: size
+                          in: path
+                          required: true
+                          schema:
+                            $ref: "#/components/schemas/ImageSize"
+                          description: "Desired image size"
+                    responses:
+                        "200":
+                            description: "Returns the requested image"
+                            content:
+                                image/jpeg: { }
+                                image/png: { }
+                        "404":
+                            description: "Image not found"
+                        "400":
+                            description: "Invalid size parameter"
+
+            /api/media/images/{image_id}:
+                delete:
+                    tags:
+                        - Media
+                    summary: "Delete an image"
+                    description: "Deletes an image from storage by its ID."
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - name: image_id
+                          in: path
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "Unique identifier of the image"
+                    responses:
+                        "204":
+                            description: "Image deleted successfully"
+                        "404":
+                            description: "Image not found"
+                        "403":
+                            description: "Unauthorized access to delete"
+
         components:
             schemas:
                 RegisterUserDTO:
@@ -751,3 +846,7 @@ nelmio_api_doc:
                         phone_number_number:
                             type: string
                             example: "666000000"
+                ImageSize:
+                    type: string
+                    enum: [ ORIGINAL, LARGE, MEDIUM, THUMBNAIL ]
+                    description: "Size of the image"

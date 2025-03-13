@@ -21,7 +21,6 @@ use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\User\Domain\Entity\User;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Symfony\Component\Uid\Uuid;
 
 #[AsMessageHandler(handles: AddUserToCompanyCommand::class)]
 class AddUserToCompanyCommandHandler implements CommandHandler

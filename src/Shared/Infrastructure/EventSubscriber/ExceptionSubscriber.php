@@ -7,7 +7,7 @@ namespace App\Shared\Infrastructure\EventSubscriber;
 use App\Shared\Application\Exception\BadRequest\BadRequestException;
 use App\Shared\Application\Exception\NotFound\NotFoundException;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -32,7 +32,7 @@ class ExceptionSubscriber
     ];
 
     public function __construct(
-        private JsonResponseService $jsonResponse,
+        private ResponseService $jsonResponse,
         private LoggerInterface $logger
     ) {
     }

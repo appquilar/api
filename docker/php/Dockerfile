@@ -9,7 +9,13 @@ RUN apt-get update && apt-get install -y \
     curl \
     libonig-dev \
     libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql mysqli
+    libonig-dev \
+    libxml2-dev \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libpng-dev \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg \
+    && docker-php-ext-install pdo pdo_mysql mysqli gd
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite

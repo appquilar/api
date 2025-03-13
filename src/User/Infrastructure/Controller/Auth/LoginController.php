@@ -6,7 +6,7 @@ namespace App\User\Infrastructure\Controller\Auth;
 
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Shared\Application\Query\QueryBus;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Query\Login\LoginQuery;
 use App\User\Application\Query\Login\LoginQueryResult;
 use App\User\Infrastructure\Request\LoginUserDto;
@@ -18,7 +18,7 @@ class LoginController
 {
     public function __construct(
         private QueryBus $queryBus,
-        private JsonResponseService $jsonResponseService
+        private ResponseService $jsonResponseService
     ) {
     }
 

@@ -8,7 +8,7 @@ use App\Company\Application\Command\UpdateCompanyUserRole\UpdateCompanyUserRoleC
 use App\Company\Infrastructure\Request\UpdateCompanyUserRoleDto;
 use App\Shared\Application\Command\CommandBus;
 use App\Shared\Infrastructure\Security\RoutePermission;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -17,7 +17,7 @@ class UpdateCompanyUserRoleController
 {
     public function __construct(
         private CommandBus $commandBus,
-        private JsonResponseService $jsonResponseService
+        private ResponseService $jsonResponseService
     ) {
     }
 

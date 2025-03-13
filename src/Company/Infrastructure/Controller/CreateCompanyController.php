@@ -8,7 +8,7 @@ use App\Company\Application\Command\CreateCompany\CreateCompanyCommand;
 use App\Company\Infrastructure\Request\CreateCompanyDto;
 use App\Shared\Application\Command\CommandBus;
 use App\Shared\Infrastructure\Security\RoutePermission;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -16,8 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class CreateCompanyController
 {
     public function __construct(
-        private CommandBus $commandBus,
-        private JsonResponseService $jsonResponseService,
+        private CommandBus      $commandBus,
+        private ResponseService $jsonResponseService,
     ) {
     }
 

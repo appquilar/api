@@ -6,7 +6,7 @@ namespace App\User\Infrastructure\Controller;
 
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Query\QueryBus;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Query\GetUserById\GetUserByIdQuery;
 use App\User\Application\Query\GetUserById\GetUserByIdQueryResult;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -17,9 +17,9 @@ use Symfony\Component\Routing\Attribute\Route;
 class GetMeController
 {
     public function __construct(
-        private QueryBus $queryBus,
-        private JsonResponseService $jsonResponseService,
-        private UserGranted $userGranted,
+        private QueryBus        $queryBus,
+        private ResponseService $jsonResponseService,
+        private UserGranted     $userGranted,
     ) {
     }
 

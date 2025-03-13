@@ -9,7 +9,7 @@ use App\Company\Application\Query\GetCompanyById\GetCompanyByIdQueryResult;
 use App\Company\Infrastructure\Request\GetCompanyByIdDto;
 use App\Shared\Application\Query\QueryBus;
 use App\Shared\Infrastructure\Security\RoutePermission;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -18,7 +18,7 @@ class GetCompanyByIdController
 {
     public function __construct(
         private QueryBus $queryBus,
-        private JsonResponseService $jsonResponseService
+        private ResponseService $jsonResponseService
     ) {
     }
 

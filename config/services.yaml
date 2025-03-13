@@ -29,9 +29,15 @@ services:
         autowire: true
         autoconfigure: true
 
-
     App\Company\Infrastructure\Controller\:
         resource: '../src/Company/Infrastructure/Controller/'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        autowire: true
+        autoconfigure: true
+
+    App\Media\Infrastructure\Controller\:
+        resource: '../src/Media/Infrastructure/Controller/'
         tags: [ 'controller.service_arguments' ]
         public: true
         autowire: true
@@ -54,7 +60,6 @@ services:
             - '@App\User\Application\Service\UserPasswordHasher'
         tags:
             - { name: 'foundry.factory' }
-
 
     App\Tests\Factories\User\Domain\Entity\UserFactory:
         parent: App\Tests\Factories\User\Domain\Entity\PersistingUserFactory
@@ -85,3 +90,7 @@ services:
             $fromEmail: '%env(MAIL_FROM_EMAIL)%'
             $fromName: '%env(MAIL_FROM_NAME)%'
             $devToEmail: '%env(DEV_TO_EMAIL)%'
+
+    App\Media\Infrastructure\Service\StorageService:
+        arguments:
+            $uploadDirectory: '%kernel.project_dir%%env(MEDIA_STORAGE_DIR)%'

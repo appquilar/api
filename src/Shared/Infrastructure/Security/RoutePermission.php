@@ -23,6 +23,10 @@ enum RoutePermission: string
     case COMPANY_REMOVE_USER = 'company_remove_user';
     case COMPANY_USER_ACCEPTS_INVITATION = 'company_user_accepts_invitation';
 
+    /** MEDIA */
+    case MEDIA_UPLOAD_IMAGE = 'media_upload_image';
+    case MEDIA_DELETE_IMAGE = 'media_delete_image';
+
     /**
      * @return UserRole[]
      */
@@ -39,6 +43,8 @@ enum RoutePermission: string
             self::COMPANY_ADD_USER,
             self::COMPANY_UPDATE_USER_ROLE,
             self::COMPANY_REMOVE_USER,
+            self::MEDIA_UPLOAD_IMAGE,
+            self::MEDIA_DELETE_IMAGE,
                 => [UserRole::REGULAR_USER],
             default => []
         };

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\User\Infrastructure\Controller\Auth;
 
 use App\Shared\Application\Command\CommandBus;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Command\Logout\LogoutCommand;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,8 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class LogoutController
 {
     public function __construct(
-        private CommandBus $commandBus,
-        private JsonResponseService $jsonResponseService,
+        private CommandBus      $commandBus,
+        private ResponseService $jsonResponseService,
     ) {
     }
 

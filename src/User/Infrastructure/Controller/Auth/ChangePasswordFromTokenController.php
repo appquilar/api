@@ -6,7 +6,7 @@ namespace App\User\Infrastructure\Controller\Auth;
 
 use App\Shared\Application\Command\CommandBus;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Command\ChangePasswordFromToken\ChangePasswordFromTokenCommand;
 use App\User\Infrastructure\Request\ChangePasswordFromTokenDto;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -16,8 +16,8 @@ use Symfony\Component\Routing\Attribute\Route;
 class ChangePasswordFromTokenController
 {
     public function __construct(
-        private CommandBus          $commandBus,
-        private JsonResponseService $jsonResponseService,
+        private CommandBus      $commandBus,
+        private ResponseService $jsonResponseService,
     ) {
     }
 

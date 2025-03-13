@@ -8,7 +8,7 @@ use App\Shared\Application\Command\CommandBus;
 use App\Shared\Application\Exception\BadRequest\BadRequestException;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Shared\Infrastructure\Security\RoutePermission;
-use App\Shared\Infrastructure\Service\JsonResponseService;
+use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Command\UpdateUser\UpdateUserCommand;
 use App\User\Infrastructure\Request\UpdateUserDto;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,7 +19,7 @@ class UpdateUserController
 {
     public function __construct(
         private CommandBus $commandBus,
-        private JsonResponseService $jsonResponseService
+        private ResponseService $jsonResponseService
     ) {
     }
 

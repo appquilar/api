@@ -17,12 +17,6 @@ class AddUserToCompanyDto implements RequestDtoInterface
         #[Assert\Uuid(message: "company.add_user.company_id.uuid")]
         public ?Uuid $companyId = null,
 
-        #[Assert\AtLeastOneOf([
-            new Assert\IsNull(),
-            new Assert\Uuid(message: "company.add_user.user_id.uuid")
-        ])]
-        public ?Uuid $userId = null,
-
         #[Assert\NotBlank(message: "company.add_user.company_id.not_blank")]
         #[Assert\Email(message: "company.add_user.email.email")]
         public ?string $email = null,
