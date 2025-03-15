@@ -43,4 +43,9 @@ trait ImageContext
         }
         PersistingImageFactory::createOne(['imageId' => $imageId]);
     }
+
+    public function givenItExistsAnImageWithId(Uuid $imageId): void
+    {
+        PersistingImageFactory::createOne(['imageId' => $imageId]);
+    }
 }

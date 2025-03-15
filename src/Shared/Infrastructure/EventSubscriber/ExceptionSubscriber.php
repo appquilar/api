@@ -40,10 +40,7 @@ class ExceptionSubscriber
     #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 10)]
     public function processException(ExceptionEvent $event): void
     {
-        $exception = $event->getThrowable();
-        if ($exception instanceof InvalidArgumentException && str_contains($exception->getMessage(), 'must belong to a backed enumeration')) {
-            $exception = new BadRequestException($exception->getMessage(), $exception->getCode(), $exception);
-        }
+        $exception = $this->getRealException($event->getThrowable());
 
         $config = self::EXCEPTIONS[$exception::class] ?? ['handlers' => 'genericError'];
 
@@ -54,7 +51,7 @@ class ExceptionSubscriber
     #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 0)]
     public function logException(ExceptionEvent $event): void
     {
-        $exception = $event->getThrowable();
+        $exception = $this->getRealException($event->getThrowable());
         $config = self::EXCEPTIONS[$exception::class] ?? ['logLevel' => 'error'];
 
         $this->logger->log(
@@ -68,5 +65,14 @@ class ExceptionSubscriber
             ),
             ['exception' => $exception]
         );
+    }
+
+    private function getRealException(\Throwable $exception): \Throwable
+    {
+        if ($exception instanceof InvalidArgumentException && str_contains($exception->getMessage(), 'must belong to a backed enumeration')) {
+            return new BadRequestException($exception->getMessage(), $exception->getCode(), $exception);
+        }
+
+        return $exception;
     }
 }

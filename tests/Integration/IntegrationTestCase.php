@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration;
 
+use App\Tests\Integration\Context\CategoryContext;
 use App\Tests\Integration\Context\CompanyContext;
 use App\Tests\Integration\Context\CompanyUserContext;
 use App\Tests\Integration\Context\ImageContext;
@@ -17,7 +18,7 @@ class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
 
-    use UserContext,CompanyContext,CompanyUserContext,ImageContext;
+    use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext;
 
     protected KernelBrowser $client;
     protected array $customHeaders = [];
@@ -67,5 +68,12 @@ class IntegrationTestCase extends WebTestCase
         );
 
         return $this->client->getResponse();
+    }
+
+    protected function assertErrorMessageExists(string $field, array $content): void
+    {
+        $this->assertArrayHasKey('error', $content);
+        $this->assertArrayHasKey('errors', $content['error']);
+        $this->assertArrayHasKey($field, $content['error']['errors']);
     }
 }

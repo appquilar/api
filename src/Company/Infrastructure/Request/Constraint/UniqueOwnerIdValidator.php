@@ -17,7 +17,7 @@ class UniqueOwnerIdValidator extends ConstraintValidator
     ) {
     }
 
-    public function validate(mixed $value, Constraint $constraint)
+    public function validate(mixed $value, Constraint $constraint): void
     {
         if (!$constraint instanceof UniqueOwnerId) {
             throw new UnexpectedTypeException($constraint, UniqueOwnerId::class);

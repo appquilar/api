@@ -639,6 +639,24 @@ nelmio_api_doc:
                             description: "Image not found"
                         "403":
                             description: "Unauthorized access to delete"
+            /api/categories:
+                post:
+                    tags:
+                        - "Category"
+                    summary: "Create a new category"
+                    description: "Creates a new category in the system"
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/Category"
+                    responses:
+                        201:
+                            description: "Category successfully created"
+                        400:
+                            description: "Validation failed"
+                        401:
+                            description: "Not enough scopes granted"
 
         components:
             schemas:
@@ -850,3 +868,33 @@ nelmio_api_doc:
                     type: string
                     enum: [ ORIGINAL, LARGE, MEDIUM, THUMBNAIL ]
                     description: "Size of the image"
+
+                Category:
+                    type: object
+                    properties:
+                        category_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Acme Inc."
+                        description:
+                            type: string
+                            example: "Leading provider of innovative solutions"
+                        parent_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        icon_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        featured_image_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        landscape_image_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"

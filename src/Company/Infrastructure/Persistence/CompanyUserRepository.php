@@ -6,7 +6,6 @@ namespace App\Company\Infrastructure\Persistence;
 
 use App\Company\Application\Repository\CompanyUserRepositoryInterface;
 use App\Company\Domain\Entity\CompanyUser;
-use App\Company\Domain\Enum\CompanyUserRole;
 use App\Shared\Infrastructure\Persistence\DoctrineRepository;
 use Symfony\Component\Uid\Uuid;
 

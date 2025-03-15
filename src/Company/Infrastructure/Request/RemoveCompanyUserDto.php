@@ -6,6 +6,7 @@ namespace App\Company\Infrastructure\Request;
 
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class RemoveCompanyUserDto implements RequestDtoInterface
 {
