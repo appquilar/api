@@ -12,6 +12,7 @@ use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Dto\TokenPayload;
 use App\User\Application\Repository\UserRepositoryInterface;
 use App\User\Application\Service\AuthTokenServiceInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\RequestEvent;

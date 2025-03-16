@@ -17,6 +17,7 @@ enum RoutePermission: string
 
     /** COMPANY */
     case COMPANY_CREATE = 'company_create';
+    case COMPANY_UPDATE = 'company_update';
     case COMPANY_LIST_USERS = 'company_list_users';
     case COMPANY_ADD_USER = 'company_add_user';
     case COMPANY_UPDATE_USER_ROLE = 'company_update_user_role';
@@ -42,6 +43,7 @@ enum RoutePermission: string
             self::USER_UPDATE_USER,
             self::USER_CHANGE_PASSWORD,
             self::COMPANY_CREATE,
+            self::COMPANY_UPDATE,
             self::COMPANY_LIST_USERS,
             self::COMPANY_ADD_USER,
             self::COMPANY_UPDATE_USER_ROLE,

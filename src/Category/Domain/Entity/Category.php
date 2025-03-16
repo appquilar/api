@@ -75,56 +75,6 @@ class Category extends Entity
         $this->description = $description;
     }
 
-    public function getSlug(): string
-    {
-        return $this->slug;
-    }
-
-    public function setSlug(string $slug): void
-    {
-        $this->slug = $slug;
-    }
-
-    public function getParentId(): ?Uuid
-    {
-        return $this->parentId;
-    }
-
-    public function setParentId(?Uuid $parentId): void
-    {
-        $this->parentId = $parentId;
-    }
-
-    public function getIconId(): ?Uuid
-    {
-        return $this->iconId;
-    }
-
-    public function setIconId(?Uuid $iconId): void
-    {
-        $this->iconId = $iconId;
-    }
-
-    public function getFeaturedImageId(): ?Uuid
-    {
-        return $this->featuredImageId;
-    }
-
-    public function setFeaturedImageId(?Uuid $featuredImageId): void
-    {
-        $this->featuredImageId = $featuredImageId;
-    }
-
-    public function getLandscapeImageId(): ?Uuid
-    {
-        return $this->landscapeImageId;
-    }
-
-    public function setLandscapeImageId(?Uuid $landscapeImageId): void
-    {
-        $this->landscapeImageId = $landscapeImageId;
-    }
-
     public function update(
         string $name,
         ?string $description,

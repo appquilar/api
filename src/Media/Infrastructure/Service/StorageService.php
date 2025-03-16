@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Media\Infrastructure\Service;
 
+use App\Shared\Application\Exception\BadRequest\BadRequestException;
 use function imagecreatefrompng;
 use App\Media\Application\Enum\ImageSize;
 use App\Media\Application\Service\StorageServiceInterface;
@@ -23,20 +24,17 @@ class StorageService implements StorageServiceInterface
 
     public function upload(UploadedFile $file, Uuid $imageId): void
     {
-        // Validate that the file is an image.
         $mimeType = $file->getMimeType();
         if (strpos($mimeType, 'image/') !== 0) {
-            throw new \Exception('Invalid file type.');
+            throw new BadRequestException('Invalid file type.');
         }
 
         $extension = $file->guessExtension() ?: 'jpg';
         $baseFileName = $imageId->toString() . '.' . $extension;
         $originalPath = $this->uploadDirectory . DIRECTORY_SEPARATOR . $baseFileName;
 
-        // Move the uploaded file to the target directory.
         copy($file->getPathname(), $originalPath);
 
-        // Define image sizes with semantic naming and dimensions.
         $sizes = [
             ImageSize::LARGE->value     => [800, 600],
             ImageSize::MEDIUM->value    => [400, 300],
@@ -56,7 +54,7 @@ class StorageService implements StorageServiceInterface
     {
         $info = getimagesize($sourcePath);
         if (!$info) {
-            throw new \Exception('Unable to get image info.');
+            throw new BadRequestException('Unable to get image info.');
         }
         $width = $info[0];
         $height = $info[1];

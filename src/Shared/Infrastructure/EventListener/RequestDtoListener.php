@@ -6,6 +6,7 @@ namespace App\Shared\Infrastructure\EventListener;
 
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
 use App\Shared\Infrastructure\Service\ResponseService;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\ControllerArgumentsEvent;
 use Symfony\Component\PropertyInfo\Extractor\PhpDocExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
@@ -44,6 +45,7 @@ class RequestDtoListener
         ]);
     }
 
+    #[AsEventListener(event: ControllerArgumentsEvent::class)]
     public function onKernelControllerArguments(ControllerArgumentsEvent $event): void
     {
         $request = $event->getRequest();

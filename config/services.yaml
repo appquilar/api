@@ -50,11 +50,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    # Symfony kernel listeners
-    App\Shared\Infrastructure\EventListener\RequestDtoListener:
-        tags:
-            - { name: kernel.event_listener, event: kernel.controller_arguments }
-
     # Factories
     App\Shared\Application\Context\UserGranted:
         factory: [ App\Shared\Application\Context\UserGranted, me ]

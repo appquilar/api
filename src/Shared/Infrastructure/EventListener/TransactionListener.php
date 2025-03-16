@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Shared\Infrastructure\EventListener;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -15,11 +16,13 @@ class TransactionListener
     {
     }
 
+    #[AsEventListener(event: RequestEvent::class)]
     public function onKernelRequest(RequestEvent $event): void
     {
         $this->entityManager->beginTransaction();
     }
 
+    #[AsEventListener(event: ResponseEvent::class)]
     public function onKernelResponse(ResponseEvent $event): void
     {
         if ($this->entityManager->getConnection()->isTransactionActive()) {
@@ -27,6 +30,7 @@ class TransactionListener
         }
     }
 
+    #[AsEventListener(event: ExceptionEvent::class, priority: 1000)]
     public function onKernelException(ExceptionEvent $event): void
     {
         if ($this->entityManager->getConnection()->isTransactionActive()) {

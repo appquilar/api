@@ -331,6 +331,30 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Company with id xxxx-xxx-xxx-xx-xxxx not found"
+                patch:
+                    summary: "Update a company"
+                    tags:
+                        - Company
+                    parameters:
+                        - in: path
+                          name: companyId
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/UpdateCompanyDto"
+                    responses:
+                        204:
+                            description: "Company updated successfully"
+                        400:
+                            description: "Error on validation"
+                        401:
+                            description: "You only can update a company if you're an admin of the platform or a company's admin. So not enough scopes granted."
             /api/companies/{company_id}/users:
                 get:
                     summary: "Get paginated list of users for a company"
@@ -792,6 +816,48 @@ nelmio_api_doc:
                             type: string
                             enum: [ ACCEPTED, PENDING, EXPIRED ]
                             description: "Status of the user's invitation"
+                UpdateCompanyDto:
+                    type: object
+                    properties:
+                        company_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Acme Inc."
+                        slug:
+                            type: string
+                            example: "acme-inc"
+                        description:
+                            type: string
+                            example: "Leading provider of innovative solutions"
+                        fiscal_identifier:
+                            type: string
+                            description: "In Spain, the CIF"
+                            example: "123456789"
+                        address:
+                            type: string
+                            example: "1234 Elm Street, Springfield"
+                        postal_code:
+                            type: string
+                            example: "12345"
+                        city:
+                            type: string
+                            example: "Springfield"
+                        contact_email:
+                            type: string
+                            format: email
+                            example: "contact@acme.com"
+                        phone_number_country_code:
+                            type: string
+                            example: "ES"
+                        phone_number_prefix:
+                            type: string
+                            example: "+34"
+                        phone_number_number:
+                            type: string
+                            example: "666000000"
                 PhoneNumber:
                     type: object
                     properties:

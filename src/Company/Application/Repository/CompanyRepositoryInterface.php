@@ -10,6 +10,7 @@ use Symfony\Component\Uid\Uuid;
 
 /**
  * @method Company|null findById(Uuid $id)
+ * @method Company|null findOneBy(array $params)
  */
 interface CompanyRepositoryInterface extends RepositoryInterface
 {

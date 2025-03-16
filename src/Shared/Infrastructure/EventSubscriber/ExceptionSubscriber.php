@@ -37,7 +37,7 @@ class ExceptionSubscriber
     ) {
     }
 
-    #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 10)]
+    #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 0)]
     public function processException(ExceptionEvent $event): void
     {
         $exception = $this->getRealException($event->getThrowable());
@@ -48,7 +48,7 @@ class ExceptionSubscriber
         $event->setResponse($response);
     }
 
-    #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 0)]
+    #[AsEventListener(event: KernelEvents::EXCEPTION, priority: 10)]
     public function logException(ExceptionEvent $event): void
     {
         $exception = $this->getRealException($event->getThrowable());

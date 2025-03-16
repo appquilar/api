@@ -10,9 +10,9 @@ use App\Company\Application\Event\CompanyCreated;
 use App\Company\Application\Repository\CompanyRepositoryInterface;
 use App\Company\Domain\Entity\Company;
 use App\Shared\Application\Context\UserGranted;
+use App\Shared\Application\Service\SlugifyServiceInterface;
 use App\Tests\Factories\User\Domain\Entity\UserFactory;
 use App\Tests\Unit\UnitTestCase;
-use App\User\Domain\Entity\User;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Uid\Uuid;
 
@@ -23,11 +23,12 @@ class CreateCompanyCommandHandlerTest extends UnitTestCase
         $companyId = Uuid::v4();
         $ownerId = Uuid::v4();
         $name = "Acme Inc.";
+        $slug = 'acme-inc';
         $description = "An innovative company.";
-        /** @var User $user */
         $user = UserFactory::createOne(['userId' => $ownerId]);
 
         $repositoryMock = $this->createMock(CompanyRepositoryInterface::class);
+        $slugifyServiceMock = $this->createMock(SlugifyServiceInterface::class);
         $eventDispatcherMock = $this->createMock(EventDispatcherInterface::class);
         $userGranted = $this->createMock(UserGranted::class);
 
@@ -38,6 +39,14 @@ class CreateCompanyCommandHandlerTest extends UnitTestCase
                     $company->getName() === $name &&
                     $company->getDescription() === $description;
             }));
+
+        $slugifyServiceMock->expects($this->once())
+            ->method('generate')
+            ->with($name)
+            ->willReturn($slug);
+        $slugifyServiceMock->expects($this->once())
+            ->method('validateSlugIsUnique')
+            ->with($slug);
 
         $userGranted->expects($this->once())
             ->method('getUser')
@@ -52,6 +61,7 @@ class CreateCompanyCommandHandlerTest extends UnitTestCase
 
         $commandHandler = new CreateCompanyCommandHandler(
             $repositoryMock,
+            $slugifyServiceMock,
             $eventDispatcherMock,
             $userGranted
         );

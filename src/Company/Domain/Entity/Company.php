@@ -16,6 +16,9 @@ class Company extends Entity
     #[ORM\Column(type: "string", length: 255)]
     private string $name;
 
+    #[ORM\Column(type: "string", length: 255, unique: true)]
+    private string $slug;
+
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description;
 
@@ -40,6 +43,7 @@ class Company extends Entity
     public function __construct(
         Uuid $companyId,
         string $name,
+        string $slug,
         ?string $description,
         ?string $fiscalIdentifier = null,
         ?string $address = null,
@@ -51,6 +55,7 @@ class Company extends Entity
         parent::__construct($companyId);
 
         $this->name = $name;
+        $this->slug = $slug;
         $this->description = $description;
         $this->fiscalIdentifier = $fiscalIdentifier;
         $this->address = $address;
@@ -63,6 +68,11 @@ class Company extends Entity
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getSlug(): string
+    {
+        return $this->slug;
     }
 
     public function getDescription(): ?string
@@ -98,5 +108,28 @@ class Company extends Entity
     public function getPhoneNumber(): ?PhoneNumber
     {
         return $this->phoneNumber;
+    }
+
+    public function update(
+        string $name,
+        string $slug,
+        ?string $description,
+        ?string $fiscalIdentifier = null,
+        ?string $address = null,
+        ?string $postalCode = null,
+        ?string $city = null,
+        ?string $contactEmail = null,
+        ?PhoneNumber $phoneNumber = null
+    ): void
+    {
+        $this->name = $name;
+        $this->slug = $slug;
+        $this->description = $description;
+        $this->fiscalIdentifier = $fiscalIdentifier;
+        $this->address = $address;
+        $this->postalCode = $postalCode;
+        $this->city = $city;
+        $this->contactEmail = $contactEmail;
+        $this->phoneNumber = $phoneNumber;
     }
 }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Context;
 
-use App\Company\Domain\Entity\CompanyUser;
 use App\Company\Domain\Enum\CompanyUserRole;
 use App\Company\Domain\Enum\CompanyUserStatus;
 use App\Tests\Factories\Company\Domain\Entity\PersistingCompanyUserFactory;

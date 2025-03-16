@@ -45,29 +45,4 @@ class Image extends Entity
         $this->width = $width;
         $this->height = $height;
     }
-
-    public function setOriginalFilename(string $originalFilename): void
-    {
-        $this->originalFilename = $originalFilename;
-    }
-
-    public function setMimeType(string $mimeType): void
-    {
-        $this->mimeType = $mimeType;
-    }
-
-    public function setSize(int $size): void
-    {
-        $this->size = $size;
-    }
-
-    public function setWidth(?int $width): void
-    {
-        $this->width = $width;
-    }
-
-    public function setHeight(?int $height): void
-    {
-        $this->height = $height;
-    }
 }

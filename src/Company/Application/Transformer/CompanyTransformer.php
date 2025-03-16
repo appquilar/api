@@ -20,6 +20,7 @@ class CompanyTransformer implements Transformer
     {
         $data = [
             'company_id' => $entity->getId(),
+            'slug' => $entity->getSlug(),
             'name' => $entity->getName(),
             'description' => $entity->getDescription(),
             'address' => $entity->getAddress(),
