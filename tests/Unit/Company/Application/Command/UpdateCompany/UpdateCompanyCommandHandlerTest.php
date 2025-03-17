@@ -187,6 +187,11 @@ class UpdateCompanyCommandHandlerTest extends UnitTestCase
             ->willReturn($company);
 
         $this->slugifyServiceMock->expects($this->once())
+            ->method('generate')
+            ->with($slug)
+            ->willReturn($slug);
+
+        $this->slugifyServiceMock->expects($this->once())
             ->method('validateSlugIsUnique')
             ->with($slug)
             ->willThrowException(new BadRequestException());

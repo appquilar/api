@@ -18,4 +18,9 @@ trait CategoryContext
     {
         PersistingCategoryFactory::createOne(['slug' => $slug]);
     }
+
+    public function givenItExistsACategoryWithIdAndSlug(Uuid $categoryId, string $slug): void
+    {
+        PersistingCategoryFactory::createOne(['categoryId' => $categoryId, 'slug' => $slug]);
+    }
 }

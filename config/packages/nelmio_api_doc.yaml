@@ -301,10 +301,31 @@ nelmio_api_doc:
                                             error:
                                                 type: string
                                                 example: "Unauthorized"
+            /api/companies/{slug}:
+                get:
+                    summary: "Get details of a company by its slug"
+                    tags:
+                        - Company
+                    parameters:
+                        - in: path
+                          name: slug
+                          required: true
+                          schema:
+                              type: string
+                              example: "acme-inc"
+                    responses:
+                        200:
+                            description: "Company details retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/Company"
+                        404:
+                            description: "Company not found"
 
             /api/companies/{company_id}:
                 get:
-                    summary: "Get details of a company"
+                    summary: "Get details of a company by its id"
                     tags:
                         - Company
                     parameters:
@@ -595,15 +616,6 @@ nelmio_api_doc:
                     responses:
                         "201":
                             description: "Image uploaded successfully"
-                            content:
-                                application/json:
-                                    schema:
-                                        type: object
-                                        properties:
-                                            image_id:
-                                                type: string
-                                                format: uuid
-                                                description: "The unique identifier of the uploaded image"
                         "400":
                             description: "Invalid file type or missing file"
                         "500":
@@ -666,9 +678,11 @@ nelmio_api_doc:
             /api/categories:
                 post:
                     tags:
-                        - "Category"
+                        - Category
                     summary: "Create a new category"
                     description: "Creates a new category in the system"
+                    security:
+                        - bearerAuth: [ ]
                     requestBody:
                         content:
                             application/json:
@@ -681,7 +695,69 @@ nelmio_api_doc:
                             description: "Validation failed"
                         401:
                             description: "Not enough scopes granted"
-
+            /api/categories/{category_id}:
+                patch:
+                    tags:
+                        - Category
+                    summary: "Update a category"
+                    description: "Updates a category in the system"
+                    security:
+                        - bearerAuth: [admin]
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/CategoryResponse"
+                    responses:
+                        204:
+                            description: "Category successfully updated"
+                        400:
+                            description: "Validation failed"
+                        401:
+                            description: "Not enough scopes granted"
+                get:
+                    tags:
+                        - Category
+                    summary: "Get a category by its id"
+                    description: "Get a category by its id"
+                    parameters:
+                        - in: path
+                          name: category_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                    responses:
+                        200:
+                            description: "Category successfully retrieved"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/CategoryResponse"
+                        400:
+                            description: "Validation failed"
+            /api/categories/{slug}:
+                get:
+                    tags:
+                        - Category
+                    summary: "Get a category by its slug"
+                    description: "Get a category by its slug"
+                    parameters:
+                        - in: path
+                          name: slug
+                          required: true
+                          schema:
+                              type: string
+                              example: 'tools-and-machinery'
+                    responses:
+                        200:
+                            description: "Category successfully retrieved"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/CategoryResponse"
+                        400:
+                            description: "Validation failed"
         components:
             schemas:
                 RegisterUserDTO:
@@ -770,10 +846,9 @@ nelmio_api_doc:
                         name:
                             type: string
                             example: "Acme Inc."
-                        owner_id:
+                        slug:
                             type: string
-                            format: uuid
-                            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                            example: "acme-inc"
                         description:
                             type: string
                             example: "Leading provider of innovative solutions"
@@ -944,7 +1019,40 @@ nelmio_api_doc:
                             example: "550e8400-e29b-41d4-a716-446655440000"
                         name:
                             type: string
-                            example: "Acme Inc."
+                            example: "Tools and machinery"
+                        description:
+                            type: string
+                            example: "Leading provider of innovative solutions"
+                        parent_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        icon_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        featured_image_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        landscape_image_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+
+                CategoryResponse:
+                    type: object
+                    properties:
+                        category_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Tools and machinery"
+                        slug:
+                            type: string
+                            example: "tools-and-machinery"
                         description:
                             type: string
                             example: "Leading provider of innovative solutions"

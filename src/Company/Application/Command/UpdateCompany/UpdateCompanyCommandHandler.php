@@ -38,11 +38,12 @@ class UpdateCompanyCommandHandler implements CommandHandler
             throw new EntityNotFoundException($command->getCompanyId());
         }
 
-        $this->slugifyService->validateSlugIsUnique($command->getSlug(), $this->companyRepository);
+        $slug = $this->slugifyService->generate($command->getSlug());
+        $this->slugifyService->validateSlugIsUnique($slug, $this->companyRepository, $company->getId());
 
         $company->update(
             $command->getName(),
-            $this->slugifyService->generate($command->getSlug()),
+            $slug,
             $command->getDescription(),
             $command->getFiscalIdentifier(),
             $command->getAddress(),

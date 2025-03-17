@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Shared\Infrastructure\EventSubscriber;
 
 use App\Shared\Application\Exception\BadRequest\BadRequestException;
+use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
 use App\Shared\Application\Exception\NotFound\NotFoundException;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Shared\Infrastructure\Service\ResponseService;
@@ -23,6 +24,10 @@ class ExceptionSubscriber
         ],
         UnauthorizedException::class => [
             'handlers' => 'unauthorized',
+            'logLevel' => 'notice'
+        ],
+        EntityNotFoundException::class => [
+            'handlers' => 'notFound',
             'logLevel' => 'notice'
         ],
         NotFoundException::class => [

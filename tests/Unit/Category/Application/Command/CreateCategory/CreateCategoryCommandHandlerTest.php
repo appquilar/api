@@ -9,7 +9,6 @@ use App\Category\Application\Command\CreateCategory\CreateCategoryCommandHandler
 use App\Category\Application\Repository\CategoryRepositoryInterface;
 use App\Shared\Application\Exception\BadRequest\BadRequestException;
 use App\Shared\Application\Service\SlugifyServiceInterface;
-use App\Tests\Factories\Category\Domain\Entity\CategoryFactory;
 use App\Tests\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Uid\Uuid;

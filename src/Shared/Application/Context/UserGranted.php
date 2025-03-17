@@ -43,11 +43,6 @@ class UserGranted
         $this->user = $user;
     }
 
-    public function getCompany(): ?Company
-    {
-        return $this->company;
-    }
-
     public function setCompany(?Company $company): void
     {
         $this->company = $company;

@@ -60,25 +60,41 @@ class Category extends Entity
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getDescription(): ?string
     {
         return $this->description;
     }
 
-    public function setDescription(?string $description): void
+    public function getSlug(): string
     {
-        $this->description = $description;
+        return $this->slug;
+    }
+
+    public function getParentId(): ?Uuid
+    {
+        return $this->parentId;
+    }
+
+    public function getIconId(): ?Uuid
+    {
+        return $this->iconId;
+    }
+
+    public function getFeaturedImageId(): ?Uuid
+    {
+        return $this->featuredImageId;
+    }
+
+    public function getLandscapeImageId(): ?Uuid
+    {
+        return $this->landscapeImageId;
     }
 
     public function update(
         string $name,
         ?string $description,
         string $slug,
+        ?Uuid $parentId,
         ?Uuid $iconId,
         ?Uuid $featuredImageId,
         ?Uuid $landscapeImageId
@@ -86,6 +102,7 @@ class Category extends Entity
         $this->name = $name;
         $this->description = $description;
         $this->slug = $slug;
+        $this->parentId = $parentId;
         $this->iconId = $iconId;
         $this->featuredImageId = $featuredImageId;
         $this->landscapeImageId = $landscapeImageId;

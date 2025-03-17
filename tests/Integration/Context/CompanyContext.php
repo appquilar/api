@@ -19,9 +19,20 @@ trait CompanyContext
         PersistingCompanyFactory::createOne(['companyId' => $companyId]);
     }
 
+    public function givenACompanyWithIdAndSlug(Uuid $companyId, string $slug): void
+    {
+        PersistingCompanyFactory::createOne(['companyId' => $companyId, 'slug' => $slug]);
+    }
+
     public function givenACompanyWithOwnerAndId(Uuid $ownerId, Uuid $companyId): void
     {
         $this->givenACompanyWithId($companyId);
+        $this->aCompanyHasAnUser($companyId, CompanyUserRole::ADMIN, CompanyUserStatus::ACCEPTED, $ownerId);
+    }
+
+    public function givenACompanyWithOwnerAndIdAndSlug(Uuid $ownerId, Uuid $companyId, string $slug): void
+    {
+        $this->givenACompanyWithIdAndSlug($companyId, $slug);
         $this->aCompanyHasAnUser($companyId, CompanyUserRole::ADMIN, CompanyUserStatus::ACCEPTED, $ownerId);
     }
 }

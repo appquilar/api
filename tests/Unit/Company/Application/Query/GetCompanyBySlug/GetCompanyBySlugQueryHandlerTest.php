@@ -2,24 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Company\Application\Query\GetCompanyById;
+namespace App\Tests\Unit\Company\Application\Query\GetCompanyBySlug;
 
-use App\Company\Application\Query\GetCompanyById\GetCompanyByIdQuery;
-use App\Company\Application\Query\GetCompanyById\GetCompanyByIdQueryHandler;
-use App\Company\Application\Query\GetCompanyById\GetCompanyByIdQueryResult;
+use App\Company\Application\Query\GetCompanyBySlug\GetCompanyBySlugQuery;
+use App\Company\Application\Query\GetCompanyBySlug\GetCompanyBySlugQueryHandler;
+use App\Company\Application\Query\GetCompanyBySlug\GetCompanyBySlugQueryResult;
 use App\Company\Application\Repository\CompanyRepositoryInterface;
 use App\Company\Application\Transformer\CompanyTransformer;
-use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
+use App\Shared\Application\Exception\NotFound\NotFoundException;
 use App\Tests\Factories\Company\Domain\Entity\CompanyFactory;
 use App\Tests\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Component\Uid\Uuid;
 
-class GetCompanyByIdQueryHandlerTest extends UnitTestCase
+class GetCompanyBySlugQueryHandlerTest extends UnitTestCase
 {
     private CompanyRepositoryInterface|MockObject $companyRepository;
     private CompanyTransformer|MockObject $companyTransformer;
-    private GetCompanyByIdQueryHandler $handler;
+    private GetCompanyBySlugQueryHandler $handler;
 
     protected function setUp(): void
     {
@@ -27,7 +27,7 @@ class GetCompanyByIdQueryHandlerTest extends UnitTestCase
 
         $this->companyRepository = $this->createMock(CompanyRepositoryInterface::class);
         $this->companyTransformer = $this->createMock(CompanyTransformer::class);
-        $this->handler = new GetCompanyByIdQueryHandler(
+        $this->handler = new GetCompanyBySlugQueryHandler(
             $this->companyRepository,
             $this->companyTransformer,
         );
@@ -35,28 +35,28 @@ class GetCompanyByIdQueryHandlerTest extends UnitTestCase
 
     public function testNonExistentCompanyWillThrownANotFoundError(): void
     {
-        $nonexistentCompanyId = Uuid::v4();
+        $nonexistentCompanySlug = 'acme-inc';
 
         $this->companyRepository->expects($this->once())
-            ->method('findById')
-            ->with($nonexistentCompanyId)
+            ->method('findOneBy')
+            ->with(['slug' => $nonexistentCompanySlug])
             ->willReturn(null);
 
-        $this->expectException(EntityNotFoundException::class);
-        $this->expectExceptionMessage("Entity with id " . $nonexistentCompanyId->toString() . " not found");
+        $this->expectException(NotFoundException::class);
 
-        $this->handler->__invoke(new GetCompanyByIdQuery($nonexistentCompanyId));
+        $this->handler->__invoke(new GetCompanyBySlugQuery($nonexistentCompanySlug));
     }
 
     public function testReturnCompanyAfterTransformation(): void
     {
         $companyId = Uuid::v4();
-        $company = CompanyFactory::createOne(['companyId' => $companyId]);
-        $expectedResult = ['company_id' => $company->getId()->toString()];
+        $slug = 'acme-inc';
+        $company = CompanyFactory::createOne(['companyId' => $companyId, 'slug' => $slug]);
+        $expectedResult = ['company_id' => $company->getId()->toString(), 'slug' => $slug];
 
         $this->companyRepository->expects($this->once())
-            ->method('findById')
-            ->with($companyId)
+            ->method('findOneBy')
+            ->with(['slug' => $slug])
             ->willReturn($company);
 
         $this->companyTransformer->expects($this->once())
@@ -64,8 +64,8 @@ class GetCompanyByIdQueryHandlerTest extends UnitTestCase
             ->with($company)
             ->willReturn($expectedResult);
 
-        /** @var GetCompanyByIdQueryResult $result */
-        $result = $this->handler->__invoke(new GetCompanyByIdQuery($companyId));
+        /** @var GetCompanyBySlugQueryResult $result */
+        $result = $this->handler->__invoke(new GetCompanyBySlugQuery($slug));
 
         $this->assertEquals($expectedResult, $result->getCompany());
     }

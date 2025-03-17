@@ -30,6 +30,7 @@ enum RoutePermission: string
 
     /** CATEGORY */
     case CATEGORY_CREATE = 'category_create';
+    case CATEGORY_UPDATE = 'category_update';
 
     /**
      * @return UserRole[]
@@ -52,6 +53,7 @@ enum RoutePermission: string
             self::MEDIA_DELETE_IMAGE,
                 => [UserRole::REGULAR_USER],
             self::CATEGORY_CREATE,
+            self::CATEGORY_UPDATE,
                 => [UserRole::ADMIN],
             default => []
         };
