@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shared\Domain\Entity;
 
-use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
@@ -16,16 +15,16 @@ abstract class Entity
     #[ORM\Id]
     #[ORM\Column(type: UuidType::NAME, unique: true)]
     private Uuid $id;
-    #[ORM\Column(type: 'datetime_immutable')]
-    private DateTimeImmutable $createdAt;
+    #[ORM\Column(type: 'datetime_microseconds')]
+    private \DateTime $createdAt;
 
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?DateTimeImmutable $updatedAt = null;
+    #[ORM\Column(type: 'datetime_microseconds', nullable: true)]
+    private ?\DateTime $updatedAt = null;
 
     public function __construct(Uuid $id)
     {
         $this->id = $id;
-        $this->createdAt = new DateTimeImmutable();
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): Uuid
@@ -36,6 +35,6 @@ abstract class Entity
     #[ORM\PreUpdate]
     public function updateTimestamps(): void
     {
-        $this->updatedAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTime();
     }
 }

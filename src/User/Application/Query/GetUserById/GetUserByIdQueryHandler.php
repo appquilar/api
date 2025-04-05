@@ -15,7 +15,6 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 #[AsMessageHandler(handles: GetUserByIdQuery::class)]
 class GetUserByIdQueryHandler implements QueryHandler
 {
-
     public function __construct(
         private UserRepositoryInterface $userRepository,
         private UserGranted $userGranted,

@@ -2,15 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Category\Infrastructure\Request\Constraint;
+namespace App\Shared\Infrastructure\Request\Constraint;
 
 use Symfony\Component\Validator\Constraint;
 
 #[\Attribute]
 class CategoryExists extends Constraint
 {
-    public function __construct(public ?string $message = null)
+    public ?string $message = null;
+    public function __construct(string $message)
     {
         parent::__construct();
+
+        $this->message = $message;
     }
 }

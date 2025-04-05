@@ -17,7 +17,7 @@ class LogoutApiTest extends IntegrationTestCase
         $response = $this->request('POST', '/api/auth/logout');
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals(json_encode(['success' => true]), $response->getContent());
+        $this->assertEquals(json_encode(['success' => true, 'data' => []]), $response->getContent());
     }
 
     public function testLogoutFailsWithInvalidToken(): void
@@ -44,7 +44,7 @@ class LogoutApiTest extends IntegrationTestCase
         $response = $this->request('POST', '/api/auth/logout');
 
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
-        $this->assertEquals(json_encode(['success' => true]), $response->getContent());
+        $this->assertEquals(json_encode(['success' => true, 'data' => []]), $response->getContent());
 
         $response = $this->request('POST', '/api/auth/logout');
 

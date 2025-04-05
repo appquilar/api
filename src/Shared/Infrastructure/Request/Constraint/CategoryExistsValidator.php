@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Category\Infrastructure\Request\Constraint;
+namespace App\Shared\Infrastructure\Request\Constraint;
 
-use App\Category\Application\Repository\CategoryRepositoryInterface;
+use App\Shared\Infrastructure\Service\CategoryServiceInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
@@ -12,17 +12,17 @@ use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 class CategoryExistsValidator extends ConstraintValidator
 {
     public function __construct(
-        private CategoryRepositoryInterface $categoryRepository
+        private CategoryServiceInterface $categoryServicez,
     ) {
     }
 
-    public function validate(mixed $value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint)
     {
         if (!$constraint instanceof CategoryExists) {
-            throw new UnexpectedTypeException($constraint, CategoryExists::class);
+            throw new UnexpectedTypeException($constraint, ImageExists::class);
         }
 
-        if ($this->categoryRepository->findById($value) === null) {
+        if (!$this->categoryServicez->categoryExistsById($value)) {
             $this->context->buildViolation($constraint->message)
                 ->addViolation();
         }

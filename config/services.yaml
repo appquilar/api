@@ -50,6 +50,13 @@ services:
         autowire: true
         autoconfigure: true
 
+    App\Site\Infrastructure\Controller\:
+        resource: '../src/Site/Infrastructure/Controller/'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        autowire: true
+        autoconfigure: true
+
     # Factories
     App\Shared\Application\Context\UserGranted:
         factory: [ App\Shared\Application\Context\UserGranted, me ]

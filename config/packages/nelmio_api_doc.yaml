@@ -758,6 +758,81 @@ nelmio_api_doc:
                                         $ref: "#/components/schemas/CategoryResponse"
                         400:
                             description: "Validation failed"
+            /api/sites:
+                post:
+                    tags:
+                        - Sites
+                    summary: "Create a new site"
+                    description: "Creates a new site in the system"
+                    security:
+                        - bearerAuth: [ admin ]
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/Site"
+                    responses:
+                        201:
+                            description: "Category successfully retrieved"
+                        400:
+                            description: "Validation failed"
+                get:
+                    tags:
+                        - Sites
+                    summary: "Get all sites"
+                    description: "Get all sites"
+                    responses:
+                        200:
+                            description: "Category successfully retrieved"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            data:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/Site"
+            /api/sites/{site_id}:
+                patch:
+                    tags:
+                        - Sites
+                    summary: "Updates a new site"
+                    description: "Updates a new site in the system"
+                    security:
+                        - bearerAuth: [ admin ]
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/Site"
+                    responses:
+                        204:
+                            description: "Category successfully updated"
+                        400:
+                            description: "Validation failed"
+                get:
+                    tags:
+                        - Sites
+                    summary: "Get a site by its id"
+                    description: "Get a site by its id"
+                    parameters:
+                        - in: path
+                          name: site_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                    responses:
+                        200:
+                            description: "Category successfully retrieved"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/Site"
+                        400:
+                            description: "Validation failed"
+
         components:
             schemas:
                 RegisterUserDTO:
@@ -1072,3 +1147,47 @@ nelmio_api_doc:
                             type: string
                             format: uuid
                             example: "550e8400-e29b-41d4-a716-446655440000"
+
+                Site:
+                    type: object
+                    properties:
+                        site_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Acme Inc."
+                        title:
+                            type: string
+                            example: "Acme|Appquilar"
+                        url:
+                            type: string
+                            example: "https://acme-inc.com"
+                        description:
+                            type: string
+                            example: "Leading provider of innovative solutions"
+                        logo_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        favicon_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        primary_color:
+                            type: string
+                            description: "The primary color of the site in hex"
+                            example: "FF0000"
+                        category_ids:
+                            $ref: "#/components/schemas/UuidArray"
+                        menu_category_ids:
+                            $ref: "#/components/schemas/UuidArray"
+                        featured_category_ids:
+                            $ref: "#/components/schemas/UuidArray"
+
+                UuidArray:
+                    type: array
+                    items:
+                        type: string
+                        format: uuid

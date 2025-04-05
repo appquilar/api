@@ -32,6 +32,11 @@ enum RoutePermission: string
     case CATEGORY_CREATE = 'category_create';
     case CATEGORY_UPDATE = 'category_update';
 
+    /** SITE */
+    case SITE_CREATE = 'site_create';
+    case SITE_UPDATE = 'site_update';
+    case SITE_LIST_ALL = 'site_list_all';
+
     /**
      * @return UserRole[]
      */
@@ -54,6 +59,9 @@ enum RoutePermission: string
                 => [UserRole::REGULAR_USER],
             self::CATEGORY_CREATE,
             self::CATEGORY_UPDATE,
+            self::SITE_CREATE,
+            self::SITE_UPDATE,
+            self::SITE_LIST_ALL,
                 => [UserRole::ADMIN],
             default => []
         };

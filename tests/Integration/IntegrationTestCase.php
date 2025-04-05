@@ -8,6 +8,7 @@ use App\Tests\Integration\Context\CategoryContext;
 use App\Tests\Integration\Context\CompanyContext;
 use App\Tests\Integration\Context\CompanyUserContext;
 use App\Tests\Integration\Context\ImageContext;
+use App\Tests\Integration\Context\SiteContext;
 use App\Tests\Integration\Context\UserContext;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -18,7 +19,7 @@ class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
 
-    use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext;
+    use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext,SiteContext;
 
     protected KernelBrowser $client;
     protected array $customHeaders = [];

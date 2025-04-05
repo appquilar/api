@@ -14,7 +14,7 @@ class ResponseService
             'success' => true,
         ];
 
-        if (!empty($data)) {
+        if ($data !== null) {
             $response['data'] = $data;
         }
 

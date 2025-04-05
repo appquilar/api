@@ -11,6 +11,10 @@ interface RepositoryInterface
 {
     public function findById(Uuid $id): Entity|null;
     public function findOneBy(array $params): Entity|null;
+    /**
+     * @return Entity[]
+     */
+    public function findAll(): array;
     public function save(Entity $entity): void;
     public function delete(Entity $entity): void;
 }

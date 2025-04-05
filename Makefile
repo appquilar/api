@@ -69,7 +69,7 @@ all-tests:
 clean-integration:
 	@echo "Resetting database..."
 	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:drop --force --if-exists --env=test
-	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:create --env=test
+	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:database:create --if-not-exists --env=test
 	docker exec -it $$(docker-compose ps -q php) bin/console doctrine:migrations:migrate --no-interaction --env=test
 
 ci-copy-env:

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Category\Infrastructure\Request;
 
-use App\Category\Infrastructure\Request\Constraint\CategoryExists;
+use App\Shared\Infrastructure\Request\Constraint\CategoryExists;
 use App\Shared\Infrastructure\Request\Constraint\ImageExists;
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
 use Symfony\Component\Uid\Uuid;
