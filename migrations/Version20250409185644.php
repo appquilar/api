@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250405214351 extends AbstractMigration
+final class Version20250409185644 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -26,19 +26,29 @@ final class Version20250405214351 extends AbstractMigration
         $this->addSql('CREATE TABLE company_users (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, company_id BINARY(16) NOT NULL, user_id BINARY(16) DEFAULT NULL, email VARCHAR(255) NOT NULL, role VARCHAR(255) NOT NULL, status VARCHAR(255) NOT NULL, invitation_expires_at TIME NOT NULL, invitation_token VARCHAR(40) NOT NULL, INDEX token_idx (invitation_token), INDEX company_user_idx (company_id, user_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
         $this->addSql('CREATE TABLE forgot_password_tokens (id BINARY(16) NOT NULL, user_id BINARY(16) NOT NULL, site_id BINARY(16) NOT NULL, token VARCHAR(300) NOT NULL, expires_at DATETIME NOT NULL, UNIQUE INDEX UNIQ_2350282B5F37A13B (token), INDEX token_idx (token), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
         $this->addSql('CREATE TABLE media (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, original_filename VARCHAR(255) NOT NULL, mime_type VARCHAR(255) NOT NULL, size INT NOT NULL, width INT DEFAULT NULL, height INT DEFAULT NULL, INDEX media_filename_idx (original_filename), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('CREATE TABLE products (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, name VARCHAR(255) NOT NULL, slug VARCHAR(255) NOT NULL, internal_id VARCHAR(50) NOT NULL, description LONGTEXT DEFAULT NULL, company_id BINARY(16) DEFAULT NULL, user_id BINARY(16) DEFAULT NULL, category_id BINARY(16) DEFAULT NULL, image_ids JSON NOT NULL, publication_status_status VARCHAR(20) NOT NULL, publication_status_published_at DATETIME DEFAULT NULL, UNIQUE INDEX UNIQ_B3BA5A5A989D9B62 (slug), INDEX slug_idx (slug), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('CREATE TABLE rental_products (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, always_available TINYINT(1) NOT NULL, availability_periods JSON NOT NULL, includes_weekends TINYINT(1) NOT NULL, daily_amount NUMERIC(10, 2) NOT NULL, daily_currency VARCHAR(3) NOT NULL, hourly_amount NUMERIC(10, 2) NOT NULL, hourly_currency VARCHAR(3) NOT NULL, weekly_amount NUMERIC(10, 2) NOT NULL, weekly_currency VARCHAR(3) NOT NULL, monthly_amount NUMERIC(10, 2) NOT NULL, monthly_currency VARCHAR(3) NOT NULL, deposit_amount NUMERIC(10, 2) NOT NULL, deposit_currency VARCHAR(3) NOT NULL, product_id BINARY(16) NOT NULL, UNIQUE INDEX UNIQ_83DC43694584665A (product_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('CREATE TABLE sale_products (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, `condition` VARCHAR(255) DEFAULT NULL, year_of_purchase INT DEFAULT NULL, negotiable TINYINT(1) NOT NULL, additional_information LONGTEXT DEFAULT NULL, amount NUMERIC(10, 2) NOT NULL, currency VARCHAR(3) NOT NULL, product_id BINARY(16) NOT NULL, UNIQUE INDEX UNIQ_ADCEB6F04584665A (product_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
         $this->addSql('CREATE TABLE sites (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, name VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, url VARCHAR(255) NOT NULL, description LONGTEXT NOT NULL, logo_id BINARY(16) NOT NULL, favicon_id BINARY(16) NOT NULL, primary_color VARCHAR(25) NOT NULL, category_ids JSON NOT NULL, menu_category_ids JSON NOT NULL, featured_category_ids JSON NOT NULL, INDEX name_idx (name), INDEX url_idx (url), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
         $this->addSql('CREATE TABLE users (id BINARY(16) NOT NULL, created_at DATETIME(6) NOT NULL, updated_at DATETIME(6) DEFAULT NULL, email VARCHAR(255) NOT NULL, password VARCHAR(255) NOT NULL, wordpress_password VARCHAR(255) DEFAULT NULL, roles JSON NOT NULL, first_name VARCHAR(255) DEFAULT NULL, last_name VARCHAR(255) DEFAULT NULL, wordpress_id INT DEFAULT NULL, UNIQUE INDEX UNIQ_1483A5E9E7927C74 (email), INDEX email_idx (email), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE `utf8mb4_unicode_ci`');
+        $this->addSql('ALTER TABLE rental_products ADD CONSTRAINT FK_83DC43694584665A FOREIGN KEY (product_id) REFERENCES products (id)');
+        $this->addSql('ALTER TABLE sale_products ADD CONSTRAINT FK_ADCEB6F04584665A FOREIGN KEY (product_id) REFERENCES products (id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
+        $this->addSql('ALTER TABLE rental_products DROP FOREIGN KEY FK_83DC43694584665A');
+        $this->addSql('ALTER TABLE sale_products DROP FOREIGN KEY FK_ADCEB6F04584665A');
         $this->addSql('DROP TABLE access_tokens');
         $this->addSql('DROP TABLE categories');
         $this->addSql('DROP TABLE companies');
         $this->addSql('DROP TABLE company_users');
         $this->addSql('DROP TABLE forgot_password_tokens');
         $this->addSql('DROP TABLE media');
+        $this->addSql('DROP TABLE products');
+        $this->addSql('DROP TABLE rental_products');
+        $this->addSql('DROP TABLE sale_products');
         $this->addSql('DROP TABLE sites');
         $this->addSql('DROP TABLE users');
     }

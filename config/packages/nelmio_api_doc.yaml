@@ -833,6 +833,299 @@ nelmio_api_doc:
                         400:
                             description: "Validation failed"
 
+            /api/products:
+                post:
+                    tags:
+                        - Product
+                    summary: "Create a new product"
+                    description: "Creates a new product with basic information"
+                    security:
+                        - bearerAuth: [ ]
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/CreateProductDto"
+                    responses:
+                        "201":
+                            description: "Product successfully created"
+                        "400":
+                            description: "Validation error"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/ValidationError"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+
+            /api/products/{product_id}:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get product by ID"
+                    description: "Retrieves detailed information for a specific product"
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product to retrieve"
+                    responses:
+                        "200":
+                            description: "Product retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/ProductResponse"
+                        "404":
+                            description: "Product not found"
+
+                patch:
+                    tags:
+                        - Product
+                    summary: "Update product basic information"
+                    description: "Updates the basic information of an existing product"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product to update"
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/UpdateProductDto"
+                    responses:
+                        "204":
+                            description: "Product updated successfully"
+                        "400":
+                            description: "Validation error"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Product not found"
+
+            /api/products/slug/{slug}:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get product by slug"
+                    description: "Retrieves detailed information for a specific product by its slug"
+                    parameters:
+                        - in: path
+                          name: slug
+                          required: true
+                          schema:
+                              type: string
+                          description: "Slug of the product to retrieve"
+                    responses:
+                        "200":
+                            description: "Product retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/ProductResponse"
+                        "404":
+                            description: "Product not found"
+
+            /api/companies/{company_id}/products:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get products by company"
+                    description: "Retrieves a paginated list of products for a specific company"
+                    parameters:
+                        - in: path
+                          name: company_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the company"
+                        - in: query
+                          name: page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 1
+                          description: "Page number for pagination"
+                        - in: query
+                          name: per_page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 10
+                              maximum: 50
+                          description: "Items per page"
+                    responses:
+                        "200":
+                            description: "Products retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            data:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/ProductResponse"
+                                            total:
+                                                type: integer
+                                                description: "Total number of products"
+                                            page:
+                                                type: integer
+                                                description: "Current page number"
+                        "404":
+                            description: "Company not found"
+
+            /api/products/{product_id}/rental:
+                post:
+                    tags:
+                        - Product
+                    summary: "Add rental features to a product"
+                    description: "Adds rental-specific features to an existing product"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product"
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/AddRentalFeaturesDto"
+                    responses:
+                        "204":
+                            description: "Rental features added successfully"
+                        "400":
+                            description: "Validation error or product is already for sale"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Product not found"
+
+            /api/products/{product_id}/sale:
+                post:
+                    tags:
+                        - Product
+                    summary: "Add sale features to a product"
+                    description: "Adds sale-specific features to an existing product"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product"
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: "#/components/schemas/AddSaleFeaturesDto"
+                    responses:
+                        "204":
+                            description: "Sale features added successfully"
+                        "400":
+                            description: "Validation error or product is already for rent"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Product not found"
+
+            /api/products/{product_id}/publish:
+                patch:
+                    tags:
+                        - Product
+                    summary: "Publish a product"
+                    description: "Changes a product's publication status to published"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product"
+                    responses:
+                        "204":
+                            description: "Product published successfully"
+                        "400":
+                            description: "Product must have either rental or sale features to be published"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Product not found"
+
+            /api/products/{product_id}/unpublish:
+                patch:
+                    tags:
+                        - Product
+                    summary: "Unpublish a product"
+                    description: "Changes a product's publication status to draft"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product"
+                    responses:
+                        "204":
+                            description: "Product unpublished successfully"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Product not found"
+
+            /api/products/{product_id}/archive:
+                patch:
+                    tags:
+                        - Product
+                    summary: "Archive a product"
+                    description: "Changes a product's publication status to archived"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: product_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the product"
+                    responses:
+                        "204":
+                            description: "Product archived successfully"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Product not found"
+
+
         components:
             schemas:
                 RegisterUserDTO:
@@ -1185,9 +1478,310 @@ nelmio_api_doc:
                             $ref: "#/components/schemas/UuidArray"
                         featured_category_ids:
                             $ref: "#/components/schemas/UuidArray"
-
                 UuidArray:
                     type: array
                     items:
                         type: string
                         format: uuid
+                Money:
+                    type: object
+                    properties:
+                        amount:
+                            type: number
+                            format: float
+                            example: 29.99
+                        currency:
+                            type: string
+                            example: "EUR"
+                            description: "3-letter ISO currency code"
+
+                PublicationStatus:
+                    type: object
+                    properties:
+                        status:
+                            type: string
+                            enum: [ draft, published, archived ]
+                            example: "published"
+                        published_at:
+                            type: string
+                            format: date-time
+                            nullable: true
+                            example: "2025-01-15T14:30:00Z"
+
+                CreateProductDto:
+                    type: object
+                    required:
+                        - product_id
+                        - name
+                        - internal_id
+                        - company_id
+                    properties:
+                        product_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Sierra de Mesa con Soporte"
+                        internal_id:
+                            type: string
+                            example: "PRD002"
+                        description:
+                            type: string
+                            example: "Sierra de mesa portátil con soporte plegable. Ideal para obras y proyectos DIY."
+                        company_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        category_id:
+                            type: string
+                            format: uuid
+                            nullable: true
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        image_ids:
+                            type: array
+                            items:
+                                type: string
+                                format: uuid
+                            example: [ "550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001" ]
+
+                UpdateProductDto:
+                    type: object
+                    required:
+                        - name
+                        - slug
+                        - internal_id
+                    properties:
+                        name:
+                            type: string
+                            example: "Sierra de Mesa con Soporte PRO"
+                        slug:
+                            type: string
+                            example: "sierra-de-mesa-con-soporte"
+                        internal_id:
+                            type: string
+                            example: "PRD002"
+                        description:
+                            type: string
+                            example: "Sierra de mesa portátil con soporte plegable. Ideal para obras y proyectos DIY."
+                        category_id:
+                            type: string
+                            format: uuid
+                            nullable: true
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        image_ids:
+                            type: array
+                            items:
+                                type: string
+                                format: uuid
+                            example: [ "550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001" ]
+
+                AddRentalFeaturesDto:
+                    type: object
+                    required:
+                        - daily_price_amount
+                        - daily_price_currency
+                    properties:
+                        daily_price_amount:
+                            type: number
+                            format: float
+                            example: 35.00
+                        daily_price_currency:
+                            type: string
+                            example: "EUR"
+                        hourly_price_amount:
+                            type: number
+                            format: float
+                            nullable: true
+                            example: 8.50
+                        hourly_price_currency:
+                            type: string
+                            nullable: true
+                            example: "EUR"
+                        weekly_price_amount:
+                            type: number
+                            format: float
+                            nullable: true
+                            example: 160.00
+                        weekly_price_currency:
+                            type: string
+                            nullable: true
+                            example: "EUR"
+                        monthly_price_amount:
+                            type: number
+                            format: float
+                            nullable: true
+                            example: 450.00
+                        monthly_price_currency:
+                            type: string
+                            nullable: true
+                            example: "EUR"
+                        deposit_amount:
+                            type: number
+                            format: float
+                            nullable: true
+                            example: 100.00
+                        deposit_currency:
+                            type: string
+                            nullable: true
+                            example: "EUR"
+                        always_available:
+                            type: boolean
+                            default: false
+                            example: false
+                        availability_periods:
+                            type: array
+                            items:
+                                type: object
+                                properties:
+                                    start_date:
+                                        type: string
+                                        format: date
+                                        example: "2025-04-07"
+                                    end_date:
+                                        type: string
+                                        format: date
+                                        example: "2025-04-27"
+                            example: [
+                                { "start_date": "2025-04-07", "end_date": "2025-04-27" },
+                                { "start_date": "2025-05-07", "end_date": "2025-05-27" }
+                            ]
+                        includes_weekends:
+                            type: boolean
+                            default: true
+                            example: true
+
+                AddSaleFeaturesDto:
+                    type: object
+                    required:
+                        - price_amount
+                        - price_currency
+                    properties:
+                        price_amount:
+                            type: number
+                            format: float
+                            example: 499.99
+                        price_currency:
+                            type: string
+                            example: "EUR"
+                        condition:
+                            type: string
+                            enum: [ new, like_new, good, fair, poor ]
+                            example: "good"
+                        year_of_purchase:
+                            type: integer
+                            nullable: true
+                            example: 2023
+                        negotiable:
+                            type: boolean
+                            default: false
+                            example: true
+                        additional_information:
+                            type: string
+                            nullable: true
+                            example: "Incluye cuchillas de repuesto y manual de usuario original"
+
+                ProductResponse:
+                    type: object
+                    properties:
+                        id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Sierra de Mesa con Soporte"
+                        slug:
+                            type: string
+                            example: "sierra-de-mesa-con-soporte"
+                        internal_id:
+                            type: string
+                            example: "PRD002"
+                        description:
+                            type: string
+                            example: "Sierra de mesa portátil con soporte plegable. Ideal para obras y proyectos DIY."
+                        company_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        category_id:
+                            type: string
+                            format: uuid
+                            nullable: true
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        image_ids:
+                            type: array
+                            items:
+                                type: string
+                                format: uuid
+                            example: [ "550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001" ]
+                        publication_status:
+                            $ref: "#/components/schemas/PublicationStatus"
+                        for_rent:
+                            type: boolean
+                            example: true
+                        for_sale:
+                            type: boolean
+                            example: false
+                        rental_features:
+                            type: object
+                            nullable: true
+                            properties:
+                                id:
+                                    type: string
+                                    format: uuid
+                                    example: "550e8400-e29b-41d4-a716-446655440002"
+                                daily_price:
+                                    $ref: "#/components/schemas/Money"
+                                hourly_price:
+                                    $ref: "#/components/schemas/Money"
+                                weekly_price:
+                                    $ref: "#/components/schemas/Money"
+                                monthly_price:
+                                    $ref: "#/components/schemas/Money"
+                                deposit:
+                                    $ref: "#/components/schemas/Money"
+                                always_available:
+                                    type: boolean
+                                    example: false
+                                availability_periods:
+                                    type: array
+                                    items:
+                                        type: object
+                                        properties:
+                                            start_date:
+                                                type: string
+                                                format: date
+                                                example: "2025-04-07"
+                                            end_date:
+                                                type: string
+                                                format: date
+                                                example: "2025-04-27"
+                                includes_weekends:
+                                    type: boolean
+                                    example: true
+                        sale_features:
+                            type: object
+                            nullable: true
+                            properties:
+                                id:
+                                    type: string
+                                    format: uuid
+                                    example: "550e8400-e29b-41d4-a716-446655440003"
+                                price:
+                                    $ref: "#/components/schemas/Money"
+                                condition:
+                                    type: string
+                                    enum: [ new, like_new, good, fair, poor ]
+                                    example: "good"
+                                year_of_purchase:
+                                    type: integer
+                                    nullable: true
+                                    example: 2023
+                                negotiable:
+                                    type: boolean
+                                    example: true
+                                additional_information:
+                                    type: string
+                                    nullable: true
+                                    example: "Incluye cuchillas de repuesto y manual de usuario original"
