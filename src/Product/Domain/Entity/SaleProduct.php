@@ -7,15 +7,15 @@ namespace App\Product\Domain\Entity;
 use App\Product\Domain\ValueObject\Money;
 use App\Shared\Domain\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: "sale_products")]
 class SaleProduct extends Entity
 {
-    #[ORM\OneToOne(inversedBy: "saleProduct")]
-    #[ORM\JoinColumn(name: "product_id", referencedColumnName: "id", nullable: false)]
-    private Product $product;
+    #[ORM\Column(type: UuidType::NAME)]
+    private Uuid $productId;
 
     #[ORM\Embedded(class: Money::class, columnPrefix: false)]
     private Money $price;
@@ -33,7 +33,7 @@ class SaleProduct extends Entity
     private ?string $additionalInformation;
 
     public function __construct(
-        Product $product,
+        Uuid $productId,
         Money $price,
         ?string $condition = null,
         ?int $yearOfPurchase = null,
@@ -42,19 +42,17 @@ class SaleProduct extends Entity
     ) {
         parent::__construct(Uuid::v4());
 
-        $this->product = $product;
+        $this->productId = $productId;
         $this->price = $price;
         $this->condition = $condition;
         $this->yearOfPurchase = $yearOfPurchase;
         $this->negotiable = $negotiable;
         $this->additionalInformation = $additionalInformation;
-
-        $product->addSaleProduct($this);
     }
 
-    public function getProduct(): Product
+    public function getProductId(): Uuid
     {
-        return $this->product;
+        return $this->productId;
     }
 
     public function getPrice(): Money

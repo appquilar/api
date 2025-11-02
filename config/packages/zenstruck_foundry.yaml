@@ -4,6 +4,10 @@ when@dev: &dev
         orm:
             reset:
                 mode: migrate
+                migrations:
+                    configurations:
+                    - '%kernel.project_dir%/config/migrations/test-migrations.php'
+
         make_factory:
             default_namespace: Tests\Factories
 

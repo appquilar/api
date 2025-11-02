@@ -7,15 +7,15 @@ namespace App\Product\Domain\Entity;
 use App\Product\Domain\ValueObject\Money;
 use App\Shared\Domain\Entity\Entity;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: "rental_products")]
 class RentalProduct extends Entity
 {
-    #[ORM\OneToOne(inversedBy: "rentalProduct")]
-    #[ORM\JoinColumn(name: "product_id", referencedColumnName: "id", nullable: false)]
-    private Product $product;
+    #[ORM\Column(type: UuidType::NAME)]
+    private Uuid $productId;
 
     #[ORM\Embedded(class: Money::class, columnPrefix: 'daily_')]
     private ?Money $dailyPrice = null;
@@ -32,44 +32,27 @@ class RentalProduct extends Entity
     #[ORM\Embedded(class: Money::class, columnPrefix: 'deposit_')]
     private ?Money $deposit = null;
 
-    #[ORM\Column(type: "boolean")]
-    private bool $alwaysAvailable = false;
-
-    #[ORM\Column(type: "json")]
-    private array $availabilityPeriods = [];
-
-    #[ORM\Column(type: "boolean")]
-    private bool $includesWeekends = false;
-
     public function __construct(
-        Product $product,
+        Uuid $productId,
         ?Money $dailyPrice,
         ?Money $hourlyPrice = null,
         ?Money $weeklyPrice = null,
         ?Money $monthlyPrice = null,
-        ?Money $deposit = null,
-        bool $alwaysAvailable = false,
-        array $availabilityPeriods = [],
-        bool $includesWeekends = true
+        ?Money $deposit = null
     ) {
         parent::__construct(Uuid::v4());
 
-        $this->product = $product;
+        $this->productId = $productId;
         $this->dailyPrice = $dailyPrice;
         $this->hourlyPrice = $hourlyPrice;
         $this->weeklyPrice = $weeklyPrice;
         $this->monthlyPrice = $monthlyPrice;
         $this->deposit = $deposit;
-        $this->alwaysAvailable = $alwaysAvailable;
-        $this->availabilityPeriods = $availabilityPeriods;
-        $this->includesWeekends = $includesWeekends;
-
-        $product->addRentalProduct($this);
     }
 
-    public function getProduct(): Product
+    public function getProductId(): Uuid
     {
-        return $this->product;
+        return $this->productId;
     }
 
     public function getDailyPrice(): ?Money
@@ -97,38 +80,17 @@ class RentalProduct extends Entity
         return $this->deposit;
     }
 
-    public function isAlwaysAvailable(): bool
-    {
-        return $this->alwaysAvailable;
-    }
-
-    public function getAvailabilityPeriods(): array
-    {
-        return $this->availabilityPeriods;
-    }
-
-    public function includesWeekends(): bool
-    {
-        return $this->includesWeekends;
-    }
-
     public function update(
         ?Money $dailyPrice = null,
         ?Money $hourlyPrice = null,
         ?Money $weeklyPrice = null,
         ?Money $monthlyPrice = null,
-        ?Money $deposit = null,
-        bool $alwaysAvailable = false,
-        array $availabilityPeriods = [],
-        bool $includesWeekends = true
+        ?Money $deposit = null
     ): void {
         $this->dailyPrice = $dailyPrice;
         $this->hourlyPrice = $hourlyPrice;
         $this->weeklyPrice = $weeklyPrice;
         $this->monthlyPrice = $monthlyPrice;
         $this->deposit = $deposit;
-        $this->alwaysAvailable = $alwaysAvailable;
-        $this->availabilityPeriods = $availabilityPeriods;
-        $this->includesWeekends = $includesWeekends;
     }
 }

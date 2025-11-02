@@ -31,7 +31,7 @@ class CreateSiteDto implements RequestDtoInterface
         public ?string $title = null,
 
         #[Assert\NotBlank(message: "site.create.url.not_blank")]
-        #[Assert\Url(message: "site.create.url.url")]
+        #[Assert\Url(message: "site.create.url.url", requireTld: false)]
         public ?string $url = null,
 
         #[Assert\NotBlank(message: "site.create.description.not_blank")]

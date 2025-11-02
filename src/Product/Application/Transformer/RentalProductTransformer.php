@@ -33,10 +33,7 @@ class RentalProductTransformer implements Transformer
             'deposit' => $entity->getDeposit() ? [
                 'amount' => $entity->getDeposit()->getAmount(),
                 'currency' => $entity->getDeposit()->getCurrency(),
-            ] : null,
-            'always_available' => $entity->isAlwaysAvailable(),
-            'availability_periods' => $entity->getAvailabilityPeriods(),
-            'includes_weekends' => $entity->includesWeekends(),
+            ] : null
         ];
     }
 }

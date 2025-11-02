@@ -42,10 +42,7 @@ class AddRentalFeaturesCommandHandler extends ProductCommandHandler
                 $command->getHourlyPrice(),
                 $command->getWeeklyPrice(),
                 $command->getMonthlyPrice(),
-                $command->getDeposit(),
-                $command->isAlwaysAvailable(),
-                $command->getAvailabilityPeriods(),
-                $command->includesWeekends()
+                $command->getDeposit()
             );
 
             $this->rentalProductRepository->save($existingRentalProduct);
@@ -58,10 +55,7 @@ class AddRentalFeaturesCommandHandler extends ProductCommandHandler
             $command->getHourlyPrice(),
             $command->getWeeklyPrice(),
             $command->getMonthlyPrice(),
-            $command->getDeposit(),
-            $command->isAlwaysAvailable(),
-            $command->getAvailabilityPeriods(),
-            $command->includesWeekends()
+            $command->getDeposit()
         );
 
         $this->rentalProductRepository->save($rentalProduct);

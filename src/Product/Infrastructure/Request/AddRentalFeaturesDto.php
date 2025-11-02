@@ -74,13 +74,7 @@ class AddRentalFeaturesDto implements RequestDtoInterface
         ])]
         public ?float $depositAmount = null,
 
-        public ?string $depositCurrency = 'EUR',
-
-        public bool $alwaysAvailable = false,
-
-        public array $availabilityPeriods = [],
-
-        public bool $includesWeekends = true
+        public ?string $depositCurrency = 'EUR'
     ) {
     }
 

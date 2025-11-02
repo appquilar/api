@@ -18,22 +18,21 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
-
     use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext,SiteContext;
+
+    private const REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];
 
     protected KernelBrowser $client;
     protected array $customHeaders = [];
-    private const REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];
-
     protected string $testRootPath;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        if (!static::$booted) {
-            $this->client = static::createClient();
-        }
+        static::ensureKernelShutdown();
+        $this->client = static::createClient();
+
         $this->testRootPath = self::$kernel->getContainer()->getParameter('kernel.project_dir') . '/tests';
         $this->testStoragePath = self::$kernel->getContainer()->getParameter('kernel.project_dir') . '/var/uploads/test';
 

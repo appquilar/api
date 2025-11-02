@@ -1625,31 +1625,6 @@ nelmio_api_doc:
                             type: string
                             nullable: true
                             example: "EUR"
-                        always_available:
-                            type: boolean
-                            default: false
-                            example: false
-                        availability_periods:
-                            type: array
-                            items:
-                                type: object
-                                properties:
-                                    start_date:
-                                        type: string
-                                        format: date
-                                        example: "2025-04-07"
-                                    end_date:
-                                        type: string
-                                        format: date
-                                        example: "2025-04-27"
-                            example: [
-                                { "start_date": "2025-04-07", "end_date": "2025-04-27" },
-                                { "start_date": "2025-05-07", "end_date": "2025-05-27" }
-                            ]
-                        includes_weekends:
-                            type: boolean
-                            default: true
-                            example: true
 
                 AddSaleFeaturesDto:
                     type: object
@@ -1741,25 +1716,6 @@ nelmio_api_doc:
                                     $ref: "#/components/schemas/Money"
                                 deposit:
                                     $ref: "#/components/schemas/Money"
-                                always_available:
-                                    type: boolean
-                                    example: false
-                                availability_periods:
-                                    type: array
-                                    items:
-                                        type: object
-                                        properties:
-                                            start_date:
-                                                type: string
-                                                format: date
-                                                example: "2025-04-07"
-                                            end_date:
-                                                type: string
-                                                format: date
-                                                example: "2025-04-27"
-                                includes_weekends:
-                                    type: boolean
-                                    example: true
                         sale_features:
                             type: object
                             nullable: true

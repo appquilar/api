@@ -236,32 +236,4 @@ class Product extends Entity
     {
         $this->publicationStatus = $this->publicationStatus->archive();
     }
-
-    public function addRentalProduct(RentalProduct $rentalProduct): void
-    {
-        if ($this->isForSale()) {
-            throw new \InvalidArgumentException('Product is already for sale and cannot be rented');
-        }
-
-        $this->rentalProduct = $rentalProduct;
-    }
-
-    public function addSaleProduct(SaleProduct $saleProduct): void
-    {
-        if ($this->isForRent()) {
-            throw new \InvalidArgumentException('Product is already for rent and cannot be sold');
-        }
-
-        $this->saleProduct = $saleProduct;
-    }
-
-    public function removeRentalProduct(): void
-    {
-        $this->rentalProduct = null;
-    }
-
-    public function removeSaleProduct(): void
-    {
-        $this->saleProduct = null;
-    }
 }

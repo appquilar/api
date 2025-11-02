@@ -8,7 +8,6 @@ use App\Product\Application\Command\AddRentalFeatures\AddRentalFeaturesCommand;
 use App\Product\Application\Command\RemoveSaleFeatures\RemoveSaleFeaturesCommand;
 use App\Product\Infrastructure\Request\AddRentalFeaturesDto;
 use App\Shared\Application\Command\CommandBus;
-use App\Shared\Infrastructure\Security\RoutePermission;
 use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
@@ -24,7 +23,6 @@ class AddRentalFeaturesController
 
     public function __invoke(AddRentalFeaturesDto $request): JsonResponse
     {
-        // First, remove any sale features if they exist
         $this->commandBus->dispatch(
             new RemoveSaleFeaturesCommand($request->productId)
         );
@@ -37,10 +35,7 @@ class AddRentalFeaturesController
                 $request->getHourlyPrice(),
                 $request->getWeeklyPrice(),
                 $request->getMonthlyPrice(),
-                $request->getDeposit(),
-                $request->alwaysAvailable,
-                $request->availabilityPeriods,
-                $request->includesWeekends
+                $request->getDeposit()
             )
         );
 
