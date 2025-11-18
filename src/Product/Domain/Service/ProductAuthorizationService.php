@@ -7,7 +7,10 @@ namespace App\Product\Domain\Service;
 use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Domain\Entity\Product;
 use App\Shared\Application\Context\UserGranted;
+use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Shared\Infrastructure\Security\UserRole;
+use App\User\Domain\Entity\User;
+use Symfony\Component\Uid\Uuid;
 
 class ProductAuthorizationService implements ProductAuthorizationServiceInterface
 {
@@ -17,48 +20,72 @@ class ProductAuthorizationService implements ProductAuthorizationServiceInterfac
     ) {
     }
 
-    /**
-     * Check if a user has permission to view a product
-     */
-    public function canView(Product $product): bool
+    public function canView(Product $product, string $errorMessage): void
     {
-        // Published products can be viewed by anyone
-        if ($product->isPublished()) {
-            return true;
+        if (!$this->hasPermissions($product)) {
+            throw new UnauthorizedException($errorMessage);
         }
+    }
 
-        return $this->hasPermissions($product);
+    public function canViewIfPublic(Product $product, string $errorMessage): void
+    {
+        if (!$product->isPublished()) {
+            throw new UnauthorizedException($errorMessage);
+        }
+    }
+
+    public function canEdit(Product $product, string $errorMessage): void
+    {
+        if (!$this->hasPermissions($product)) {
+            throw new UnauthorizedException($errorMessage);
+        }
     }
 
     /**
-     * Check if a user has permission to edit a product
+     * @throws UnauthorizedException
      */
-    public function canEdit(Product $product): bool
+    public function assignOwnership(Product $product, ?Uuid $companyId = null): void
     {
-        return $this->hasPermissions($product);
+        $user = $this->getUserGranted();
+
+        if ($companyId !== null && $this->companyUserService->userBelongsToCompany($user->getId(), $companyId)) {
+            $product->setCompanyId($companyId);
+            return;
+        }
+
+        if ($companyId !== null) {
+            throw new UnauthorizedException();
+        }
+
+        $product->setUserId($user->getId());
+    }
+
+    /**
+     * @throws UnauthorizedException
+     */
+    private function getUserGranted(): User
+    {
+        $user = $this->userGranted->getUser();
+
+        if ($user === null) {
+            throw new UnauthorizedException('You must be logged in to create a product');
+        }
+
+        return $user;
     }
 
     private function hasPermissions(Product $product): bool
     {
-        // If the user is not authenticated, return false
         if ($this->userGranted->getUser() === null) {
             return false;
         }
 
         $userId = $this->userGranted->getUser()->getId();
-        $userRoles = $this->userGranted->getUser()->getRoles();
 
-        // Admin users have permissions over all products
-        if (in_array(UserRole::ADMIN->value, $userRoles)) {
-            return true;
-        }
-
-        // User have permissions their own products
         if ($product->belongsToUser() && $product->getUserId()->equals($userId)) {
             return true;
         }
 
-        // Check if user belongs to the company that owns the product
         return
             $product->belongsToCompany() &&
             $this->companyUserService->userBelongsToCompany($userId, $product->getCompanyId());

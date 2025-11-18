@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Application\Service;
 
+use App\Product\Application\Repository\ProductRepositoryInterface;
 use App\Shared\Application\Repository\RepositoryInterface;
 use Symfony\Component\Uid\Uuid;
 

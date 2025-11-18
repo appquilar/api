@@ -15,6 +15,15 @@ use Symfony\Component\Uid\Uuid;
 interface ProductRepositoryInterface extends RepositoryInterface
 {
     public function findBySlug(string $slug): ?Product;
-    public function findByCompanyId(Uuid $companyId, int $page = 1, int $limit = 10): array;
+    public function paginateByCompanyId(Uuid $companyId, int $page = 1, int $limit = 10): array;
     public function countByCompanyId(Uuid $companyId): int;
+
+    /**
+     * @return Product[]
+     */
+    public function getProductsByUserId(Uuid $userId): array;
+    public function paginateByUserId(Uuid $userId, int $page = 1, int $limit = 10): array;
+    public function countByUserId(Uuid $userId): int;
+    public function paginateByCategoryId(array $categoriesId, int $page = 1, int $limit = 10): array;
+    public function countByCategoryId(array $categoriesId): int;
 }

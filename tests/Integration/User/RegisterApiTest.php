@@ -20,7 +20,7 @@ class RegisterApiTest extends IntegrationTestCase
         $this->assertEquals(Response::HTTP_CREATED, $response->getStatusCode());
     }
 
-    public function testRegisterUserValidationFails(): void
+    public function test_register_user_id_validation_fails(): void
     {
         $response = $this->request('POST', '/api/auth/register', [
             'user_id' => 'invalid-uuid',

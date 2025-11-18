@@ -12,7 +12,7 @@ use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/products/{product_id}', name: 'product_update', methods: ['PATCH'])]
+#[Route('/api/products/{product_id}', name: RoutePermission::PRODUCT_UPDATE->name, methods: ['PATCH'])]
 class UpdateProductController
 {
     public function __construct(
@@ -27,11 +27,13 @@ class UpdateProductController
             new UpdateProductCommand(
                 $request->productId,
                 $request->name,
-                $request->slug,
                 $request->internalId,
                 $request->description,
+                $request->deposit,
+                $request->tiers,
+                $request->quantity,
                 $request->categoryId,
-                $request->imageIds
+                $request->imageIds,
             )
         );
 

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace App\Category\Application\Command\CreateCategory;
 
 use App\Category\Application\Repository\CategoryRepositoryInterface;
+use App\Category\Application\Service\GenerateSlugForCategoryService;
 use App\Category\Domain\Entity\Category;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
-use App\Shared\Application\Service\SlugifyServiceInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: CreateCategoryCommand::class)]
@@ -16,14 +16,15 @@ class CreateCategoryCommandHandler implements CommandHandler
 {
     public function __construct(
         private CategoryRepositoryInterface $categoryRepository,
-        private SlugifyServiceInterface $slugifyService
+        private GenerateSlugForCategoryService $generateSlugForCategoryService,
     ) {
     }
 
     public function __invoke(CreateCategoryCommand|Command $command): void
     {
-        $slug = $this->slugifyService->generate($command->getName());
-        $this->slugifyService->validateSlugIsUnique($slug, $this->categoryRepository);
+        $slug = $this->generateSlugForCategoryService->getCategorySlug(
+            $command->getName(),
+        );
 
         $category = new Category(
             $command->getCategoryId(),

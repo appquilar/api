@@ -13,6 +13,7 @@ use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Exception\NotNormalizableValueException;
 use Symfony\Component\Serializer\NameConverter\CamelCaseToSnakeCaseNameConverter;
+use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\BackedEnumNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -63,7 +64,9 @@ class RequestDtoListener
             }
         }
 
-        if (!$dtoClass) return;
+        if (!$dtoClass) {
+            return;
+        }
 
         // Merge all request sources
         $requestData = array_merge(
@@ -78,7 +81,10 @@ class RequestDtoListener
             $dto = $this->denormalizer->denormalize(
                 $requestData,
                 $dtoClass,
-                'array'
+                null,
+                [
+                    AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                ],
             );
             if ($request->files->all() !== null) {
                 if (
@@ -89,6 +95,8 @@ class RequestDtoListener
                 }
             }
         } catch (NotNormalizableValueException $e) {
+        } catch (\Throwable $e) {
+            $aux = 1;
         }
 
         // Validate DTO

@@ -1,43 +1,50 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace App\Product\Application\Command\UpdateProduct;
 
+use App\Product\Application\Assembler\TierAssembler;
 use App\Product\Application\Command\ProductCommand;
 use App\Product\Application\Command\ProductCommandHandler;
 use App\Product\Application\Repository\ProductRepositoryInterface;
 use App\Product\Application\Service\ProductAuthorizationServiceInterface;
+use App\Product\Application\Service\SlugForProductsManager;
 use App\Product\Domain\Entity\Product;
-use App\Shared\Application\Service\SlugifyServiceInterface;
+use App\Product\Domain\Exception\InvalidPriceConstructionException;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: UpdateProductCommand::class)]
 class UpdateProductCommandHandler extends ProductCommandHandler
 {
     public function __construct(
-        protected ProductRepositoryInterface $productRepository,
-        private ProductAuthorizationServiceInterface $productAuthorizationService,
-        private SlugifyServiceInterface $slugifyService
+         ProductRepositoryInterface           $productRepository,
+         ProductAuthorizationServiceInterface $productAuthorizationService,
+         private SlugForProductsManager       $slugForProductsManager,
+         private TierAssembler                $tierAssembler,
     ) {
         parent::__construct(
-            $this->productRepository,
-            $this->productAuthorizationService,
+            $productRepository,
+            $productAuthorizationService,
         );
     }
 
+    /**
+     * @throws InvalidPriceConstructionException
+     */
     public function handle(UpdateProductCommand|ProductCommand $command, Product $product): void
     {
-        $slug = $this->slugifyService->generate($command->getSlug());
-        $this->slugifyService->validateSlugIsUnique($slug, $this->productRepository, $product->getId());
-
         $product->update(
             $command->getName(),
-            $slug,
+            $this->slugForProductsManager->generateSlugForProduct(
+                $command->getName(),
+                $product->getShortId()
+            ),
             $command->getInternalId(),
             $command->getDescription(),
             $command->getCategoryId(),
-            $command->getImageIds()
+            $command->getImageIds(),
+            $command->getDeposit()->toMoney(),
+            $this->tierAssembler->createTierCollectionFromArrayOfTierInputs($command->getTiers()),
+            $command->getQuantity()
         );
 
         $this->productRepository->save($product);

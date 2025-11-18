@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Company\Application\Command\UpdateCompany;
 
 use App\Shared\Application\Command\Command;
+use App\Shared\Domain\ValueObject\Address;
+use App\Shared\Domain\ValueObject\GeoLocation;
 use App\Shared\Domain\ValueObject\PhoneNumber;
 use Symfony\Component\Uid\Uuid;
 
@@ -16,11 +18,10 @@ class UpdateCompanyCommand implements Command
         private string $slug,
         private ?string $description = null,
         private ?string $fiscalIdentifier = null,
-        private ?string $address = null,
-        private ?string $postalCode = null,
-        private ?string $city = null,
         private ?string $contactEmail = null,
-        private ?PhoneNumber $phoneNumber = null
+        private ?PhoneNumber $phoneNumber = null,
+        private ?Address $address = null,
+        private ?GeoLocation $geoLocation = null,
     ) {
     }
 
@@ -49,21 +50,6 @@ class UpdateCompanyCommand implements Command
         return $this->fiscalIdentifier;
     }
 
-    public function getAddress(): ?string
-    {
-        return $this->address;
-    }
-
-    public function getPostalCode(): ?string
-    {
-        return $this->postalCode;
-    }
-
-    public function getCity(): ?string
-    {
-        return $this->city;
-    }
-
     public function getContactEmail(): ?string
     {
         return $this->contactEmail;
@@ -72,5 +58,15 @@ class UpdateCompanyCommand implements Command
     public function getPhoneNumber(): ?PhoneNumber
     {
         return $this->phoneNumber;
+    }
+
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function getGeoLocation(): ?GeoLocation
+    {
+        return $this->geoLocation;
     }
 }

@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace App\Tests\Unit\Category\Application\Command\UpdateCategory;
 
-use App\Category\Application\Command\CreateCategory\CreateCategoryCommand;
 use App\Category\Application\Command\UpdateCategory\UpdateCategoryCommand;
 use App\Category\Application\Command\UpdateCategory\UpdateCategoryCommandHandler;
+use App\Category\Application\Guard\CategoryParentGuardInterface;
 use App\Category\Application\Repository\CategoryRepositoryInterface;
-use App\Shared\Application\Exception\BadRequest\BadRequestException;
+use App\Category\Application\Service\GenerateSlugForCategoryService;
+use App\Category\Domain\Entity\Category;
 use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
-use App\Shared\Application\Service\SlugifyServiceInterface;
 use App\Tests\Factories\Category\Domain\Entity\CategoryFactory;
 use App\Tests\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -19,7 +19,8 @@ use Symfony\Component\Uid\Uuid;
 class UpdateCategoryCommandHandlerTest extends UnitTestCase
 {
     private CategoryRepositoryInterface|MockObject $categoryRepositoryMock;
-    private SlugifyServiceInterface|MockObject $slugifyServiceMock;
+    private GenerateSlugForCategoryService|MockObject $generateSlugForCategoryService;
+    private CategoryParentGuardInterface|MockObject $categoryParentGuard;
     private UpdateCategoryCommandHandler $handler;
 
     protected function setUp(): void
@@ -27,10 +28,13 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
         parent::setUp();
 
         $this->categoryRepositoryMock = $this->createMock(CategoryRepositoryInterface::class);
-        $this->slugifyServiceMock = $this->createMock(SlugifyServiceInterface::class);
+        $this->generateSlugForCategoryService = $this->createMock(GenerateSlugForCategoryService::class);
+        $this->categoryParentGuard = $this->createMock(CategoryParentGuardInterface::class);
+
         $this->handler = new UpdateCategoryCommandHandler(
             $this->categoryRepositoryMock,
-            $this->slugifyServiceMock
+            $this->generateSlugForCategoryService,
+            $this->categoryParentGuard
         );
     }
 
@@ -38,31 +42,28 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
     {
         $categoryId = Uuid::v4();
         $category = CategoryFactory::createOne(['categoryId' => $categoryId]);
-        $slug = 'new-slug';
+        $name = 'new name';
+        $slug = 'new-name';
+        $parentId = Uuid::v4();
         $command = new UpdateCategoryCommand(
             $categoryId,
-            'new name',
-            $slug,
+            $name,
             'new-description',
-            Uuid::v4(),
+            $parentId,
             Uuid::v4(),
             Uuid::v4(),
             Uuid::v4()
         );
 
-        $this->slugifyServiceMock->expects($this->once())
-            ->method('generate')
-            ->with($slug)
+        $this->givenItExistsACategory($categoryId, $category);
+
+        $this->generateSlugForCategoryService
+            ->expects($this->once())
+            ->method('getCategorySlug')
+            ->with($name, $categoryId)
             ->willReturn($slug);
 
-        $this->slugifyServiceMock->expects($this->once())
-            ->method('validateSlugIsUnique')
-            ->with($slug);
-
-        $this->categoryRepositoryMock->expects($this->once())
-            ->method('findById')
-            ->with($categoryId)
-            ->willReturn($category);
+        $this->givenIValidateCircularIssuesWhenUpdatingParentId($categoryId, $parentId);
 
         $this->categoryRepositoryMock->expects($this->once())
             ->method('save')
@@ -71,46 +72,12 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
         $this->handler->__invoke($command);
     }
 
-    public function testSlugIsNotUnique(): void
-    {
-        $categoryId = Uuid::v4();
-        $name = "Test Category";
-        $slug = "test-category";
-
-        $command = new UpdateCategoryCommand(
-            $categoryId,
-            'new name',
-            $slug,
-            'new-description',
-            Uuid::v4(),
-            Uuid::v4(),
-            Uuid::v4(),
-            Uuid::v4()
-        );
-
-        $this->slugifyServiceMock
-            ->expects($this->once())
-            ->method('generate')
-            ->with($slug)
-            ->willReturn($slug);
-
-        $this->slugifyServiceMock
-            ->expects($this->once())
-            ->method('validateSlugIsUnique')
-            ->willThrowException(new BadRequestException());
-
-        $this->expectException(BadRequestException::class);
-        $this->handler->__invoke($command);
-    }
-
     public function testCategoryNotFound(): void
     {
         $categoryId = Uuid::v4();
-        $slug = 'new-slug';
         $command = new UpdateCategoryCommand(
             $categoryId,
             'new name',
-            $slug,
             'new-description',
             Uuid::v4(),
             Uuid::v4(),
@@ -118,21 +85,26 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
             Uuid::v4()
         );
 
-        $this->slugifyServiceMock->expects($this->once())
-            ->method('generate')
-            ->with($slug)
-            ->willReturn($slug);
-
-        $this->slugifyServiceMock->expects($this->once())
-            ->method('validateSlugIsUnique')
-            ->with($slug);
-
-        $this->categoryRepositoryMock->expects($this->once())
-            ->method('findById')
-            ->with($categoryId)
-            ->willReturn(null);
+        $this->givenItExistsACategory($categoryId, null);
 
         $this->expectException(EntityNotFoundException::class);
         $this->handler->__invoke($command);
+    }
+
+    private function givenItExistsACategory(Uuid $categoryId, ?Category $category): void
+    {
+        $this->categoryRepositoryMock->expects($this->once())
+            ->method('findById')
+            ->with($categoryId)
+            ->willReturn($category);
+    }
+
+    private function givenIValidateCircularIssuesWhenUpdatingParentId(
+        Uuid $categoryId, ?Uuid $categoryParentId
+    ): void
+    {
+        $this->categoryParentGuard->expects($this->once())
+            ->method('assertCanAssignParent')
+            ->with($categoryId, $categoryParentId);
     }
 }

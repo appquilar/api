@@ -7,11 +7,12 @@ namespace App\Product\Infrastructure\Controller;
 use App\Product\Application\Command\ArchiveProduct\ArchiveProductCommand;
 use App\Product\Infrastructure\Request\ProductByIdDto;
 use App\Shared\Application\Command\CommandBus;
+use App\Shared\Infrastructure\Security\RoutePermission;
 use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/products/{product_id}/archive', name: 'product_archive', methods: ['PATCH'])]
+#[Route('/api/products/{product_id}/archive', name: RoutePermission::PRODUCT_ARCHIVE->name, methods: ['PATCH'])]
 class ArchiveProductController
 {
     public function __construct(

@@ -14,7 +14,6 @@ use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 #[AsEventListener(event: CompanyCreated::class)]
 class OnCompanyCreatedAddOwnerListener
 {
-
     public function __construct(
         private CommandBus $commandBus
     ) {

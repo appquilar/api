@@ -45,6 +45,11 @@ class PublicationStatus
         return new self(self::STATUS_DRAFT);
     }
 
+    public static function published(): self
+    {
+        return new self(self::STATUS_PUBLISHED);
+    }
+
     public function getStatus(): string
     {
         return $this->status;

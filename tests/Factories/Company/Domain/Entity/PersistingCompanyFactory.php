@@ -3,6 +3,8 @@
 namespace App\Tests\Factories\Company\Domain\Entity;
 
 use App\Company\Domain\Entity\Company;
+use App\Shared\Domain\ValueObject\Address;
+use App\Shared\Domain\ValueObject\GeoLocation;
 use App\Shared\Domain\ValueObject\PhoneNumber;
 use Symfony\Component\Uid\Uuid;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
@@ -28,14 +30,23 @@ class PersistingCompanyFactory extends PersistentProxyObjectFactory
             'slug' => self::faker()->slug(2),
             'description' => self::faker()->text(),
             'fiscalIdentifier' => self::faker()->ean13(),
-            'address' => self::faker()->streetAddress(),
-            'postalCode' => self::faker()->postcode(),
-            'city' => self::faker()->city(),
             'contactEmail' => self::faker()->companyEmail(),
             'phoneNumber' => new PhoneNumber(
                 self::faker()->countryCode(),
                 self::faker()->countryISOAlpha3(),
                 self::faker()->phoneNumber()
+            ),
+            'address' => new Address(
+                self::faker()->streetAddress(),
+                self::faker()->buildingNumber(),
+                substr(self::faker()->city(), 0, 50),
+                substr(self::faker()->postcode(), 0, 20),
+                substr(self::faker()->country(), 0, 20),
+                substr(self::faker()->country(), 0, 20)
+            ),
+            'geoLocation' => new GeoLocation(
+                self::faker()->latitude(),
+                self::faker()->longitude()
             )
         ];
     }
@@ -45,6 +56,6 @@ class PersistingCompanyFactory extends PersistentProxyObjectFactory
      */
     protected function initialize(): static
     {
-        return $this;
+        return $this->with($this->defaults());
     }
 }

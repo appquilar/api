@@ -58,6 +58,11 @@ unit-tests:
 	@echo "Running Unit Tests..."
 	docker exec -it $$(docker-compose ps -q php) bin/phpunit --testsuite=Unit --testdox
 
+unit-tests-coverage:
+	@echo "Running Unit Tests with coverage..."
+	XDEBUG_MODE=coverage docker exec -it $$(docker-compose ps -q php) bin/phpunit --coverage-html build/coverage-html --coverage-clover build/logs/clover.xml
+
+
 integration-tests:
 	@echo "Running Integration Tests..."
 	docker exec -it $$(docker-compose ps -q php) bin/phpunit --testsuite=Integration --testdox

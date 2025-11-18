@@ -35,16 +35,6 @@ class LoginQueryHandler implements QueryHandler
             throw new UnauthorizedException('User not found');
         }
 
-        if ($user->getWordPressPassword()) {
-            $this->validateWordpressPassword($query, $user);
-
-            return new LoginQueryResult(
-                $this->authTokenService->encode(
-                    new TokenPayload($user->getId())
-                )
-            );
-        }
-
         if (!$this->passwordHasher->verifyPassword($query->getPassword(), $user->getPassword())) {
             throw new UnauthorizedException('Invalid password');
         }
@@ -54,21 +44,5 @@ class LoginQueryHandler implements QueryHandler
                 new TokenPayload($user->getId())
             )
         );
-    }
-
-    /**
-     * @throws UnauthorizedException
-     */
-    public function validateWordpressPassword(LoginQuery $query, User $user): void
-    {
-        $wpHasher = new PasswordHash(8, true);
-        if ($wpHasher->CheckPassword($query->getPassword(), $user->getWordPressPassword())) {
-            $this->userRepository->updateUserPassword(
-                $user,
-                $this->passwordHasher->hashPassword($query->getPassword())
-            );
-        } else {
-            throw new UnauthorizedException();
-        }
     }
 }

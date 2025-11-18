@@ -10,7 +10,6 @@ use App\Shared\Application\Service\SlugifyServiceInterface;
 use App\Shared\Domain\Entity\Entity;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Uid\Uuid;
-use Symfony\Contracts\Translation\LocaleAwareInterface;
 
 class SymfonySlugifyService implements SlugifyServiceInterface
 {
@@ -27,11 +26,17 @@ class SymfonySlugifyService implements SlugifyServiceInterface
             ->toString();
     }
 
+    /**
+     * @throws BadRequestException
+     */
     public function validateSlugIsUnique(string $slug, RepositoryInterface $repository, ?Uuid $existentId = null): void
     {
-        /** @var Entity $result */
         $result = $repository->findOneBy(['slug' => $slug]);
+        $this->validateIsNotUnique($result, $existentId);
+    }
 
+    protected function validateIsNotUnique(?Entity $result = null, ?Uuid $existentId = null): void
+    {
         if (
             $result !== null &&
             !$result->getId()->equals($existentId)

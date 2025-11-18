@@ -25,9 +25,6 @@ class UpdateCategoryDto implements RequestDtoInterface
         #[Assert\NotBlank(message: "category.update.description.not_blank")]
         public ?string $description = null,
 
-        #[Assert\NotBlank(message: "category.update.slug.not_blank")]
-        public ?string $slug = null,
-
         #[Assert\AtLeastOneOf([
             new Assert\Sequentially([
                 new Assert\NotBlank(message: "category.update.parent_id.not_blank"),

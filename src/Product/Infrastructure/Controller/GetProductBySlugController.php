@@ -12,7 +12,7 @@ use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/products/slug/{slug}', methods: ['GET'])]
+#[Route('/api/products/{slug}', methods: ['GET'])]
 class GetProductBySlugController
 {
     public function __construct(

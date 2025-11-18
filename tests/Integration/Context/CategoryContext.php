@@ -23,4 +23,14 @@ trait CategoryContext
     {
         PersistingCategoryFactory::createOne(['categoryId' => $categoryId, 'slug' => $slug]);
     }
+
+    public function givenItExistsACategoryWithIdAndParentIdAndSlug(Uuid $categoryId, Uuid $parentId, string $slug): void
+    {
+        PersistingCategoryFactory::createOne(['categoryId' => $categoryId, 'parentId' => $parentId, 'slug' => $slug]);
+    }
+
+    public function givenItExistsACategoryWithIdAndParentId(Uuid $categoryId, ?Uuid $parentId = null): void
+    {
+        PersistingCategoryFactory::createOne(['categoryId' => $categoryId, 'parentId' => $parentId]);
+    }
 }

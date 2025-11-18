@@ -13,6 +13,7 @@ enum RoutePermission: string
     case USER_ME = '/api/me';
     case USER_GET_BY_ID = 'users_get_user_by_id';
     case USER_UPDATE_USER = 'users_update_user';
+    case USER_UPDATE_ADDRESS = 'users_update_address';
     case USER_CHANGE_PASSWORD = 'users_change_password';
 
     /** COMPANY */
@@ -37,6 +38,14 @@ enum RoutePermission: string
     case SITE_UPDATE = 'site_update';
     case SITE_LIST_ALL = 'site_list_all';
 
+    /** PRODUCT */
+    case PRODUCT_CREATE = 'product_create';
+    case PRODUCT_UPDATE = 'product_update';
+    case PRODUCT_ARCHIVE = 'product_archive';
+    case PRODUCT_PUBLISH = 'product_publish';
+    case PRODUCT_UNPUBLISH = 'product_unpublish';
+    case PRODUCT_GET_BY_ID = 'product_get_product_by_id';
+
     /**
      * @return UserRole[]
      */
@@ -47,6 +56,7 @@ enum RoutePermission: string
             self::USER_ME,
             self::USER_GET_BY_ID,
             self::USER_UPDATE_USER,
+            self::USER_UPDATE_ADDRESS,
             self::USER_CHANGE_PASSWORD,
             self::COMPANY_CREATE,
             self::COMPANY_UPDATE,
@@ -56,6 +66,12 @@ enum RoutePermission: string
             self::COMPANY_REMOVE_USER,
             self::MEDIA_UPLOAD_IMAGE,
             self::MEDIA_DELETE_IMAGE,
+            self::PRODUCT_CREATE,
+            self::PRODUCT_UPDATE,
+            self::PRODUCT_ARCHIVE,
+            self::PRODUCT_PUBLISH,
+            self::PRODUCT_UNPUBLISH,
+            self::PRODUCT_GET_BY_ID,
                 => [UserRole::REGULAR_USER],
             self::CATEGORY_CREATE,
             self::CATEGORY_UPDATE,

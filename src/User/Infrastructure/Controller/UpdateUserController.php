@@ -12,6 +12,7 @@ use App\Shared\Infrastructure\Service\ResponseService;
 use App\User\Application\Command\UpdateUser\UpdateUserCommand;
 use App\User\Infrastructure\Request\UpdateUserDto;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 #[Route('/api/users/{user_id}', name: RoutePermission::USER_UPDATE_USER->value, methods: ['PATCH'])]
@@ -23,23 +24,20 @@ class UpdateUserController
     ) {
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     public function __invoke(UpdateUserDto $request): JsonResponse
     {
-        try {
-            $this->commandBus->dispatch(
-                new UpdateUserCommand(
-                    $request->userId,
-                    $request->firstName,
-                    $request->lastName,
-                    $request->email,
-                    $request->roles
-                )
-            );
-        } catch (BadRequestException $e) {
-            return $this->jsonResponseService->badRequest($e->getMessage());
-        } catch (UnauthorizedException $e) {
-            return $this->jsonResponseService->unauthorized($e->getMessage());
-        }
+        $this->commandBus->dispatch(
+            new UpdateUserCommand(
+                $request->userId,
+                $request->firstName,
+                $request->lastName,
+                $request->email,
+                $request->roles
+            )
+        );
 
         return $this->jsonResponseService->noContent();
     }

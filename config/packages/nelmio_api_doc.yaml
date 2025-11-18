@@ -240,6 +240,39 @@ nelmio_api_doc:
                         "404":
                             description: "User not found"
 
+            /api/users/{user_id}/address:
+                patch:
+                    summary: "Update user address and geolocation"
+                    description: "Updates the user address and geolocation"
+                    tags:
+                        - "User"
+                    parameters:
+                        - name: "user_id"
+                          in: "path"
+                          required: true
+                          schema:
+                              type: "string"
+                          example: "cdd52b98-9183-41b9-8e27-4d12c5ddcf3c"
+                    security:
+                        - BearerAuth: [ ]
+                    requestBody:
+                        content:
+                            application/json:
+                                schema:
+                                    type: object
+                                    properties:
+                                        address:
+                                            $ref: "#/components/schemas/Address"
+                                        location:
+                                            $ref: "#/components/schemas/Location"
+                    responses:
+                        "204":
+                            description: "User updated successfully"
+                        "401":
+                            description: "Unauthorized"
+                        "404":
+                            description: "Bad request"
+
             /api/users/{user_id}/change-password:
                 patch:
                     summary: "Change the user's password"
@@ -758,6 +791,32 @@ nelmio_api_doc:
                                         $ref: "#/components/schemas/CategoryResponse"
                         400:
                             description: "Validation failed"
+            /api/categories/{category_id}/breadcrumbs:
+                get:
+                    tags:
+                        - Category
+                    summary: "Get the list of breadcrumbs for a category"
+                    description: "Get the list of breadcrumbs for a category"
+                    parameters:
+                        - in: path
+                          name: slug
+                          required: true
+                          schema:
+                              type: string
+                              example: 'tools-and-machinery'
+                    responses:
+                        200:
+                            description: "List of breadcrumbs correctly retrieved"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            data:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/CategoryBreadcrumbsResponse"
+
             /api/sites:
                 post:
                     tags:
@@ -858,6 +917,171 @@ nelmio_api_doc:
                                         $ref: "#/components/schemas/ValidationError"
                         "401":
                             description: "Unauthorized - User not authenticated"
+            /api/products/{slug}:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get product by slug"
+                    description: "Retrieves detailed information for a specific product by its slug"
+                    parameters:
+                        - in: path
+                          name: slug
+                          required: true
+                          schema:
+                              type: string
+                          description: "Slug of the product to retrieve"
+                    responses:
+                        "200":
+                            description: "Product retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/ProductResponse"
+                        "404":
+                            description: "Product not found"
+
+            /api/companies/{owner_id}/products:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get products by company"
+                    description: "Retrieves a paginated list of products for a specific company"
+                    parameters:
+                        - in: path
+                          name: company_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the company"
+                        - in: query
+                          name: page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 1
+                          description: "Page number for pagination"
+                        - in: query
+                          name: per_page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 10
+                              maximum: 50
+                          description: "Items per page"
+                    responses:
+                        "200":
+                            description: "Products retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            data:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/ProductResponse"
+                                            total:
+                                                type: integer
+                                                description: "Total number of products"
+                                            page:
+                                                type: integer
+                                                description: "Current page number"
+            /api/categories/{category_id}/products:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get products by a category"
+                    description: "Retrieves a paginated list of products for a specific category and its parents"
+                    parameters:
+                        - in: path
+                          name: category_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the category from where we pivot"
+                        - in: query
+                          name: page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 1
+                          description: "Page number for pagination"
+                        - in: query
+                          name: per_page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 10
+                              maximum: 50
+                          description: "Items per page"
+                    responses:
+                        "200":
+                            description: "Products retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            data:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/ProductResponse"
+                                            total:
+                                                type: integer
+                                                description: "Total number of products"
+                                            page:
+                                                type: integer
+                                                description: "Current page number"
+
+            /api/users/{owner_id}/products:
+                get:
+                    tags:
+                        - Product
+                    summary: "Get products by user"
+                    description: "Retrieves a paginated list of products for a specific user"
+                    parameters:
+                        - in: path
+                          name: user_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the company"
+                        - in: query
+                          name: page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 1
+                          description: "Page number for pagination"
+                        - in: query
+                          name: per_page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 10
+                              maximum: 50
+                          description: "Items per page"
+                    responses:
+                        "200":
+                            description: "Products retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        type: object
+                                        properties:
+                                            data:
+                                                type: array
+                                                items:
+                                                    $ref: "#/components/schemas/ProductResponse"
+                                            total:
+                                                type: integer
+                                                description: "Total number of products"
+                                            page:
+                                                type: integer
+                                                description: "Current page number"
 
             /api/products/{product_id}:
                 get:
@@ -914,143 +1138,6 @@ nelmio_api_doc:
                         "404":
                             description: "Product not found"
 
-            /api/products/slug/{slug}:
-                get:
-                    tags:
-                        - Product
-                    summary: "Get product by slug"
-                    description: "Retrieves detailed information for a specific product by its slug"
-                    parameters:
-                        - in: path
-                          name: slug
-                          required: true
-                          schema:
-                              type: string
-                          description: "Slug of the product to retrieve"
-                    responses:
-                        "200":
-                            description: "Product retrieved successfully"
-                            content:
-                                application/json:
-                                    schema:
-                                        $ref: "#/components/schemas/ProductResponse"
-                        "404":
-                            description: "Product not found"
-
-            /api/companies/{company_id}/products:
-                get:
-                    tags:
-                        - Product
-                    summary: "Get products by company"
-                    description: "Retrieves a paginated list of products for a specific company"
-                    parameters:
-                        - in: path
-                          name: company_id
-                          required: true
-                          schema:
-                              type: string
-                              format: uuid
-                          description: "UUID of the company"
-                        - in: query
-                          name: page
-                          required: false
-                          schema:
-                              type: integer
-                              default: 1
-                          description: "Page number for pagination"
-                        - in: query
-                          name: per_page
-                          required: false
-                          schema:
-                              type: integer
-                              default: 10
-                              maximum: 50
-                          description: "Items per page"
-                    responses:
-                        "200":
-                            description: "Products retrieved successfully"
-                            content:
-                                application/json:
-                                    schema:
-                                        type: object
-                                        properties:
-                                            data:
-                                                type: array
-                                                items:
-                                                    $ref: "#/components/schemas/ProductResponse"
-                                            total:
-                                                type: integer
-                                                description: "Total number of products"
-                                            page:
-                                                type: integer
-                                                description: "Current page number"
-                        "404":
-                            description: "Company not found"
-
-            /api/products/{product_id}/rental:
-                post:
-                    tags:
-                        - Product
-                    summary: "Add rental features to a product"
-                    description: "Adds rental-specific features to an existing product"
-                    security:
-                        - bearerAuth: [ ]
-                    parameters:
-                        - in: path
-                          name: product_id
-                          required: true
-                          schema:
-                              type: string
-                              format: uuid
-                          description: "UUID of the product"
-                    requestBody:
-                        required: true
-                        content:
-                            application/json:
-                                schema:
-                                    $ref: "#/components/schemas/AddRentalFeaturesDto"
-                    responses:
-                        "204":
-                            description: "Rental features added successfully"
-                        "400":
-                            description: "Validation error or product is already for sale"
-                        "401":
-                            description: "Unauthorized - User not authenticated"
-                        "404":
-                            description: "Product not found"
-
-            /api/products/{product_id}/sale:
-                post:
-                    tags:
-                        - Product
-                    summary: "Add sale features to a product"
-                    description: "Adds sale-specific features to an existing product"
-                    security:
-                        - bearerAuth: [ ]
-                    parameters:
-                        - in: path
-                          name: product_id
-                          required: true
-                          schema:
-                              type: string
-                              format: uuid
-                          description: "UUID of the product"
-                    requestBody:
-                        required: true
-                        content:
-                            application/json:
-                                schema:
-                                    $ref: "#/components/schemas/AddSaleFeaturesDto"
-                    responses:
-                        "204":
-                            description: "Sale features added successfully"
-                        "400":
-                            description: "Validation error or product is already for rent"
-                        "401":
-                            description: "Unauthorized - User not authenticated"
-                        "404":
-                            description: "Product not found"
-
             /api/products/{product_id}/publish:
                 patch:
                     tags:
@@ -1070,8 +1157,6 @@ nelmio_api_doc:
                     responses:
                         "204":
                             description: "Product published successfully"
-                        "400":
-                            description: "Product must have either rental or sale features to be published"
                         "401":
                             description: "Unauthorized - User not authenticated"
                         "404":
@@ -1204,6 +1289,11 @@ nelmio_api_doc:
                             type: array
                             items:
                                 $ref: "#/components/schemas/UserRoles"
+                        address:
+                            $ref: "#/components/schemas/Address"
+                        location:
+                            $ref: "#/components/schemas/Location"
+
                 Company:
                     type: object
                     properties:
@@ -1224,21 +1314,17 @@ nelmio_api_doc:
                             type: string
                             description: "In Spain, the CIF"
                             example: "123456789"
-                        address:
-                            type: string
-                            example: "1234 Elm Street, Springfield"
-                        postal_code:
-                            type: string
-                            example: "12345"
-                        city:
-                            type: string
-                            example: "Springfield"
                         contact_email:
                             type: string
                             format: email
                             example: "contact@acme.com"
                         phone_number:
                             $ref: "#/components/schemas/PhoneNumber"
+                        address:
+                            $ref: "#/components/schemas/Address"
+                        location:
+                            $ref: "#/components/schemas/Location"
+
                 CompanyUser:
                     type: object
                     properties:
@@ -1440,7 +1526,30 @@ nelmio_api_doc:
                             type: string
                             format: uuid
                             example: "550e8400-e29b-41d4-a716-446655440000"
-
+                CategoryBreadcrumbsResponse:
+                    type: object
+                    properties:
+                        id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        parent_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Tools and machinery"
+                        slug:
+                            type: string
+                            example: "tools-and-machinery"
+                        icon_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        depth:
+                            type: integer
+                            example: 3
                 Site:
                     type: object
                     properties:
@@ -1515,6 +1624,8 @@ nelmio_api_doc:
                         - name
                         - internal_id
                         - company_id
+                        - tiers
+                        - deposit
                     properties:
                         product_id:
                             type: string
@@ -1529,6 +1640,9 @@ nelmio_api_doc:
                         description:
                             type: string
                             example: "Sierra de mesa portátil con soporte plegable. Ideal para obras y proyectos DIY."
+                        quantity:
+                            type: integer
+                            example: 1
                         company_id:
                             type: string
                             format: uuid
@@ -1544,17 +1658,29 @@ nelmio_api_doc:
                                 type: string
                                 format: uuid
                             example: [ "550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001" ]
+                        deposit:
+                            $ref: "#/components/schemas/Money"
+                        tiers:
+                            $ref: "#/components/schemas/TierCollection"
 
                 UpdateProductDto:
                     type: object
                     required:
+                        - product_id
                         - name
                         - slug
                         - internal_id
+                        - company_id
+                        - tiers
+                        - deposit
                     properties:
+                        product_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
                         name:
                             type: string
-                            example: "Sierra de Mesa con Soporte PRO"
+                            example: "Sierra de Mesa con Soporte"
                         slug:
                             type: string
                             example: "sierra-de-mesa-con-soporte"
@@ -1564,6 +1690,13 @@ nelmio_api_doc:
                         description:
                             type: string
                             example: "Sierra de mesa portátil con soporte plegable. Ideal para obras y proyectos DIY."
+                        quantity:
+                            type: integer
+                            example: 1
+                        company_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
                         category_id:
                             type: string
                             format: uuid
@@ -1575,86 +1708,10 @@ nelmio_api_doc:
                                 type: string
                                 format: uuid
                             example: [ "550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001" ]
-
-                AddRentalFeaturesDto:
-                    type: object
-                    required:
-                        - daily_price_amount
-                        - daily_price_currency
-                    properties:
-                        daily_price_amount:
-                            type: number
-                            format: float
-                            example: 35.00
-                        daily_price_currency:
-                            type: string
-                            example: "EUR"
-                        hourly_price_amount:
-                            type: number
-                            format: float
-                            nullable: true
-                            example: 8.50
-                        hourly_price_currency:
-                            type: string
-                            nullable: true
-                            example: "EUR"
-                        weekly_price_amount:
-                            type: number
-                            format: float
-                            nullable: true
-                            example: 160.00
-                        weekly_price_currency:
-                            type: string
-                            nullable: true
-                            example: "EUR"
-                        monthly_price_amount:
-                            type: number
-                            format: float
-                            nullable: true
-                            example: 450.00
-                        monthly_price_currency:
-                            type: string
-                            nullable: true
-                            example: "EUR"
-                        deposit_amount:
-                            type: number
-                            format: float
-                            nullable: true
-                            example: 100.00
-                        deposit_currency:
-                            type: string
-                            nullable: true
-                            example: "EUR"
-
-                AddSaleFeaturesDto:
-                    type: object
-                    required:
-                        - price_amount
-                        - price_currency
-                    properties:
-                        price_amount:
-                            type: number
-                            format: float
-                            example: 499.99
-                        price_currency:
-                            type: string
-                            example: "EUR"
-                        condition:
-                            type: string
-                            enum: [ new, like_new, good, fair, poor ]
-                            example: "good"
-                        year_of_purchase:
-                            type: integer
-                            nullable: true
-                            example: 2023
-                        negotiable:
-                            type: boolean
-                            default: false
-                            example: true
-                        additional_information:
-                            type: string
-                            nullable: true
-                            example: "Incluye cuchillas de repuesto y manual de usuario original"
+                        deposit:
+                            $ref: "#/components/schemas/Money"
+                        tiers:
+                            $ref: "#/components/schemas/TierCollection"
 
                 ProductResponse:
                     type: object
@@ -1692,52 +1749,56 @@ nelmio_api_doc:
                             example: [ "550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440001" ]
                         publication_status:
                             $ref: "#/components/schemas/PublicationStatus"
-                        for_rent:
-                            type: boolean
-                            example: true
-                        for_sale:
-                            type: boolean
-                            example: false
-                        rental_features:
-                            type: object
-                            nullable: true
-                            properties:
-                                id:
-                                    type: string
-                                    format: uuid
-                                    example: "550e8400-e29b-41d4-a716-446655440002"
-                                daily_price:
-                                    $ref: "#/components/schemas/Money"
-                                hourly_price:
-                                    $ref: "#/components/schemas/Money"
-                                weekly_price:
-                                    $ref: "#/components/schemas/Money"
-                                monthly_price:
-                                    $ref: "#/components/schemas/Money"
-                                deposit:
-                                    $ref: "#/components/schemas/Money"
-                        sale_features:
-                            type: object
-                            nullable: true
-                            properties:
-                                id:
-                                    type: string
-                                    format: uuid
-                                    example: "550e8400-e29b-41d4-a716-446655440003"
-                                price:
-                                    $ref: "#/components/schemas/Money"
-                                condition:
-                                    type: string
-                                    enum: [ new, like_new, good, fair, poor ]
-                                    example: "good"
-                                year_of_purchase:
-                                    type: integer
-                                    nullable: true
-                                    example: 2023
-                                negotiable:
-                                    type: boolean
-                                    example: true
-                                additional_information:
-                                    type: string
-                                    nullable: true
-                                    example: "Incluye cuchillas de repuesto y manual de usuario original"
+                        deposit:
+                            $ref: "#/components/schemas/Money"
+                        tiers:
+                            $ref: "#/components/schemas/TierCollection"
+
+                Tier:
+                    type: object
+                    properties:
+                        price_per_day:
+                            $ref: "#/components/schemas/Money"
+                        days_from:
+                            type: integer
+                            example: 1
+                        days_to:
+                            type: integer
+                            example: 2
+
+                TierCollection:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/Tier"
+
+                Address:
+                    type: object
+                    properties:
+                        street:
+                            type: string
+                            example: "Fake street"
+                        street2:
+                            type: string
+                            example: "number 123"
+                        city:
+                            type: string
+                            example: "Springfield"
+                        postal_code:
+                            type: string
+                            example: "CP1234"
+                        state:
+                            type: string
+                            example: "Illinois"
+                        country:
+                            type: string
+                            example: "Spain"
+
+                Location:
+                    type: object
+                    properties:
+                        latitude:
+                            type: float
+                            example: 1.01101010
+                        longitude:
+                            type: float
+                            example: -2.0123123

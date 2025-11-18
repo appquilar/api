@@ -23,9 +23,6 @@ class CompanyTransformer implements Transformer
             'slug' => $entity->getSlug(),
             'name' => $entity->getName(),
             'description' => $entity->getDescription(),
-            'address' => $entity->getAddress(),
-            'postal_code' => $entity->getPostalCode(),
-            'city' => $entity->getCity()
         ];
 
         if ($this->userGranted->isAdmin() || $this->userGranted->worksAtThisCompany($entity->getId())) {

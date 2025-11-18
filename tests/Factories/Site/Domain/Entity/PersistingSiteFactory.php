@@ -52,7 +52,7 @@ class PersistingSiteFactory extends PersistentProxyObjectFactory
      */
     protected function initialize(): static
     {
-        return $this
+        return $this->with($this->defaults())
             // ->afterInstantiate(function(Site $site): void {})
         ;
     }

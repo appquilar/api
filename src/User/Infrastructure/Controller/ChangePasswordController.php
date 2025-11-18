@@ -17,7 +17,7 @@ use Symfony\Component\Routing\Attribute\Route;
 class ChangePasswordController
 {
     public function __construct(
-        private CommandBus          $commandBus,
+        private CommandBus $commandBus,
         private ResponseService $jsonResponseService
     ) {
     }

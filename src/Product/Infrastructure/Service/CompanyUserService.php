@@ -24,14 +24,4 @@ class CompanyUserService implements CompanyUserServiceInterface
             'status' => CompanyUserStatus::ACCEPTED
         ]) !== null;
     }
-
-    public function getCompanyIdByUserId(Uuid $userId): ?Uuid
-    {
-        $companyUser = $this->companyUserRepository->findOneBy([
-            'userId' => $userId,
-            'status' => CompanyUserStatus::ACCEPTED
-        ]);
-
-        return $companyUser?->getCompanyId();
-    }
 }

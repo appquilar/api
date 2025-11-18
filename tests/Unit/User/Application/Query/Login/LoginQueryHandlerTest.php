@@ -60,40 +60,6 @@ class LoginQueryHandlerTest extends UnitTestCase
         $this->assertEquals('fake_jwt_token', $result->getToken());
     }
 
-    public function testLoginWithWordPressUserAndMigration(): void
-    {
-        $wpHasher = new PasswordHash(8, true);
-        $user = new User(
-            Uuid::v4(),
-            'wpuser@example.com',
-            $wpHasher->HashPassword('WordPressPass123')
-        );
-        $user->setWordPressPassword($wpHasher->HashPassword('WordPressPass123'));
-
-        $this->userRepository->expects($this->once())
-            ->method('findByEmail')
-            ->with('wpuser@example.com')
-            ->willReturn($user);
-
-        $this->passwordHasher->expects($this->once())
-            ->method('hashPassword')
-            ->with('WordPressPass123')
-            ->willReturn(password_hash('WordPressPass123', PASSWORD_ARGON2ID));
-
-        $this->userRepository->expects($this->once())
-            ->method('updateUserPassword');
-
-        $this->authTokenService->expects($this->once())
-            ->method('encode')
-            ->willReturn('fake_jwt_token');
-
-        $query = new LoginQuery('wpuser@example.com', 'WordPressPass123');
-        $result = $this->queryHandler->__invoke($query);
-
-        $this->assertInstanceOf(LoginQueryResult::class, $result);
-        $this->assertEquals('fake_jwt_token', $result->getToken());
-    }
-
     public function testLoginFailsWithInvalidCredentials(): void
     {
         $this->userRepository->expects($this->once())

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Product\Application\Query\GetProductBySlug;
 
 use App\Product\Application\Repository\ProductRepositoryInterface;
+use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Application\Transformer\ProductTransformer;
 use App\Shared\Application\Exception\NotFound\NotFoundException;
 use App\Shared\Application\Query\Query;
@@ -17,6 +18,7 @@ class GetProductBySlugQueryHandler implements QueryHandler
 {
     public function __construct(
         private ProductRepositoryInterface $productRepository,
+        private ProductAuthorizationServiceInterface $productAuthorizationService,
         private ProductTransformer $productTransformer
     ) {
     }
@@ -28,6 +30,8 @@ class GetProductBySlugQueryHandler implements QueryHandler
         if ($product === null || !$product->isPublished()) {
             throw new NotFoundException('Product not found');
         }
+
+        $this->productAuthorizationService->canViewIfPublic($product, 'product.get_by_slug.unauthorized');
 
         return new GetProductBySlugQueryResult(
             $this->productTransformer->transform($product)

@@ -49,9 +49,6 @@ class UpdateCompanyCommandHandlerTest extends UnitTestCase
             'new-slug',
             'new description',
             'new fiscal identifier',
-            'new address',
-            'new postal code',
-            'new city',
             'new contact email',
             new PhoneNumber('ES', '+34', '666000000')
         );
@@ -82,9 +79,6 @@ class UpdateCompanyCommandHandlerTest extends UnitTestCase
             'new-slug',
             'new description',
             'new fiscal identifier',
-            'new address',
-            'new postal code',
-            'new city',
             'new contact email',
             new PhoneNumber('ES', '+34', '666000000')
         );
@@ -126,9 +120,6 @@ class UpdateCompanyCommandHandlerTest extends UnitTestCase
             'new-slug',
             'new description',
             'new fiscal identifier',
-            'new address',
-            'new postal code',
-            'new city',
             'new contact email',
             new PhoneNumber('ES', '+34', '666000000')
         );
@@ -165,9 +156,6 @@ class UpdateCompanyCommandHandlerTest extends UnitTestCase
             'new-slug',
             'new description',
             'new fiscal identifier',
-            'new address',
-            'new postal code',
-            'new city',
             'new contact email',
             new PhoneNumber('ES', '+34', '666000000')
         );

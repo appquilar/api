@@ -14,7 +14,7 @@ class TokenPayload
 
     public function __construct(
         private Uuid $userId,
-        int $expirationTime = null,
+        ?int $expirationTime = null,
         private bool $revoked = false
     ) {
         $this->expirationTime = $expirationTime !== null ? $expirationTime : time() + self::EXPIRATION_TIME;

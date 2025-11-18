@@ -6,6 +6,8 @@ namespace App\Company\Infrastructure\Request;
 
 use App\Company\Infrastructure\Request\Constraint\UniqueOwnerId;
 use App\Shared\Domain\ValueObject\PhoneNumber;
+use App\Shared\Infrastructure\Request\Input\AddressInput;
+use App\Shared\Infrastructure\Request\Input\GeoLocationInput;
 use App\Shared\Infrastructure\Request\RequestDtoInterface;
 use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -30,13 +32,15 @@ class CreateCompanyDto implements RequestDtoInterface
 
         public ?string $description = null,
         public ?string $fiscalIdentifier = null,
-        public ?string $address = null,
-        public ?string $postalCode = null,
-        public ?string $city = null,
         public ?string $contactEmail = null,
         ?string $phoneNumberCountryCode = null,
         ?string $phoneNumberPrefix = null,
         ?string $phoneNumberNumber = null,
+
+        #[Assert\Valid]
+        public ?AddressInput $address = null,
+        #[Assert\Valid]
+        public ?GeoLocationInput $location = null,
     ) {
         if ($phoneNumberCountryCode !== null && $phoneNumberPrefix !== null && $phoneNumberNumber !== null) {
             $this->phoneNumber = new PhoneNumber($phoneNumberCountryCode, $phoneNumberPrefix, $phoneNumberNumber);

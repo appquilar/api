@@ -30,11 +30,10 @@ class CreateCompanyController
                 $createCompanyDto->ownerId,
                 $createCompanyDto->description,
                 $createCompanyDto->fiscalIdentifier,
-                $createCompanyDto->address,
-                $createCompanyDto->postalCode,
-                $createCompanyDto->city,
                 $createCompanyDto->contactEmail,
-                $createCompanyDto->phoneNumber
+                $createCompanyDto->phoneNumber,
+                $createCompanyDto->address?->toAddress(),
+                $createCompanyDto->location?->toGeoLocation()
             )
         );
 

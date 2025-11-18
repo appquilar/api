@@ -24,13 +24,22 @@ class CreateCompanyApiTest extends IntegrationTestCase
                 'owner_id' => $userId->toString(),
                 'description' => 'An innovative company',
                 'fiscal_identifier' => '123456789',
-                'address' => '1234 Elm Street',
-                'postal_code' => '12345',
-                'city' => 'Springfield',
                 'contact_email' => 'contact@acme.com',
                 'phone_number_country_code' => 'ES',
                 'phone_number_prefix' => '+34',
                 'phone_number_number' => '666000000',
+                'address' => [
+                    'street' => 'Fake st',
+                    'street2' => 'number 123',
+                    'city' => 'Springfield',
+                    'postal_code' => '1234',
+                    'state' => 'Iowa',
+                    'country' => 'US'
+                ],
+                'location' => [
+                    'latitude' => 45.78,
+                    'longitude' => -123.45,
+                ]
             ]
         );
 
@@ -77,9 +86,6 @@ class CreateCompanyApiTest extends IntegrationTestCase
                 'owner_id' => $ownerId,
                 'description' => 'An innovative company',
                 'fiscal_identifier' => '123456789',
-                'address' => '1234 Elm Street',
-                'postal_code' => '12345',
-                'city' => 'Springfield',
                 'contact_email' => 'contact@acme.com',
                 'phone_number_country_code' => 'ES',
                 'phone_number_prefix' => '+34',
@@ -98,9 +104,6 @@ class CreateCompanyApiTest extends IntegrationTestCase
                 'owner_id' => $ownerId,
                 'description' => 'An innovative company',
                 'fiscal_identifier' => '123456789',
-                'address' => '1234 Elm Street',
-                'postal_code' => '12345',
-                'city' => 'Springfield',
                 'contact_email' => 'contact@acme.com',
                 'phone_number_country_code' => 'ES',
                 'phone_number_prefix' => '+34',
@@ -127,9 +130,6 @@ class CreateCompanyApiTest extends IntegrationTestCase
                 'owner_id' => Uuid::v4(),
                 'description' => 'An innovative company',
                 'fiscal_identifier' => '123456789',
-                'address' => '1234 Elm Street',
-                'postal_code' => '12345',
-                'city' => 'Springfield',
                 'contact_email' => 'contact@acme.com',
                 'phone_number_country_code' => 'ES',
                 'phone_number_prefix' => '+34',

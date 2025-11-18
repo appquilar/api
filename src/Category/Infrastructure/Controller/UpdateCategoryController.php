@@ -27,7 +27,6 @@ class UpdateCategoryController
             new UpdateCategoryCommand(
                 $request->categoryId,
                 $request->name,
-                $request->slug,
                 $request->description,
                 $request->parentId,
                 $request->iconId,

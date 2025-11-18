@@ -9,5 +9,4 @@ use Symfony\Component\Uid\Uuid;
 interface CompanyUserServiceInterface
 {
     public function userBelongsToCompany(Uuid $userId, Uuid $companyId): bool;
-    public function getCompanyIdByUserId(Uuid $userId): ?Uuid;
 }

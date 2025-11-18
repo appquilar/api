@@ -31,6 +31,11 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+        <report>
+            <clover outputFile="build/logs/clover.xml" />
+            <!-- optional HTML report -->
+            <html outputDirectory="build/coverage-html" lowUpperBound="35" highLowerBound="70" />
+        </report>
     </coverage>
 
     <extensions>

@@ -38,7 +38,7 @@ class PersistingCompanyUserFactory extends PersistentProxyObjectFactory
      */
     protected function initialize(): static
     {
-        return $this
+        return $this->with($this->defaults())
             // ->afterInstantiate(function(CompanyUser $companyUser): void {})
         ;
     }

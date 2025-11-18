@@ -49,6 +49,7 @@ final class PersistingAccessTokenFactory extends PersistentProxyObjectFactory
         return $this
             // it persists inside authTokenService->encode
             ->withoutPersisting()
+            ->with($this->defaults())
             ->afterInstantiate(function(AccessToken $accessToken): void {
                 $tokenPayload = new TokenPayload($accessToken->getUserId());
                 $accessToken->setToken(

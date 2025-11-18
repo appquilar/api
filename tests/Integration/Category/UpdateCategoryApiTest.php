@@ -84,18 +84,19 @@ class UpdateCategoryApiTest extends IntegrationTestCase
     public function testTryToUpdateACategoryWithAnAlreadyExistingSlug(): void
     {
         $categoryId = Uuid::v4();
+        $anotherCategoryId = Uuid::v4();
         $parentId = Uuid::v4();
         $imageId = Uuid::v4();
         $existentSlug = 'existent-slug';
+        $parentSlug = 'parent-slug';
         $this->givenImLoggedInAsAdmin();
         $this->givenItExistsACategoryWithId($categoryId);
-        $this->givenItExistsACategoryWithSlug($existentSlug);
+        $this->givenItExistsACategoryWithIdAndParentIdAndSlug($anotherCategoryId, $parentId, $existentSlug);
         $this->givenItExistsAnImageWithId($imageId);
-        $this->givenItExistsACategoryWithId($parentId);
+        $this->givenItExistsACategoryWithIdAndSlug($parentId, $parentSlug);
 
         $payload = [
-            'name' => 'Electronics',
-            'slug' => $existentSlug,
+            'name' => 'Existent Slug',
             'description' => 'All kinds of electronic devices',
             'icon_id' => $imageId,
             'parent_id' => $parentId,
@@ -106,5 +107,84 @@ class UpdateCategoryApiTest extends IntegrationTestCase
         $response = $this->request('PATCH', '/api/categories/' . $categoryId->toString(), $payload);
 
         $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+    }
+
+    public function test_try_to_update_a_category_causing_a_circular_parent_id_reference(): void
+    {
+        $categoryId = Uuid::v4();
+        $parentId = Uuid::v4();
+        $grandParentId = Uuid::v4();
+        $imageId = Uuid::v4();
+        $this->givenImLoggedInAsAdmin();
+        $this->givenItExistsAnImageWithId($imageId);
+        $this->givenItExistsACategoryWithId($grandParentId);
+        $this->givenItExistsACategoryWithIdAndParentId($parentId, $grandParentId);
+        $this->givenItExistsACategoryWithIdAndParentId($categoryId, $parentId);
+
+        $payload = [
+            'name' => 'Grandparent Slug',
+            'description' => 'grandparent',
+            'icon_id' => $imageId,
+            'parent_id' => $categoryId,
+            'featured_image_id' => $imageId,
+            'landscape_image_id' => $imageId
+        ];
+
+        $response = $this->request('PATCH', '/api/categories/' . $grandParentId->toString(), $payload);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $responseBody = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('error', $responseBody);
+        $this->assertArrayHasKey(0, $responseBody['error']);
+        $this->assertEquals('category.update.parent_id.circular', $responseBody['error'][0]);
+    }
+
+    public function test_removing_parent_id_from_category(): void
+    {
+        $categoryId = Uuid::v4();
+        $parentId = Uuid::v4();
+        $imageId = Uuid::v4();
+        $this->givenImLoggedInAsAdmin();
+        $this->givenItExistsAnImageWithId($imageId);
+        $this->givenItExistsACategoryWithId($parentId);
+        $this->givenItExistsACategoryWithIdAndParentId($categoryId, $parentId);
+
+        $payload = [
+            'name' => 'Grandparent Slug',
+            'description' => 'grandparent',
+            'icon_id' => $imageId,
+            'parent_id' => null,
+            'featured_image_id' => $imageId,
+            'landscape_image_id' => $imageId
+        ];
+
+        $response = $this->request('PATCH', '/api/categories/' . $categoryId->toString(), $payload);
+        $this->assertEquals(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+    }
+
+    public function test_try_to_update_a_category_as_its_id_as_parent_id(): void
+    {
+        $categoryId = Uuid::v4();
+        $parentId = Uuid::v4();
+        $imageId = Uuid::v4();
+        $this->givenImLoggedInAsAdmin();
+        $this->givenItExistsAnImageWithId($imageId);
+        $this->givenItExistsACategoryWithId($parentId);
+        $this->givenItExistsACategoryWithIdAndParentId($categoryId, $parentId);
+
+        $payload = [
+            'name' => 'Grandparent Slug',
+            'description' => 'grandparent',
+            'icon_id' => $imageId,
+            'parent_id' => $categoryId,
+            'featured_image_id' => $imageId,
+            'landscape_image_id' => $imageId
+        ];
+
+        $response = $this->request('PATCH', '/api/categories/' . $categoryId->toString(), $payload);
+        $this->assertEquals(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $responseBody = json_decode($response->getContent(), true);
+        $this->assertArrayHasKey('error', $responseBody);
+        $this->assertArrayHasKey(0, $responseBody['error']);
+        $this->assertEquals('category.update.parent_id.own_id_as_parent', $responseBody['error'][0]);
     }
 }

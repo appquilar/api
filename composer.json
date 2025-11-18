@@ -15,6 +15,7 @@
         "doctrine/orm": "^3.3",
         "firebase/php-jwt": "^6.11",
         "hautelook/phpass": "^0.3.6",
+        "hidehalo/nanoid-php": "^2.0",
         "lexik/jwt-authentication-bundle": "^3.1",
         "nelmio/api-doc-bundle": "^4.37",
         "nelmio/cors-bundle": "^2.5",

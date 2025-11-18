@@ -38,7 +38,7 @@ class PersistingImageFactory extends PersistentProxyObjectFactory
      */
     protected function initialize(): static
     {
-        return $this
+        return $this->with($this->defaults())
             // ->afterInstantiate(function(Image $image): void {})
         ;
     }

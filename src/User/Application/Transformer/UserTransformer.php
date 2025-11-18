@@ -22,6 +22,7 @@ class UserTransformer implements Transformer
             'user_id' => $entity->getId()->toString(),
             'first_name' => $entity->getFirstName(),
             'last_name' => $entity->getLastName(),
+            'circle' => $entity->getGeoLocation()?->generateCircle()
         ];
 
         if (
@@ -29,6 +30,8 @@ class UserTransformer implements Transformer
             $this->userGranted->getUser()->getId() === $entity->getId()
         ) {
             $data['email'] = $entity->getEmail();
+            $data['address'] = $entity->getAddress()?->toArray();
+            $data['location'] = $entity->getGeoLocation()?->toArray();
         }
 
         if ($this->userGranted->isAdmin()) {

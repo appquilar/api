@@ -8,6 +8,7 @@ use App\Tests\Integration\Context\CategoryContext;
 use App\Tests\Integration\Context\CompanyContext;
 use App\Tests\Integration\Context\CompanyUserContext;
 use App\Tests\Integration\Context\ImageContext;
+use App\Tests\Integration\Context\ProductContext;
 use App\Tests\Integration\Context\SiteContext;
 use App\Tests\Integration\Context\UserContext;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
@@ -18,7 +19,9 @@ use Zenstruck\Foundry\Test\ResetDatabase;
 class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
-    use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext,SiteContext;
+
+    use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext,SiteContext,
+        ProductContext;
 
     private const REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];
 
@@ -57,7 +60,7 @@ class IntegrationTestCase extends WebTestCase
         );
     }
 
-    protected function request(string $method, string $uri, array $payload = null, array $files = []): object
+    protected function request(string $method, string $uri, ?array $payload = null, array $files = []): object
     {
         $this->client->request(
             method: $method,
@@ -75,5 +78,12 @@ class IntegrationTestCase extends WebTestCase
         $this->assertArrayHasKey('error', $content);
         $this->assertArrayHasKey('errors', $content['error']);
         $this->assertArrayHasKey($field, $content['error']['errors']);
+    }
+
+    protected function assertArrayHasKeyAndValue(string $field, mixed $value, array $content): void
+    {
+        $this->assertArrayHasKey('data', $content);
+        $this->assertArrayHasKey($field, $content['data']);
+        $this->assertEquals($value, $content['data'][$field]);
     }
 }

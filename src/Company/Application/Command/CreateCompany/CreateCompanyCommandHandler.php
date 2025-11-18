@@ -36,11 +36,10 @@ class CreateCompanyCommandHandler implements CommandHandler
             $slug,
             $command->getDescription(),
             $command->getFiscalIdentifier(),
-            $command->getAddress(),
-            $command->getPostalCode(),
-            $command->getCity(),
             $command->getContactEmail(),
-            $command->getPhoneNumber()
+            $command->getPhoneNumber(),
+            $command->getAddress(),
+            $command->getGeoLocation()
         );
 
         $this->companyRepository->save($company);

@@ -30,17 +30,8 @@ abstract class ProductCommandHandler implements CommandHandler
             throw new EntityNotFoundException($command->getProductId());
         }
 
-        $this->authorizeEdit($product);
+        $this->productAuthorizationService->canEdit($product, 'product.update.unauthorized');
 
         $this->handle($command, $product);
-    }
-
-    protected function authorizeEdit(
-        Product $product,
-    ): void
-    {
-        if (!$this->productAuthorizationService->canEdit($product)) {
-            throw new UnauthorizedException('You do not have permission to edit this product');
-        }
     }
 }

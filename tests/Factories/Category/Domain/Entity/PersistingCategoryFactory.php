@@ -23,20 +23,15 @@ class PersistingCategoryFactory extends PersistentProxyObjectFactory
             'name' => self::faker()->word(),
             'description' => self::faker()->text(255),
             'slug' => self::faker()->slug(),
-            'parentId' => Uuid::v4(),
+            'parentId' => null,
             'iconId' => Uuid::v4(),
             'featuredImageId' => Uuid::v4(),
             'landscapeImageId' => Uuid::v4(),
         ];
     }
 
-    /**
-     * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
-     */
     protected function initialize(): static
     {
-        return $this
-            // ->afterInstantiate(function(Category $category): void {})
-        ;
+        return $this->with($this->defaults());
     }
 }

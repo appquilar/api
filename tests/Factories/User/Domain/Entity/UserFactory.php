@@ -22,11 +22,6 @@ final class UserFactory extends PersistingUserFactory
             ->afterInstantiate(function(User $user) {
                 $wpHasher = new PasswordHash(8, true);
                 $user->setPassword($this->passwordHasher->hashPassword($user->getPassword()));
-                if ($user->getWordpressPassword() !== null) {
-                    $user->setWordpressPassword(
-                        $wpHasher->HashPassword($user->getWordpressPassword())
-                    );
-                }
             });
     }
 }

@@ -27,6 +27,7 @@ class TransactionListener
     {
         if ($this->entityManager->getConnection()->isTransactionActive()) {
             $this->entityManager->commit();
+            $this->entityManager->flush();
         }
     }
 

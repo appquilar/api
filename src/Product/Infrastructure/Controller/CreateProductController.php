@@ -10,17 +10,21 @@ use App\Shared\Application\Command\CommandBus;
 use App\Shared\Infrastructure\Security\RoutePermission;
 use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Messenger\Exception\ExceptionInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route('/api/products', name: 'product_create', methods: ['POST'])]
+#[Route('/api/products', name: RoutePermission::PRODUCT_CREATE->name, methods: ['POST'])]
 class CreateProductController
 {
     public function __construct(
         private CommandBus $commandBus,
-        private ResponseService $responseService
+        private ResponseService $responseService,
     ) {
     }
 
+    /**
+     * @throws ExceptionInterface
+     */
     public function __invoke(CreateProductDto $request): JsonResponse
     {
         $this->commandBus->dispatch(
@@ -29,9 +33,12 @@ class CreateProductController
                 $request->name,
                 $request->internalId,
                 $request->description,
-                $request->companyId,
+                $request->deposit,
+                $request->tiers,
+                $request->quantity,
                 $request->categoryId,
-                $request->imageIds
+                $request->imageIds,
+                $request->companyId
             )
         );
 

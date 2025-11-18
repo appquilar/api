@@ -43,12 +43,10 @@ abstract class DoctrineRepository implements RepositoryInterface
     public function save(Entity $entity): void
     {
         $this->entityManager->persist($entity);
-        $this->entityManager->flush();
     }
 
     public function delete(Entity $entity): void
     {
         $this->entityManager->remove($entity);
-        $this->entityManager->flush();
     }
 }

@@ -31,7 +31,7 @@ class GetProductByIdQueryHandler implements QueryHandler
             throw new EntityNotFoundException($query->getProductId());
         }
 
-        $this->productAuthorizationService->canView($product);
+        $this->productAuthorizationService->canView($product, 'product.get_by_id.unauthorized');
 
         return new GetProductByIdQueryResult(
             $this->productTransformer->transform($product)

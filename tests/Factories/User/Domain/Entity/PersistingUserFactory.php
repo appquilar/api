@@ -2,10 +2,11 @@
 
 namespace App\Tests\Factories\User\Domain\Entity;
 
+use App\Shared\Domain\ValueObject\Address;
+use App\Shared\Domain\ValueObject\GeoLocation;
 use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Application\Service\UserPasswordHasher;
 use App\User\Domain\Entity\User;
-use Hautelook\Phpass\PasswordHash;
 use Symfony\Component\Uid\Uuid;
 use Zenstruck\Foundry\Persistence\PersistentProxyObjectFactory;
 
@@ -37,7 +38,19 @@ class PersistingUserFactory extends PersistentProxyObjectFactory
             'password' => self::faker()->text(),
             'roles' => [UserRole::REGULAR_USER],
             'first_name' => self::faker()->name(),
-            'last_name' => self::faker()->lastName()
+            'last_name' => self::faker()->lastName(),
+            'address' => new Address(
+                self::faker()->streetAddress(),
+                self::faker()->buildingNumber(),
+                substr(self::faker()->city(), 0, 50),
+                substr(self::faker()->postcode(), 0, 20),
+                substr(self::faker()->country(), 0, 20),
+                substr(self::faker()->country(), 0, 20)
+            ),
+            'geoLocation' => new GeoLocation(
+                self::faker()->latitude(),
+                self::faker()->longitude()
+            )
         ];
     }
 
@@ -47,12 +60,9 @@ class PersistingUserFactory extends PersistentProxyObjectFactory
     protected function initialize(): static
     {
         return $this
+            ->with($this->defaults())
             ->afterInstantiate(function(User $user) {
-                $wpHasher = new PasswordHash(8, true);
                 $user->setPassword($this->passwordHasher->hashPassword($user->getPassword()));
-                if ($user->getWordpressPassword() !== null) {
-                    $user->setWordpressPassword($wpHasher->HashPassword($user->getWordpressPassword()));
-                }
             });
     }
 }

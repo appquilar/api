@@ -57,6 +57,13 @@ services:
         autowire: true
         autoconfigure: true
 
+    App\Product\Infrastructure\Controller\:
+        resource: '../src/Product/Infrastructure/Controller/'
+        tags: [ 'controller.service_arguments' ]
+        public: true
+        autowire: true
+        autoconfigure: true
+
     # Factories
     App\Shared\Application\Context\UserGranted:
         factory: [ App\Shared\Application\Context\UserGranted, me ]
@@ -103,3 +110,5 @@ services:
     App\Media\Infrastructure\Service\StorageService:
         arguments:
             $uploadDirectory: '%kernel.project_dir%%env(MEDIA_STORAGE_DIR)%'
+
+    Hidehalo\Nanoid\Client:

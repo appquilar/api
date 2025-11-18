@@ -4,34 +4,33 @@ declare(strict_types=1);
 
 namespace App\Product\Application\Command\UpdateProduct;
 
-use App\Product\Application\Command\ProductCommand;
+use App\Shared\Application\Command\Command;
+use App\Shared\Infrastructure\Request\Input\MoneyInput;
 use Symfony\Component\Uid\Uuid;
 
-class UpdateProductCommand extends ProductCommand
+class UpdateProductCommand implements Command
 {
-    /**
-     * @param Uuid[] $imageIds
-     */
     public function __construct(
-        Uuid $productId,
+        private Uuid $productId,
         private string $name,
-        private string $slug,
         private string $internalId,
         private ?string $description,
+        private MoneyInput $deposit,
+        private array $tiers,
+        private int $quantity = 1,
         private ?Uuid $categoryId = null,
-        private array $imageIds = []
+        private array $imageIds = [],
     ) {
-        parent::__construct($productId);
+    }
+
+    public function getProductId(): Uuid
+    {
+        return $this->productId;
     }
 
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getSlug(): string
-    {
-        return $this->slug;
     }
 
     public function getInternalId(): string
@@ -42,6 +41,21 @@ class UpdateProductCommand extends ProductCommand
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getDeposit(): MoneyInput
+    {
+        return $this->deposit;
+    }
+
+    public function getTiers(): array
+    {
+        return $this->tiers;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
     }
 
     public function getCategoryId(): ?Uuid

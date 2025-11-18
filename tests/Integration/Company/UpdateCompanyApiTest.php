@@ -24,13 +24,22 @@ class UpdateCompanyApiTest extends IntegrationTestCase
             'description' => 'new description',
             'slug' => 'new-slug',
             'fiscal_identifier' => 'new fiscal identifier',
-            'address' => 'new address',
-            'postal_code' => 'new postal code',
-            'city' => 'new city',
             'contact_email' => 'new contact email',
             'phone_number_country_code' => 'ES',
             'phone_number_prefix' => '+34',
             'phone_number_number' => '666000000',
+            'address' => [
+                'street' => 'Fake st',
+                'street2' => 'number 123',
+                'city' => 'Springfield',
+                'postal_code' => '1234',
+                'state' => 'Iowa',
+                'country' => 'US'
+            ],
+            'geoLocation' => [
+                'latitude' => 45.78,
+                'longitude' => -123.45,
+            ]
         ];
 
         $response = $this->request('PATCH', '/api/companies/' . $companyId->toString(), $payload);
@@ -50,13 +59,22 @@ class UpdateCompanyApiTest extends IntegrationTestCase
             'description' => 'new description',
             'slug' => 'new-slug',
             'fiscal_identifier' => 'new fiscal identifier',
-            'address' => 'new address',
-            'postal_code' => 'new postal code',
-            'city' => 'new city',
             'contact_email' => 'new contact email',
             'phone_number_country_code' => 'ES',
             'phone_number_prefix' => '+34',
             'phone_number_number' => '666000000',
+            'address' => [
+                'street' => 'Fake st',
+                'street2' => 'number 123',
+                'city' => 'Springfield',
+                'postal_code' => '1234',
+                'state' => 'Iowa',
+                'country' => 'US'
+            ],
+            'geoLocation' => [
+                'latitude' => 45.78,
+                'longitude' => -123.45,
+            ]
         ];
 
         $response = $this->request('PATCH', '/api/companies/' . $companyId->toString(), $payload);
@@ -78,13 +96,22 @@ class UpdateCompanyApiTest extends IntegrationTestCase
             'description' => 'new description',
             'slug' => 'new-slug',
             'fiscal_identifier' => 'new fiscal identifier',
-            'address' => 'new address',
-            'postal_code' => 'new postal code',
-            'city' => 'new city',
             'contact_email' => 'new contact email',
             'phone_number_country_code' => 'ES',
             'phone_number_prefix' => '+34',
             'phone_number_number' => '666000000',
+            'address' => [
+                'street' => 'Fake st',
+                'street2' => 'number 123',
+                'city' => 'Springfield',
+                'postal_code' => '1234',
+                'state' => 'Iowa',
+                'country' => 'US'
+            ],
+            'location' => [
+                'latitude' => 45.78,
+                'longitude' => -123.45,
+            ]
         ];
 
         $response = $this->request('PATCH', '/api/companies/' . $companyId->toString(), $payload);

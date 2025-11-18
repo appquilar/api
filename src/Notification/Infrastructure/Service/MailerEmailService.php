@@ -31,7 +31,7 @@ class MailerEmailService implements EmailServiceInterface
         string $subject,
         string $template,
         array $context,
-        Address $from = null
+        ?Address $from = null
     ): void
     {
         $htmlContent = $this->twig->render($template, $context);

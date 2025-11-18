@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\User\Domain\Entity;
 
 use App\Shared\Domain\Entity\Entity;
+use App\Shared\Domain\ValueObject\Address;
+use App\Shared\Domain\ValueObject\GeoLocation;
 use App\Shared\Infrastructure\Security\UserRole;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\Index;
@@ -19,8 +21,6 @@ class User extends Entity
     private string $email;
     #[ORM\Column(type: 'string')]
     private string $password;
-    #[ORM\Column(type: 'string', nullable: true)]
-    private ?string $wordpressPassword = null;
     /** @var UserRole[] */
     #[ORM\Column(type: 'json', enumType: UserRole::class)]
     private array $roles = [];
@@ -28,8 +28,10 @@ class User extends Entity
     private ?string $firstName;
     #[ORM\Column(type: 'string', nullable: true)]
     private ?string $lastName;
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $wordpressId;
+    #[ORM\Embedded(class: Address::class, columnPrefix: false)]
+    private ?Address $address;
+    #[ORM\Embedded(class: GeoLocation::class, columnPrefix: false)]
+    private ?GeoLocation $geoLocation;
 
     /**
      * @param UserRole[] $roles
@@ -39,8 +41,10 @@ class User extends Entity
         string $email,
         string $password,
         array $roles = [UserRole::REGULAR_USER],
-        string $firstName = null,
-        string $lastName = null,
+        ?string $firstName = null,
+        ?string $lastName = null,
+        ?Address $address = null,
+        ?GeoLocation $geoLocation = null
     ) {
         parent::__construct($userId);
 
@@ -49,6 +53,8 @@ class User extends Entity
         $this->roles = $roles;
         $this->firstName = $firstName;
         $this->lastName = $lastName;
+        $this->address = $address;
+        $this->geoLocation = $geoLocation;
     }
 
     public function getEmail(): string
@@ -82,16 +88,6 @@ class User extends Entity
         $this->password = $password;
     }
 
-    public function getWordpressPassword(): ?string
-    {
-        return $this->wordpressPassword;
-    }
-
-    public function setWordpressPassword(?string $wordpressPassword): void
-    {
-        $this->wordpressPassword = $wordpressPassword;
-    }
-
     public function getFirstName(): ?string
     {
         return $this->firstName;
@@ -112,10 +108,30 @@ class User extends Entity
         $this->lastName = $lastName;
     }
 
+    public function getAddress(): ?Address
+    {
+        return $this->address;
+    }
+
+    public function setAddress(?Address $address): void
+    {
+        $this->address = $address;
+    }
+
+    public function getGeoLocation(): ?GeoLocation
+    {
+        return $this->geoLocation;
+    }
+
+    public function setGeoLocation(?GeoLocation $geoLocation): void
+    {
+        $this->geoLocation = $geoLocation;
+    }
+
     public function update(
         string $email,
-        string $firstName = null,
-        string $lastName = null,
+        ?string $firstName = null,
+        ?string $lastName = null,
     ): void
     {
         $this->email = $email;

@@ -30,11 +30,10 @@ class UpdateCompanyController
                 $request->slug,
                 $request->description,
                 $request->fiscalIdentifier,
-                $request->address,
-                $request->postalCode,
-                $request->city,
                 $request->contactEmail,
-                $request->phoneNumber
+                $request->phoneNumber,
+                $request->address?->toAddress(),
+                $request->location?->toGeoLocation()
             )
         );
 

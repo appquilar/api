@@ -4,33 +4,37 @@ declare(strict_types=1);
 
 namespace App\Product\Application\Command\CreateProduct;
 
+use App\Product\Infrastructure\Request\Input\TierInput;
 use App\Shared\Application\Command\Command;
+use App\Shared\Infrastructure\Request\Input\MoneyInput;
 use Symfony\Component\Uid\Uuid;
 
 class CreateProductCommand implements Command
 {
     /**
-     * @param Uuid[] $imageIds
-     * @param Uuid|null $companyId Provide either companyId OR userId, not both
-     * @param Uuid|null $userId Provide either companyId OR userId, not both
-     */
+     * @param Uuid $productId
+     * @param string $name
+     * @param string $internalId
+     * @param string|null $description
+     * @param MoneyInput $deposit
+     * @param array $tiers
+     * @param int $quantity
+     * @param Uuid|null $categoryId
+     * @param array $imageIds
+     * @param Uuid|null $companyId
+≤     */
     public function __construct(
         private Uuid $productId,
         private string $name,
         private string $internalId,
         private ?string $description,
+        private MoneyInput $deposit,
+        private array $tiers,
+        private int $quantity = 1,
         private ?Uuid $categoryId = null,
         private array $imageIds = [],
         private ?Uuid $companyId = null,
-        private ?Uuid $userId = null
     ) {
-        if ($companyId === null && $userId === null) {
-            throw new \InvalidArgumentException('Either companyId or userId must be provided');
-        }
-
-        if ($companyId !== null && $userId !== null) {
-            throw new \InvalidArgumentException('Only one of companyId or userId must be provided, not both');
-        }
     }
 
     public function getProductId(): Uuid
@@ -68,18 +72,21 @@ class CreateProductCommand implements Command
         return $this->companyId;
     }
 
-    public function getUserId(): ?Uuid
+    public function getQuantity(): int
     {
-        return $this->userId;
+        return $this->quantity;
     }
 
-    public function belongsToCompany(): bool
+    public function getDeposit(): MoneyInput
     {
-        return $this->companyId !== null;
+        return $this->deposit;
     }
 
-    public function belongsToUser(): bool
+    /**
+     * @return TierInput[]
+     */
+    public function getTiers(): array
     {
-        return $this->userId !== null;
+        return $this->tiers;
     }
 }

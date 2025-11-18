@@ -5,16 +5,22 @@ declare(strict_types=1);
 namespace App\Product\Domain\Entity;
 
 use App\Product\Domain\ValueObject\PublicationStatus;
+use App\Product\Domain\ValueObject\TierCollection;
 use App\Shared\Domain\Entity\Entity;
+use App\Shared\Domain\ValueObject\Money;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Types\UuidType;
 use Symfony\Component\Uid\Uuid;
 
 #[ORM\Entity]
 #[ORM\Table(name: "products")]
-#[ORM\Index(name: "slug_idx", columns: ["slug"])]
+#[ORM\Index(name: "short_id_idx", columns: ["short_id"])]
+#[ORM\Index(name: "internal_id_idx", columns: ["internal_id"])]
 class Product extends Entity
 {
+    #[ORM\Column(name: "short_id", type: "string", length: 255, unique: true)]
+    private string $shortId;
+
     #[ORM\Column(type: "string", length: 255)]
     private string $name;
 
@@ -27,6 +33,9 @@ class Product extends Entity
     #[ORM\Column(type: "text", nullable: true)]
     private ?string $description;
 
+    #[ORM\Column(type: "integer")]
+    private int $quantity = 1;
+
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
     private ?Uuid $companyId = null;
 
@@ -36,61 +45,60 @@ class Product extends Entity
     #[ORM\Column(type: UuidType::NAME, nullable: true)]
     private ?Uuid $categoryId;
 
-    #[ORM\OneToOne(mappedBy: "product", cascade: ["persist", "remove"])]
-    private ?RentalProduct $rentalProduct = null;
-
-    #[ORM\OneToOne(mappedBy: "product", cascade: ["persist", "remove"])]
-    private ?SaleProduct $saleProduct = null;
-
-    #[ORM\Column(type: "json")]
+    /** @var Uuid[] */
+    #[ORM\Column(type: "uuidv4_array")]
     private array $imageIds = [];
 
     #[ORM\Embedded(class: PublicationStatus::class)]
     private PublicationStatus $publicationStatus;
 
-    /**
-     * @param Uuid $productId
-     * @param string $name
-     * @param string $slug
-     * @param string $internalId
-     * @param string|null $description
-     * @param Uuid|null $categoryId
-     * @param array $imageIds
-     * @param PublicationStatus|null $publicationStatus
-     * @param Uuid|null $companyId Provide either companyId OR userId, not both
-     * @param Uuid|null $userId Provide either companyId OR userId, not both
-     */
+    #[ORM\Embedded(class: Money::class, columnPrefix: "deposit_")]
+    private Money $deposit;
+
+    #[ORM\Column(name: 'tiers', type: 'tier_collection')]
+    private TierCollection $tiers;
+
     public function __construct(
         Uuid $productId,
         string $name,
+        string $shortId,
         string $slug,
         string $internalId,
         ?string $description,
+        int $quantity,
+        Money $deposit,
+        TierCollection $tiers,
         ?Uuid $categoryId = null,
         array $imageIds = [],
         ?PublicationStatus $publicationStatus = null,
         ?Uuid $companyId = null,
-        ?Uuid $userId = null
+        ?Uuid $userId = null,
     ) {
         parent::__construct($productId);
 
-        if ($companyId === null && $userId === null) {
-            throw new \InvalidArgumentException('Either companyId or userId must be provided');
-        }
-
-        if ($companyId !== null && $userId !== null) {
-            throw new \InvalidArgumentException('Only one of companyId or userId must be provided, not both');
-        }
-
+        $this->shortId = $shortId;
         $this->name = $name;
         $this->slug = $slug;
         $this->internalId = $internalId;
         $this->description = $description;
+        $this->quantity = $quantity;
         $this->companyId = $companyId;
         $this->userId = $userId;
         $this->categoryId = $categoryId;
         $this->imageIds = $imageIds;
         $this->publicationStatus = $publicationStatus ?? new PublicationStatus();
+        $this->tiers = $tiers;
+        $this->deposit = $deposit;
+    }
+
+    public function getShortId(): string
+    {
+        return $this->shortId;
+    }
+
+    public function setShortId(string $shortId): void
+    {
+        $this->shortId = $shortId;
     }
 
     public function getName(): string
@@ -111,6 +119,16 @@ class Product extends Entity
     public function getDescription(): ?string
     {
         return $this->description;
+    }
+
+    public function getQuantity(): int
+    {
+        return $this->quantity;
+    }
+
+    public function setQuantity(int $quantity): void
+    {
+        $this->quantity = $quantity;
     }
 
     public function getCompanyId(): ?Uuid
@@ -143,29 +161,9 @@ class Product extends Entity
         return $this->imageIds;
     }
 
-    public function getRentalProduct(): ?RentalProduct
-    {
-        return $this->rentalProduct;
-    }
-
-    public function getSaleProduct(): ?SaleProduct
-    {
-        return $this->saleProduct;
-    }
-
     public function getPublicationStatus(): PublicationStatus
     {
         return $this->publicationStatus;
-    }
-
-    public function isForRent(): bool
-    {
-        return $this->rentalProduct !== null;
-    }
-
-    public function isForSale(): bool
-    {
-        return $this->saleProduct !== null;
     }
 
     public function isDraft(): bool
@@ -181,6 +179,26 @@ class Product extends Entity
     public function isArchived(): bool
     {
         return $this->publicationStatus->isArchived();
+    }
+
+    public function getDeposit(): Money
+    {
+        return $this->deposit;
+    }
+
+    public function setDeposit(Money $deposit): void
+    {
+        $this->deposit = $deposit;
+    }
+
+    public function getTiers(): TierCollection
+    {
+        return $this->tiers;
+    }
+
+    public function setTiers(TierCollection $tiers): void
+    {
+        $this->tiers = $tiers;
     }
 
     public function belongsToCompany(): bool
@@ -212,14 +230,26 @@ class Product extends Entity
         string $internalId,
         ?string $description,
         ?Uuid $categoryId,
-        array $imageIds
+        array $imageIds,
+        Money $deposit,
+        TierCollection $tiers,
+        int $quantity = 1,
     ): void {
         $this->name = $name;
         $this->slug = $slug;
         $this->internalId = $internalId;
+        $this->quantity = $quantity;
         $this->description = $description;
         $this->categoryId = $categoryId;
         $this->imageIds = $imageIds;
+        $this->deposit = $deposit;
+        $this->tiers = $tiers;
+    }
+
+    public function changeOwnershipToCompany(Uuid $companyId): void
+    {
+        $this->userId = null;
+        $this->companyId = $companyId;
     }
 
     public function publish(): void

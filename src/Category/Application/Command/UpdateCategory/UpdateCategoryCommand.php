@@ -12,7 +12,6 @@ class UpdateCategoryCommand implements Command
     public function __construct(
         private Uuid $categoryId,
         private string $name,
-        private string $slug,
         private ?string $description,
         private ?Uuid $parentId,
         private ?Uuid $icon,
@@ -29,11 +28,6 @@ class UpdateCategoryCommand implements Command
     public function getName(): string
     {
         return $this->name;
-    }
-
-    public function getSlug(): string
-    {
-        return $this->slug;
     }
 
     public function getDescription(): ?string

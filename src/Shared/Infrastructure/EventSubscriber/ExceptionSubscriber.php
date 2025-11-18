@@ -46,8 +46,13 @@ class ExceptionSubscriber
     public function processException(ExceptionEvent $event): void
     {
         $exception = $this->getRealException($event->getThrowable());
+        $exceptionClass = $exception::class;
 
-        $config = self::EXCEPTIONS[$exception::class] ?? ['handlers' => 'genericError'];
+        if (!array_key_exists($exceptionClass, self::EXCEPTIONS)) {
+            $exceptionClass = get_parent_class($exception);
+        }
+
+        $config = self::EXCEPTIONS[$exceptionClass] ?? ['handlers' => 'genericError'];
 
         $response = $this->jsonResponse->{$config['handlers']}($exception->getMessage());
         $event->setResponse($response);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Company\Infrastructure\Controller;
 
 use App\Company\Application\Command\UpdateCompanyUserRole\UpdateCompanyUserRoleCommand;
+use App\Company\Domain\Enum\CompanyUserRole;
 use App\Company\Infrastructure\Request\UpdateCompanyUserRoleDto;
 use App\Shared\Application\Command\CommandBus;
 use App\Shared\Infrastructure\Security\RoutePermission;
@@ -27,7 +28,7 @@ class UpdateCompanyUserRoleController
             new UpdateCompanyUserRoleCommand(
                 $request->companyId,
                 $request->userId,
-                $request->role
+                CompanyUserRole::from($request->role)
             )
         );
 
