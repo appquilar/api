@@ -87,6 +87,11 @@ class ProductRepository extends DoctrineRepository implements ProductRepositoryI
             ->getSingleScalarResult();
     }
 
+    public function findByCategoryId(Uuid $categoryId): array
+    {
+        return $this->findBy(['categoryId' => $categoryId->toBinary()]);
+    }
+
     public function paginateByCategoryId(array $categoriesId, int $page = 1, int $limit = 10): array
     {
         $qb = $this->entityManager->createQueryBuilder()

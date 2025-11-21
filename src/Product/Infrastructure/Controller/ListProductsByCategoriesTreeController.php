@@ -4,11 +4,7 @@ namespace App\Product\Infrastructure\Controller;
 
 use App\Product\Application\Query\ListProductsByCategoryId\ListProductsByCategoryIdQuery;
 use App\Product\Application\Query\ListProductsByCategoryId\ListProductsByCategoryIdQueryResult;
-use App\Product\Application\Query\ListProductsByOwner\ListProductsByOwnerQuery;
-use App\Product\Application\Query\ListProductsByOwner\ListProductsByOwnerQueryResult;
-use App\Product\Domain\Enum\ProductOwner;
 use App\Product\Infrastructure\Request\ListProductsByCategoryTreeDto;
-use App\Product\Infrastructure\Request\ListProductsByOwnerDto;
 use App\Shared\Application\Query\QueryBus;
 use App\Shared\Infrastructure\Service\ResponseService;
 use Symfony\Component\HttpFoundation\JsonResponse;

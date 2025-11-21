@@ -8,24 +8,29 @@ use App\Category\Application\Command\CreateCategory\CreateCategoryCommand;
 use App\Category\Application\Command\CreateCategory\CreateCategoryCommandHandler;
 use App\Category\Application\Repository\CategoryRepositoryInterface;
 use App\Category\Application\Service\GenerateSlugForCategoryService;
+use App\Category\Domain\Event\CategoryCreated;
 use App\Tests\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Uid\Uuid;
 
 class CreateCategoryCommandHandlerTest extends UnitTestCase
 {
     private CategoryRepositoryInterface|MockObject $categoryRepositoryMock;
     private GenerateSlugForCategoryService|MockObject $generateSlugForCategoryService;
+    private EventDispatcherInterface|MockObject $eventDispatcher;
     private CreateCategoryCommandHandler $handler;
 
     protected function setUp(): void
     {
         $this->categoryRepositoryMock = $this->createMock(CategoryRepositoryInterface::class);
         $this->generateSlugForCategoryService = $this->createMock(GenerateSlugForCategoryService::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->handler = new CreateCategoryCommandHandler(
             $this->categoryRepositoryMock,
-            $this->generateSlugForCategoryService
+            $this->generateSlugForCategoryService,
+            $this->eventDispatcher
         );
     }
 
@@ -54,6 +59,10 @@ class CreateCategoryCommandHandlerTest extends UnitTestCase
         $this->categoryRepositoryMock
             ->expects($this->once())
             ->method('save');
+
+        $this->eventDispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with(new CategoryCreated($categoryId));
 
         $this->handler->__invoke($command);
     }

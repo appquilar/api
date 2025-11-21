@@ -10,10 +10,12 @@ use App\Category\Application\Guard\CategoryParentGuardInterface;
 use App\Category\Application\Repository\CategoryRepositoryInterface;
 use App\Category\Application\Service\GenerateSlugForCategoryService;
 use App\Category\Domain\Entity\Category;
+use App\Category\Domain\Event\CategoryUpdated;
 use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
 use App\Tests\Factories\Category\Domain\Entity\CategoryFactory;
 use App\Tests\Unit\UnitTestCase;
 use PHPUnit\Framework\MockObject\MockObject;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Uid\Uuid;
 
 class UpdateCategoryCommandHandlerTest extends UnitTestCase
@@ -21,6 +23,7 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
     private CategoryRepositoryInterface|MockObject $categoryRepositoryMock;
     private GenerateSlugForCategoryService|MockObject $generateSlugForCategoryService;
     private CategoryParentGuardInterface|MockObject $categoryParentGuard;
+    private EventDispatcherInterface|MockObject $eventDispatcher;
     private UpdateCategoryCommandHandler $handler;
 
     protected function setUp(): void
@@ -30,11 +33,13 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
         $this->categoryRepositoryMock = $this->createMock(CategoryRepositoryInterface::class);
         $this->generateSlugForCategoryService = $this->createMock(GenerateSlugForCategoryService::class);
         $this->categoryParentGuard = $this->createMock(CategoryParentGuardInterface::class);
+        $this->eventDispatcher = $this->createMock(EventDispatcherInterface::class);
 
         $this->handler = new UpdateCategoryCommandHandler(
             $this->categoryRepositoryMock,
             $this->generateSlugForCategoryService,
-            $this->categoryParentGuard
+            $this->categoryParentGuard,
+            $this->eventDispatcher
         );
     }
 
@@ -68,6 +73,8 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
         $this->categoryRepositoryMock->expects($this->once())
             ->method('save')
             ->with($category);
+
+        $this->givenAnEventIsDispatched($categoryId);
 
         $this->handler->__invoke($command);
     }
@@ -106,5 +113,13 @@ class UpdateCategoryCommandHandlerTest extends UnitTestCase
         $this->categoryParentGuard->expects($this->once())
             ->method('assertCanAssignParent')
             ->with($categoryId, $categoryParentId);
+    }
+
+    private function givenAnEventIsDispatched(Uuid $categoryId): void
+    {
+        $this->eventDispatcher->expects($this->once())
+            ->method('dispatch')
+            ->with(new CategoryUpdated($categoryId));
+
     }
 }

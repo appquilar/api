@@ -10,10 +10,12 @@ use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Application\Service\ShortIdGeneratorInterface;
 use App\Product\Application\Service\SlugForProductsManager;
 use App\Product\Domain\Entity\Product;
+use App\Product\Domain\Event\ProductCreated;
 use App\Product\Domain\Exception\InvalidPriceConstructionException;
 use App\Product\Domain\ValueObject\PublicationStatus;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: CreateProductCommand::class)]
@@ -25,6 +27,7 @@ class CreateProductCommandHandler implements CommandHandler
         private TierAssembler                        $tierAssembler,
         private SlugForProductsManager               $slugForProductsManager,
         private ShortIdGeneratorInterface            $shortIdGenerator,
+        private EventDispatcherInterface             $eventDispatcher
     ) {
     }
 
@@ -55,5 +58,7 @@ class CreateProductCommandHandler implements CommandHandler
         $this->productAuthorizationService->assignOwnership($product, $command->getCompanyId());
 
         $this->productRepository->save($product);
+
+        $this->eventDispatcher->dispatch(new ProductCreated($product->getId()));
     }
 }

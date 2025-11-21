@@ -7,12 +7,14 @@ namespace App\Category\Application\Command\UpdateCategory;
 use App\Category\Application\Guard\CategoryParentGuardInterface;
 use App\Category\Application\Repository\CategoryRepositoryInterface;
 use App\Category\Application\Service\GenerateSlugForCategoryService;
+use App\Category\Domain\Event\CategoryUpdated;
 use App\Category\Domain\Exception\CategoryCantBeItsOwnParentException;
 use App\Category\Domain\Exception\CategoryParentCircularException;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
 use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
 use Doctrine\DBAL\Exception;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: UpdateCategoryCommand::class)]
@@ -21,7 +23,8 @@ class UpdateCategoryCommandHandler implements CommandHandler
     public function __construct(
         private CategoryRepositoryInterface    $categoryRepository,
         private GenerateSlugForCategoryService $generateSlugForCategoryService,
-        private CategoryParentGuardInterface   $categoryParentGuard
+        private CategoryParentGuardInterface   $categoryParentGuard,
+        private EventDispatcherInterface       $eventDispatcher
     ) {
     }
 
@@ -56,5 +59,7 @@ class UpdateCategoryCommandHandler implements CommandHandler
         );
 
         $this->categoryRepository->save($category);
+
+        $this->eventDispatcher->dispatch(new CategoryUpdated($category->getId()));
     }
 }

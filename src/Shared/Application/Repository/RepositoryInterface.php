@@ -14,6 +14,10 @@ interface RepositoryInterface
     /**
      * @return Entity[]
      */
+    public function findBy(array $params): array;
+    /**
+     * @return Entity[]
+     */
     public function findAll(): array;
     public function save(Entity $entity): void;
     public function delete(Entity $entity): void;

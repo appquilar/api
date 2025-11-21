@@ -1,0 +1,14 @@
+services:
+  opensearch:
+    environment:
+      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+    deploy:
+      resources:
+        limits:
+          memory: 4G
+
+  opensearch-dashboards:
+    deploy:
+      resources:
+        limits:
+          memory: 1G

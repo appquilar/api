@@ -23,6 +23,7 @@ class GetImageQueryHandlerTest extends IntegrationTestCase
 
     protected function setUp(): void
     {
+        parent::setUp();
         $this->imageRepositoryMock = $this->createMock(ImageRepositoryInterface::class);
         $this->storageServiceMock = $this->createMock(StorageServiceInterface::class);
         $this->handler = new GetImageQueryHandler(

@@ -5,7 +5,7 @@ namespace App\Shared\Infrastructure\Request\Input;
 use App\Shared\Domain\ValueObject\Money;
 use Symfony\Component\Validator\Constraints as Assert;
 
-final class MoneyInput
+class MoneyInput
 {
     public function __construct(
         #[Assert\NotNull]

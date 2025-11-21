@@ -4,11 +4,10 @@ namespace App\Tests\Integration\Product;
 
 use App\Product\Application\Service\ShortIdGeneratorInterface;
 use App\Product\Infrastructure\Service\NanoidShortIdGenerator;
-use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-class GetProductBySlugApiTest extends IntegrationTestCase
+class GetProductBySlugApiTest extends ProductIntegrationTestCase
 {
     private ShortIdGeneratorInterface $shortIdGenerator;
     public function setUp(): void
@@ -40,6 +39,7 @@ class GetProductBySlugApiTest extends IntegrationTestCase
         $userId = Uuid::v4();
         $slug = 'test';
         $shortId = $this->shortIdGenerator->generateShortId();
+        $this->givenAnUserWithIdAndEmail($userId, 'a@a.com');
         $this->givenItExistsAProductWithSlugAndShortIdBelongingToAnUserAndPublished($slug, $userId, $shortId);
 
         $response = $this->request(

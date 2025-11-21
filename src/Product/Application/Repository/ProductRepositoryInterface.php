@@ -24,6 +24,11 @@ interface ProductRepositoryInterface extends RepositoryInterface
     public function getProductsByUserId(Uuid $userId): array;
     public function paginateByUserId(Uuid $userId, int $page = 1, int $limit = 10): array;
     public function countByUserId(Uuid $userId): int;
+
+    /**
+     * @return Product[]
+     */
+    public function findByCategoryId(Uuid $categoryId): array;
     public function paginateByCategoryId(array $categoriesId, int $page = 1, int $limit = 10): array;
     public function countByCategoryId(array $categoriesId): int;
 }

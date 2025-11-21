@@ -10,6 +10,7 @@ use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Application\Service\SlugForProductsManager;
 use App\Product\Domain\Entity\Product;
 use App\Product\Domain\Exception\InvalidPriceConstructionException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: UpdateProductCommand::class)]
@@ -18,12 +19,14 @@ class UpdateProductCommandHandler extends ProductCommandHandler
     public function __construct(
          ProductRepositoryInterface           $productRepository,
          ProductAuthorizationServiceInterface $productAuthorizationService,
+         EventDispatcherInterface             $eventDispatcher,
          private SlugForProductsManager       $slugForProductsManager,
          private TierAssembler                $tierAssembler,
     ) {
         parent::__construct(
             $productRepository,
             $productAuthorizationService,
+            $eventDispatcher
         );
     }
 
@@ -48,5 +51,7 @@ class UpdateProductCommandHandler extends ProductCommandHandler
         );
 
         $this->productRepository->save($product);
+
+        $this->handleProductUpdateEvent($product->getId());
     }
 }

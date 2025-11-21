@@ -83,7 +83,6 @@ class AddUserToCompanyCommandHandlerTest extends UnitTestCase
         $this->companyUserRepository->expects($this->once())
             ->method('save');
 
-        // Expect the event dispatcher to be called with a CompanyUserCreated event.
         $this->eventDispatcher->expects($this->once())
             ->method('dispatch');
 

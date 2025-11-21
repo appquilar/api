@@ -88,6 +88,7 @@ WITH RECURSIVE category_path AS (
         c.parent_id,
         c.slug,
         c.name,
+        c.description,
         c.icon_id,
         0 AS depth
     FROM categories c
@@ -100,6 +101,7 @@ WITH RECURSIVE category_path AS (
         c2.parent_id,
         c2.slug,
         c2.name,
+        c2.description,
         c2.icon_id,
         cp.depth + 1 AS depth
     FROM categories c2
@@ -111,6 +113,7 @@ SELECT
     parent_id,
     slug,
     name,
+    description,
     icon_id,
     depth
 FROM category_path;

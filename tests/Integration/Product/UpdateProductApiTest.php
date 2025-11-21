@@ -2,11 +2,10 @@
 
 namespace App\Tests\Integration\Product;
 
-use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-class UpdateProductApiTest extends IntegrationTestCase
+class UpdateProductApiTest extends ProductIntegrationTestCase
 {
     public function testTryToUpdateAnUnexistentProduct(): void
     {
@@ -72,6 +71,7 @@ class UpdateProductApiTest extends IntegrationTestCase
         $anotherUserId = Uuid::v4();
         $productId = Uuid::v4();
         $categoryId = Uuid::v4();
+        $this->givenAnUserWithIdAndEmail($anotherUserId, 'a@a.com');
         $this->givenImLoggedInAsRegularUserWithUserId($userId);
         $this->givenItExistsACategoryWithId($categoryId);
         $this->givenItExistsAProductWithIdBelongingToAnUserId($productId, $anotherUserId);

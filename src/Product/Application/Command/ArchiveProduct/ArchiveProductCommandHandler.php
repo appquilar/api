@@ -11,6 +11,7 @@ use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Application\Service\SlugForProductsManager;
 use App\Product\Domain\Entity\Product;
 use App\Shared\Application\Service\SlugifyServiceInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: ArchiveProductCommand::class)]
@@ -19,14 +20,12 @@ class ArchiveProductCommandHandler extends ProductCommandHandler
     public function __construct(
         ProductRepositoryInterface $productRepository,
         ProductAuthorizationServiceInterface $productAuthorizationService,
-        SlugifyServiceInterface $slugifyService,
-        SlugForProductsManager $slugForProductsManager
+        EventDispatcherInterface $eventDispatcher
     ) {
         parent::__construct(
             $productRepository,
             $productAuthorizationService,
-            $slugifyService,
-            $slugForProductsManager
+            $eventDispatcher,
         );
     }
 
@@ -35,5 +34,7 @@ class ArchiveProductCommandHandler extends ProductCommandHandler
         $product->archive();
 
         $this->productRepository->save($product);
+
+        $this->handleProductUpdateEvent($product->getId());
     }
 }

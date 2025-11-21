@@ -4,7 +4,7 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    opensearch_products_index: 'products'
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -112,3 +112,23 @@ services:
             $uploadDirectory: '%kernel.project_dir%%env(MEDIA_STORAGE_DIR)%'
 
     Hidehalo\Nanoid\Client:
+
+    # OpenSearch
+    OpenSearch\Client:
+        factory: [ App\Product\Infrastructure\OpenSearch\OpenSearchClientFactory, 'create' ]
+        arguments:
+            - '%env(OPENSEARCH_HOST)%'
+
+    App\Product\Infrastructure\OpenSearch\OpenSearchProductIndexer:
+        arguments:
+            $client: '@OpenSearch\Client'
+            $indexName: '%opensearch_products_index%'
+
+    App\Product\Application\Service\ProductSearchIndexerInterface:
+        alias: App\Product\Infrastructure\OpenSearch\OpenSearchProductIndexer
+
+    App\Product\Infrastructure\Adapter\OpenSearchProductSearchAdapter:
+        arguments:
+            $client: '@OpenSearch\Client'
+            $indexName: '%opensearch_products_index%'
+

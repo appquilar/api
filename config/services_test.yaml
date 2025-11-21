@@ -1,0 +1,8 @@
+parameters:
+  opensearch_products_index: 'products_test'
+
+services:
+  App\Tests\Factories\Product\Domain\Entity\PersistingProductFactory:
+    autowire: true
+    autoconfigure: true
+    tags: [ 'foundry.factory' ]

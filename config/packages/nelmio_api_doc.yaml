@@ -917,6 +917,83 @@ nelmio_api_doc:
                                         $ref: "#/components/schemas/ValidationError"
                         "401":
                             description: "Unauthorized - User not authenticated"
+            /api/products/search:
+                get:
+                    tags:
+                        - Product
+                    summary: "Search products"
+                    description: >
+                        Full-text product search with optional filters by category and distance.
+                        Results are always restricted to products with publication_status = "published".
+                    parameters:
+                        - in: query
+                          name: text
+                          required: false
+                          schema:
+                              type: string
+                          description: >
+                              Free text to search on product name, product description and category
+                              name/description.
+                        - in: query
+                          name: latitude
+                          required: false
+                          schema:
+                              type: number
+                              format: float
+                          description: "Latitude of the search origin (used together with longitude and radius)"
+                        - in: query
+                          name: longitude
+                          required: false
+                          schema:
+                              type: number
+                              format: float
+                          description: "Longitude of the search origin (used together with latitude and radius)"
+                        - in: query
+                          name: radius
+                          required: false
+                          schema:
+                              type: integer
+                              default: 50
+                          description: "Search radius in kilometers around the given latitude/longitude"
+                        - in: query
+                          name: categories
+                          required: false
+                          schema:
+                              type: array
+                              items:
+                                  type: string
+                                  format: uuid
+                          style: form
+                          explode: true
+                          description: >
+                              List of category IDs to filter by (OR logic). A product will match if it
+                              belongs to at least one of these categories.
+                        - in: query
+                          name: page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 1
+                          description: "Page number for pagination (1-based)"
+                        - in: query
+                          name: perPage
+                          required: false
+                          schema:
+                              type: integer
+                              default: 10
+                          description: "Items per page"
+                    responses:
+                        "200":
+                            description: "Products retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/SearchProductsResponse"
+                        "400":
+                            description: "Validation error"
+                        "500":
+                            description: "Unexpected error while searching products"
+
             /api/products/{slug}:
                 get:
                     tags:
@@ -1802,3 +1879,101 @@ nelmio_api_doc:
                         longitude:
                             type: float
                             example: -2.0123123
+
+                SearchProductsResponse:
+                    type: object
+                    properties:
+                        data:
+                            type: array
+                            items:
+                                $ref: "#/components/schemas/ProductSearchHit"
+                        total:
+                            type: integer
+                            description: "Total number of matching products"
+                            example: 42
+                        page:
+                            type: integer
+                            description: "Current page number"
+                            example: 1
+
+                ProductSearchHit:
+                    type: object
+                    properties:
+                        id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        name:
+                            type: string
+                            example: "Taladro Bosch Pro 4000"
+                        slug:
+                            type: string
+                            example: "taladro-bosch-pro-4000"
+                        description:
+                            type: string
+                            nullable: true
+                            example: "Taladro muy potente de Bosch"
+                        categories:
+                            type: array
+                            items:
+                                $ref: "#/components/schemas/ProductCategoryPathItem"
+                        owner_id:
+                            type: string
+                            format: uuid
+                            example: "db7be8ee-50d6-4b54-8b09-a96211ecc79f"
+                        owner_type:
+                            type: string
+                            enum: [ COMPANY, USER ]
+                            example: "USER"
+                        location:
+                            $ref: "#/components/schemas/Location"
+                        circle:
+                            type: array
+                            description: "Circle of coordinates around the product location, used for drawing geofences in the UI"
+                            items:
+                                type: object
+                                properties:
+                                    latitude:
+                                        type: number
+                                        format: float
+                                        example: 41.5381
+                                    longitude:
+                                        type: number
+                                        format: float
+                                        example: 2.4445
+                        image_ids:
+                            type: array
+                            items:
+                                type: string
+                                format: uuid
+                            example:
+                                - "550e8400-e29b-41d4-a716-446655440000"
+                                - "550e8400-e29b-41d4-a716-446655440001"
+                        distance:
+                            type: number
+                            format: float
+                            nullable: true
+                            description: "Distance in meters from the search origin to the product location (only present if latitude/longitude were provided)"
+                            example: 1234.56
+
+                ProductCategoryPathItem:
+                    type: object
+                    properties:
+                        id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        slug:
+                            type: string
+                            example: "tools-and-machinery"
+                        name:
+                            type: string
+                            example: "Tools and machinery"
+                        description:
+                            type: string
+                            example: "All types of tools and machinery"
+                        parent_id:
+                            type: string
+                            format: uuid
+                            nullable: true
+                            example: "111e8400-e29b-41d4-a716-446655440000"

@@ -7,8 +7,10 @@ namespace App\Category\Application\Command\CreateCategory;
 use App\Category\Application\Repository\CategoryRepositoryInterface;
 use App\Category\Application\Service\GenerateSlugForCategoryService;
 use App\Category\Domain\Entity\Category;
+use App\Category\Domain\Event\CategoryCreated;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler(handles: CreateCategoryCommand::class)]
@@ -17,6 +19,7 @@ class CreateCategoryCommandHandler implements CommandHandler
     public function __construct(
         private CategoryRepositoryInterface $categoryRepository,
         private GenerateSlugForCategoryService $generateSlugForCategoryService,
+        private EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -38,5 +41,7 @@ class CreateCategoryCommandHandler implements CommandHandler
         );
 
         $this->categoryRepository->save($category);
+
+        $this->eventDispatcher->dispatch(new CategoryCreated($category->getId()));
     }
 }

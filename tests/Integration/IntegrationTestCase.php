@@ -11,6 +11,7 @@ use App\Tests\Integration\Context\ImageContext;
 use App\Tests\Integration\Context\ProductContext;
 use App\Tests\Integration\Context\SiteContext;
 use App\Tests\Integration\Context\UserContext;
+use OpenSearch\Client;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Zenstruck\Foundry\Test\Factories;
@@ -23,7 +24,8 @@ class IntegrationTestCase extends WebTestCase
     use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext,SiteContext,
         ProductContext;
 
-    private const REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];
+    /** @var array{key:string, value:string} */
+    private const array REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];
 
     protected KernelBrowser $client;
     protected array $customHeaders = [];
@@ -35,9 +37,10 @@ class IntegrationTestCase extends WebTestCase
 
         static::ensureKernelShutdown();
         $this->client = static::createClient();
+        $container = static::getContainer();
 
-        $this->testRootPath = self::$kernel->getContainer()->getParameter('kernel.project_dir') . '/tests';
-        $this->testStoragePath = self::$kernel->getContainer()->getParameter('kernel.project_dir') . '/var/uploads/test';
+        $this->testRootPath = $container->getParameter('kernel.project_dir') . '/tests';
+        $this->testStoragePath = $container->getParameter('kernel.project_dir') . '/var/uploads/test';
 
         if (!is_dir($this->testStoragePath)) {
             mkdir($this->testStoragePath, 0777, true);

@@ -35,6 +35,11 @@ abstract class DoctrineRepository implements RepositoryInterface
         return $this->repository->findOneBy($params);
     }
 
+    public function findBy(array $params): array
+    {
+        return $this->repository->findBy($params);
+    }
+
     public function findAll(): array
     {
         return $this->repository->findBy(array(), array('createdAt' => 'ASC'));

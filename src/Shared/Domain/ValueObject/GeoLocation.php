@@ -6,7 +6,7 @@ use App\Shared\Exception\InvalidGeoLocationException;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Embeddable]
-final readonly class GeoLocation
+class GeoLocation
 {
     private const int EARTH_RADIUS_METERS = 6371000;
 
@@ -125,5 +125,26 @@ final readonly class GeoLocation
             );
 
         return [$newLatRad, $newLngRad];
+    }
+
+    public function getDistanceInMeters(GeoLocation $destination): float
+    {
+        $earthRadius = 6371000;
+
+        $lat1 = deg2rad($this->latitude);
+        $lon1 = deg2rad($this->longitude);
+        $lat2 = deg2rad($destination->getLatitude());
+        $lon2 = deg2rad($destination->getLongitude());
+
+        $latDelta = $lat2 - $lat1;
+        $lonDelta = $lon2 - $lon1;
+
+        $a = sin($latDelta / 2) ** 2 +
+            cos($lat1) * cos($lat2) *
+            sin($lonDelta / 2) ** 2;
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+
+        return $earthRadius * $c;
     }
 }

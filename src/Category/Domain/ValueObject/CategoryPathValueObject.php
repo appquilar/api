@@ -73,4 +73,9 @@ class CategoryPathValueObject
     {
         return array_any($this->items, fn($item) => $item->id->equals($id));
     }
+
+    public function getItems(): array
+    {
+        return $this->items;
+    }
 }

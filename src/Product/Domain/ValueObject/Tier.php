@@ -5,7 +5,7 @@ namespace App\Product\Domain\ValueObject;
 use App\Product\Domain\Exception\InvalidPriceConstructionException;
 use App\Shared\Domain\ValueObject\Money;
 
-final class Tier
+class Tier
 {
     /**
      * @throws InvalidPriceConstructionException

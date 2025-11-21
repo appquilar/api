@@ -8,6 +8,12 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
+    # 👇 IMPORTANTE: env a nivel de job
+    env:
+      DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test
+      OPENSEARCH_HOST: http://127.0.0.1:9200
+      APP_ENV: test
+
     services:
       mysql:
         image: mysql:8.0
@@ -18,7 +24,25 @@ jobs:
           MYSQL_PASSWORD: symfony_pass
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+      opensearch:
+        image: opensearchproject/opensearch:2.11.0
+        env:
+          discovery.type: single-node
+          plugins.security.disabled: "true"
+          OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+        ports:
+          - 9200:9200
+        options: >-
+          --health-cmd="curl -sSf http://localhost:9200 || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
 
     steps:
       - name: Checkout repository
@@ -39,15 +63,9 @@ jobs:
 
       - name: Set up test database
         run: make ci-migrations
-        env:
-          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test
 
       - name: Run Unit Tests
         run: make run-ci-unit-tests
-        env:
-          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test
 
       - name: Run Integration Tests
         run: make run-ci-integration-tests
-        env:
-          DATABASE_URL: mysql://root:root@127.0.0.1:3306/symfony_test

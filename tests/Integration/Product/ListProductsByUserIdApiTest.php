@@ -2,11 +2,10 @@
 
 namespace App\Tests\Integration\Product;
 
-use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-class ListProductsByUserIdApiTest extends IntegrationTestCase
+class ListProductsByUserIdApiTest extends ProductIntegrationTestCase
 {
     public function test_list_products_happy_path(): void
     {
@@ -16,6 +15,8 @@ class ListProductsByUserIdApiTest extends IntegrationTestCase
         $productId4 = Uuid::v4();
         $userId = Uuid::v4();
         $anotherUserId = Uuid::v4();
+        $this->givenAnUserWithIdAndEmail($userId, 'a@a.com');
+        $this->givenAnUserWithIdAndEmail($anotherUserId, 'b@a.com');
         $this->givenItExistsAProductWithIdBelongingToAnUserId($productId1, $userId);
         $this->givenItExistsAProductWithIdBelongingToAnUserId($productId2, $userId);
         $this->givenItExistsAProductWithIdBelongingToAnUserId($productId3, $userId);

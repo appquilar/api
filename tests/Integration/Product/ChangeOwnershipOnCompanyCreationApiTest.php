@@ -2,11 +2,10 @@
 
 namespace App\Tests\Integration\Product;
 
-use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-class ChangeOwnershipOnCompanyCreationApiTest extends IntegrationTestCase
+class ChangeOwnershipOnCompanyCreationApiTest extends ProductIntegrationTestCase
 {
     public function test_change_ownership_from_user_to_company_on_company_creation(): void
     {

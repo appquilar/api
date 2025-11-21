@@ -2,14 +2,15 @@
 
 namespace App\Tests\Integration\Product;
 
-use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-class ListProductsByCategoriesTreeApiTest extends IntegrationTestCase
+class ListProductsByCategoriesTreeApiTest extends ProductIntegrationTestCase
 {
     public function test_list_products_from_different_categories(): void
     {
+        $userId = Uuid::v4();
+        $this->givenAnUserWithIdAndEmail($userId, 'a@a.com');
         $categoryId = Uuid::v4();
         $categoryId2 = Uuid::v4();
         $parentId = Uuid::v4();
@@ -32,16 +33,16 @@ class ListProductsByCategoriesTreeApiTest extends IntegrationTestCase
         $this->givenItExistsACategoryWithIdAndParentId($parentId2, $grandParentId);
         $this->givenItExistsACategoryWithIdAndParentId($categoryId, $parentId);
         $this->givenItExistsACategoryWithIdAndParentId($categoryId2, $parentId2);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId1, $grandParentId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId2, $grandParentId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId3, $grandParentId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId4, $grandParentId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId5, $parentId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId6, $parentId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId7, $parentId2);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId8, $categoryId);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId9, $categoryId2);
-        $this->givenItExistsAPublishedProductWithIdAndCategoryId($productId10, $unrelatedCategoryId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId1, $grandParentId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId2, $grandParentId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId3, $grandParentId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId4, $grandParentId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId5, $parentId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId6, $parentId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId7, $parentId2, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId8, $categoryId, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId9, $categoryId2, $userId);
+        $this->givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser($productId10, $unrelatedCategoryId, $userId);
 
         $response = $this->request(
             'GET',

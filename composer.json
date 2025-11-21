@@ -4,7 +4,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.2",
+        "php": ">=8.4",
         "ext-ctype": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
@@ -14,11 +14,14 @@
         "doctrine/doctrine-migrations-bundle": "^3.0",
         "doctrine/orm": "^3.3",
         "firebase/php-jwt": "^6.11",
+        "guzzlehttp/guzzle": "^7.10",
         "hautelook/phpass": "^0.3.6",
         "hidehalo/nanoid-php": "^2.0",
         "lexik/jwt-authentication-bundle": "^3.1",
         "nelmio/api-doc-bundle": "^4.37",
         "nelmio/cors-bundle": "^2.5",
+        "nyholm/psr7": "^1.8",
+        "opensearch-project/opensearch-php": "^2.4",
         "phpdocumentor/reflection-docblock": "^5.6",
         "predis/predis": "^2.3",
         "symfony/asset": "7.2.*",
@@ -50,6 +53,11 @@
         "zenstruck/foundry": "^2.3"
     },
     "config": {
+        "audit": {
+            "ignore": [
+                "PKSA-365x-2zjk-pt47"
+            ]
+        },
         "allow-plugins": {
             "php-http/discovery": true,
             "symfony/flex": true,

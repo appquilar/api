@@ -4,15 +4,16 @@ namespace App\Category\Domain\Dto;
 
 use Symfony\Component\Uid\Uuid;
 
-class CategoryPathItemDto
+readonly class CategoryPathItemDto
 {
     public function __construct(
-        public readonly Uuid $id,
-        public readonly string $slug,
-        public readonly string $name,
-        public readonly int $depth,
-        public readonly ?Uuid $parentId = null,
-        public readonly ?string $iconId = null,
+        public Uuid    $id,
+        public string  $slug,
+        public string  $name,
+        public string  $description,
+        public int     $depth,
+        public ?Uuid   $parentId = null,
+        public ?string $iconId = null,
     ) {
     }
 
@@ -22,6 +23,7 @@ class CategoryPathItemDto
             Uuid::fromBinary($data['id']),
             $data['slug'],
             $data['name'],
+            $data['description'],
             (int) $data['depth'],
             $data['parent_id'] !== null ? Uuid::fromBinary($data['parent_id']) : null,
             $data['icon_id']
@@ -56,5 +58,10 @@ class CategoryPathItemDto
     public function getParentId(): ?Uuid
     {
         return $this->parentId;
+    }
+
+    public function getDescription(): string
+    {
+        return $this->description;
     }
 }

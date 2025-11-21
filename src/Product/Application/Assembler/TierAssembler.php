@@ -8,7 +8,7 @@ use App\Product\Domain\ValueObject\TierCollection;
 use App\Product\Infrastructure\Request\Input\TierInput;
 use App\Shared\Domain\ValueObject\Money;
 
-final class TierAssembler
+class TierAssembler
 {
     /**
      * @throws InvalidPriceConstructionException

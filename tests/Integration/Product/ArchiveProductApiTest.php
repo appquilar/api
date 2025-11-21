@@ -2,11 +2,10 @@
 
 namespace App\Tests\Integration\Product;
 
-use App\Tests\Integration\IntegrationTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Uid\Uuid;
 
-class ArchiveProductApiTest extends IntegrationTestCase
+class ArchiveProductApiTest extends ProductIntegrationTestCase
 {
     public function testPublishProductBelongingToAnUser(): void
     {
@@ -46,6 +45,7 @@ class ArchiveProductApiTest extends IntegrationTestCase
         $anotherUserId = Uuid::v4();
         $productId = Uuid::v4();
         $this->givenImLoggedInAsRegularUserWithUserId($userId);
+        $this->givenAnUserWithIdAndEmail($anotherUserId, 'a@a.com');
         $this->givenItExistsAProductWithIdBelongingToAnUserId($productId, $anotherUserId);
 
         $response = $this->request(

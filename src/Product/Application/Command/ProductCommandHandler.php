@@ -7,16 +7,21 @@ namespace App\Product\Application\Command;
 use App\Product\Application\Repository\ProductRepositoryInterface;
 use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Domain\Entity\Product;
+use App\Product\Domain\Event\ProductCreated;
+use App\Product\Domain\Event\ProductUpdated;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;
 use App\Shared\Application\Exception\NotFound\EntityNotFoundException;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Uid\Uuid;
 
 abstract class ProductCommandHandler implements CommandHandler
 {
     public function __construct(
-        protected ProductRepositoryInterface $productRepository,
+        protected ProductRepositoryInterface         $productRepository,
         private ProductAuthorizationServiceInterface $productAuthorizationService,
+        private EventDispatcherInterface             $eventDispatcher
     ) {
     }
 
@@ -33,5 +38,10 @@ abstract class ProductCommandHandler implements CommandHandler
         $this->productAuthorizationService->canEdit($product, 'product.update.unauthorized');
 
         $this->handle($command, $product);
+    }
+
+    protected function handleProductUpdateEvent(Uuid $productId): void
+    {
+        $this->eventDispatcher->dispatch(new ProductUpdated($productId));
     }
 }

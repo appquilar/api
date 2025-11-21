@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Integration\Context;
 
+use App\Shared\Domain\ValueObject\GeoLocation;
 use App\Shared\Infrastructure\Security\UserRole;
 use App\Tests\Factories\User\Domain\Entity\PersistingUserFactory;
 use App\Tests\Factories\User\Infrastructure\Entity\AccessToken\PersistingAccessTokenFactory;
@@ -85,5 +86,13 @@ trait UserContext
     {
         $accessToken = PersistingAccessTokenFactory::createOne(['userId' => $userId]);
         $this->accessToken = $accessToken->getToken();
+    }
+
+    protected function givenAnUserWithIdAndSpecificLocation(Uuid $userId, float $latitude, float $longitude): void
+    {
+        PersistingUserFactory::createOne([
+            'userId'      => $userId,
+            'geoLocation' => new GeoLocation($latitude, $longitude),
+        ]);
     }
 }

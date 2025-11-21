@@ -52,8 +52,8 @@ trait ProductContext
         PersistingProductFactory::createOne($params);
     }
 
-    public function givenItExistsAPublishedProductWithIdAndCategoryId(Uuid $productId, Uuid $categoryId): void
+    public function givenItExistsAPublishedProductWithIdAndCategoryIdBelongingToAnUser(Uuid $productId, Uuid $categoryId, Uuid $userId): void
     {
-        $this->givenItExistsAProductWithParams(['productId' => $productId, 'categoryId' => $categoryId, 'publicationStatus' => PublicationStatus::published()]);
+        $this->givenItExistsAProductWithParams(['productId' => $productId, 'categoryId' => $categoryId, 'publicationStatus' => PublicationStatus::published(), 'userId' => $userId]);
     }
 }
