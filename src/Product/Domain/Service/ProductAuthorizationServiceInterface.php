@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Product\Application\Service;
+namespace App\Product\Domain\Service;
 
 use App\Product\Domain\Entity\Product;
 use Symfony\Component\Uid\Uuid;

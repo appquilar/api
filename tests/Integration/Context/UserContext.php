@@ -67,9 +67,21 @@ trait UserContext
         $this->login($userId);
     }
 
+    protected function givenILogInWithAnAlreadyExistingUser(Uuid $userId): void
+    {
+        $this->login($userId);
+    }
+
     protected function givenImLoggedInAsRegularUserWithUserIdAndPassword(Uuid $userId, string $password): void
     {
         $this->givenARegularUserWithUserIdAndPassword($userId, $password);
+
+        $this->login($userId);
+    }
+
+    protected function givenImLoggedInAsAdminWithUserId(Uuid $userId): void
+    {
+        $this->givenAnAdminUserWithUserId($userId);
 
         $this->login($userId);
     }

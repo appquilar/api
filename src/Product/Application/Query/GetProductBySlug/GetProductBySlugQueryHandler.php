@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace App\Product\Application\Query\GetProductBySlug;
 
 use App\Product\Application\Repository\ProductRepositoryInterface;
-use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Application\Transformer\ProductTransformer;
+use App\Product\Domain\Service\ProductAuthorizationServiceInterface;
 use App\Shared\Application\Exception\NotFound\NotFoundException;
 use App\Shared\Application\Query\Query;
 use App\Shared\Application\Query\QueryHandler;

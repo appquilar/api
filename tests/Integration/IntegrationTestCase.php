@@ -9,6 +9,7 @@ use App\Tests\Integration\Context\CompanyContext;
 use App\Tests\Integration\Context\CompanyUserContext;
 use App\Tests\Integration\Context\ImageContext;
 use App\Tests\Integration\Context\ProductContext;
+use App\Tests\Integration\Context\RentContext;
 use App\Tests\Integration\Context\SiteContext;
 use App\Tests\Integration\Context\UserContext;
 use OpenSearch\Client;
@@ -21,8 +22,8 @@ class IntegrationTestCase extends WebTestCase
 {
     use Factories,ResetDatabase;
 
-    use UserContext,CompanyContext,CompanyUserContext,ImageContext,CategoryContext,SiteContext,
-        ProductContext;
+    use UserContext, CompanyContext, CompanyUserContext, ImageContext, CategoryContext, SiteContext,
+        ProductContext, RentContext;
 
     /** @var array{key:string, value:string} */
     private const array REQUEST_HEADERS = ['CONTENT_TYPE' => 'application/json'];

@@ -2,10 +2,10 @@
 
 namespace App\Tests\Unit\Product\Domain\Service;
 
-use App\Product\Application\Service\ProductAuthorizationServiceInterface;
+use App\Product\Application\Service\ProductAuthorizationService;
 use App\Product\Domain\Entity\Product;
 use App\Product\Domain\Service\CompanyUserServiceInterface;
-use App\Product\Domain\Service\ProductAuthorizationService;
+use App\Product\Domain\Service\ProductAuthorizationServiceInterface;
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Tests\Unit\UnitTestCase;

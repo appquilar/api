@@ -3,9 +3,9 @@
 namespace App\Tests\Unit\Product\Application\Command;
 
 use App\Product\Application\Repository\ProductRepositoryInterface;
-use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Domain\Entity\Product;
 use App\Product\Domain\Event\ProductUpdated;
+use App\Product\Domain\Service\ProductAuthorizationServiceInterface;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
 use App\Tests\Factories\Product\Domain\Entity\ProductFactory;
 use App\Tests\Unit\UnitTestCase;

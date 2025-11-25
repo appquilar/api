@@ -84,6 +84,7 @@ class RequestDtoListener
                 null,
                 [
                     AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true,
+                    DateTimeNormalizer::FORMAT_KEY => 'Y-m-d H:i:s e'
                 ],
             );
             if ($request->files->all() !== null) {
@@ -95,8 +96,6 @@ class RequestDtoListener
                 }
             }
         } catch (NotNormalizableValueException $e) {
-        } catch (\Throwable $e) {
-            $aux = 1;
         }
 
         // Validate DTO

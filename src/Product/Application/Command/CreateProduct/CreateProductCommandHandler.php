@@ -6,12 +6,12 @@ namespace App\Product\Application\Command\CreateProduct;
 
 use App\Product\Application\Assembler\TierAssembler;
 use App\Product\Application\Repository\ProductRepositoryInterface;
-use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Application\Service\ShortIdGeneratorInterface;
 use App\Product\Application\Service\SlugForProductsManager;
 use App\Product\Domain\Entity\Product;
 use App\Product\Domain\Event\ProductCreated;
 use App\Product\Domain\Exception\InvalidPriceConstructionException;
+use App\Product\Domain\Service\ProductAuthorizationServiceInterface;
 use App\Product\Domain\ValueObject\PublicationStatus;
 use App\Shared\Application\Command\Command;
 use App\Shared\Application\Command\CommandHandler;

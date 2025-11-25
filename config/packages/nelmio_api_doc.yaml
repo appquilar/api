@@ -1287,6 +1287,192 @@ nelmio_api_doc:
                         "404":
                             description: "Product not found"
 
+            /api/rents:
+                get:
+                    tags:
+                        - Rent
+                    summary: "List rents by owner"
+                    description: >
+                        Lists rents for the authenticated owner. You must be the owner (user or company member)
+                        to view these rents. Allows optional filtering by product, dates and status.
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: query
+                          name: product_id
+                          required: false
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "Filter rents by a specific product ID"
+                        - in: query
+                          name: start_date
+                          required: false
+                          schema:
+                              type: string
+                          description: >
+                              Filter rents that start on or after this date.
+                              Format: 'Y-m-d H:i:s e' (e.g. '2025-01-01 10:00:00 Europe/Madrid')
+                        - in: query
+                          name: end_date
+                          required: false
+                          schema:
+                              type: string
+                          description: >
+                              Filter rents that end on or before this date.
+                              Format: 'Y-m-d H:i:s e' (e.g. '2025-01-10 10:00:00 Europe/Madrid')
+                        - in: query
+                          name: status
+                          required: false
+                          schema:
+                              $ref: "#/components/schemas/RentStatus"
+                          description: "Filter rents by status"
+                        - in: query
+                          name: page
+                          required: false
+                          schema:
+                              type: integer
+                              default: 1
+                          description: "Page number for pagination (1-based)"
+                        - in: query
+                          name: perPage
+                          required: false
+                          schema:
+                              type: integer
+                              default: 10
+                          description: "Items per page"
+                    responses:
+                        "200":
+                            description: "Rents retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/RentListResponse"
+                        "400":
+                            description: "Validation error"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/ValidationError"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                post:
+                    tags:
+                        - Rent
+                    summary: Create a new rent
+                    description: Creates a new rent for a product, assigning it to a renter and inferring the owner from the product.
+                    security:
+                        - bearerAuth: []
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/CreateRentDto'
+                    responses:
+                        '201':
+                            description: Rent successfully created
+                        '400':
+                            description: Validation error
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: '#/components/schemas/ValidationError'
+                        '401':
+                            description: Unauthorized - User not authenticated
+
+            /api/rents/{rent_id}:
+                get:
+                    tags:
+                        - Rent
+                    summary: "Get rent by ID"
+                    description: "Retrieves detailed information for a specific rent"
+                    security:
+                        - bearerAuth: [ ]
+                    parameters:
+                        - in: path
+                          name: rent_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: "UUID of the rent to retrieve"
+                    responses:
+                        "200":
+                            description: "Rent retrieved successfully"
+                            content:
+                                application/json:
+                                    schema:
+                                        $ref: "#/components/schemas/Rent"
+                        "401":
+                            description: "Unauthorized - User not authenticated"
+                        "404":
+                            description: "Rent not found"
+                patch:
+                    tags:
+                        - Rent
+                    summary: Update an existing rent
+                    description: >
+                        Updates the details of an existing rent. Allows changing dates, deposit, price and deposit returned.
+                    security:
+                        - bearerAuth: []
+                    parameters:
+                        - in: path
+                          name: rent_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: UUID of the rent to update
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/UpdateRentDto'
+                    responses:
+                        '204':
+                            description: Rent updated successfully
+                        '400':
+                            description: Validation error
+                        '401':
+                            description: Unauthorized - User not authenticated
+                        '404':
+                            description: Rent not found
+
+            /api/rents/{rent_id}/status:
+                patch:
+                    tags:
+                        - Rent
+                    summary: Update rent status
+                    description: >
+                        Updates the status of an existing rent. Only the owner can change status except for cancellation,
+                        which can be performed by both owner and renter.
+                    security:
+                        - bearerAuth: []
+                    parameters:
+                        - in: path
+                          name: rent_id
+                          required: true
+                          schema:
+                              type: string
+                              format: uuid
+                          description: UUID of the rent whose status will be updated
+                    requestBody:
+                        required: true
+                        content:
+                            application/json:
+                                schema:
+                                    $ref: '#/components/schemas/UpdateRentStatusDto'
+                    responses:
+                        '204':
+                            description: Rent status updated successfully
+                        '400':
+                            description: Validation error
+                        '401':
+                            description: Unauthorized - User not authenticated
+                        '404':
+                            description: Rent not found
 
         components:
             schemas:
@@ -1674,8 +1860,8 @@ nelmio_api_doc:
                     properties:
                         amount:
                             type: number
-                            format: float
-                            example: 29.99
+                            format: integer
+                            example: 2999
                         currency:
                             type: string
                             example: "EUR"
@@ -1977,3 +2163,165 @@ nelmio_api_doc:
                             format: uuid
                             nullable: true
                             example: "111e8400-e29b-41d4-a716-446655440000"
+
+                RentStatus:
+                    type: string
+                    description: Status of the rent lifecycle
+                    enum:
+                        - draft
+                        - pending
+                        - confirmed
+                        - cancelled
+                        - completed
+                    example: pending
+
+                CreateRentDto:
+                    type: object
+                    required:
+                        - rent_id
+                        - product_id
+                        - renter_id
+                        - start_date
+                        - end_date
+                        - deposit
+                        - price
+                    properties:
+                        rent_id:
+                            type: string
+                            format: uuid
+                            example: 550e8400-e29b-41d4-a716-446655440000
+                        product_id:
+                            type: string
+                            format: uuid
+                            example: 550e8400-e29b-41d4-a716-446655440001
+                        renter_id:
+                            type: string
+                            format: uuid
+                            description: UUID of the user renting the product
+                            example: 550e8400-e29b-41d4-a716-446655440002
+                        start_date:
+                            type: string
+                            description: 'Start date and time of the rent in format "Y-m-d H:i:s e" (e.g. "2025-01-01 10:00:00 Europe/Madrid")'
+                            example: '2025-01-01 10:00:00 Europe/Madrid'
+                        end_date:
+                            type: string
+                            description: 'End date and time of the rent in format "Y-m-d H:i:s e" (e.g. "2025-01-10 10:00:00 Europe/Madrid")'
+                            example: '2025-01-10 10:00:00 Europe/Madrid'
+                        deposit:
+                            $ref: '#/components/schemas/Money'
+                        price:
+                            $ref: '#/components/schemas/Money'
+
+                UpdateRentDto:
+                    type: object
+                    description: >
+                        DTO for partial updates of a rent. All fields are optional; only provided fields will be updated.
+                    properties:
+                        start_date:
+                            type: string
+                            nullable: true
+                            description: 'New start date and time in format "Y-m-d H:i:s e"'
+                            example: '2025-01-02 10:00:00 Europe/Madrid'
+                        end_date:
+                            type: string
+                            nullable: true
+                            description: 'New end date and time in format "Y-m-d H:i:s e"'
+                            example: '2025-01-12 10:00:00 Europe/Madrid'
+                        deposit:
+                            allOf:
+                                - $ref: '#/components/schemas/Money'
+                            nullable: true
+                            description: 'New deposit amount (overwrites the existing one)'
+                        price:
+                            allOf:
+                                - $ref: '#/components/schemas/Money'
+                            nullable: true
+                            description: 'New final agreed price (without deposit)'
+                        deposit_returned:
+                            allOf:
+                                - $ref: '#/components/schemas/Money'
+                            nullable: true
+                            description: 'Amount of the deposit returned after the rent is completed'
+                        status:
+                            allOf:
+                                - $ref: '#/components/schemas/RentStatus'
+                            nullable: true
+                            description: 'New status of the rent'
+
+                UpdateRentStatusDto:
+                    type: object
+                    required:
+                        - rent_status
+                    properties:
+                        rent_status:
+                            $ref: '#/components/schemas/RentStatus'
+
+                Rent:
+                    type: object
+                    properties:
+                        rent_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440000"
+                        product_id:
+                            type: string
+                            format: uuid
+                            example: "550e8400-e29b-41d4-a716-446655440001"
+                        owner_id:
+                            type: string
+                            format: uuid
+                            description: "UUID of the owner (user or company)"
+                            example: "550e8400-e29b-41d4-a716-446655440002"
+                        owner_type:
+                            type: string
+                            description: "Type of the owner (user or company)"
+                            enum: [ user, company ]
+                            example: "user"
+                        renter_id:
+                            type: string
+                            format: uuid
+                            description: "UUID of the user renting the product"
+                            example: "550e8400-e29b-41d4-a716-446655440003"
+                        start_date:
+                            type: string
+                            description: >
+                                Start date and time of the rent in format 'Y-m-d H:i:s e'
+                                (e.g. '2025-01-01 10:00:00 Europe/Madrid')
+                            example: "2025-01-01 10:00:00 Europe/Madrid"
+                        end_date:
+                            type: string
+                            description: >
+                                End date and time of the rent in format 'Y-m-d H:i:s e'
+                                (e.g. '2025-01-10 10:00:00 Europe/Madrid')
+                            example: "2025-01-10 10:00:00 Europe/Madrid"
+                        deposit:
+                            $ref: "#/components/schemas/Money"
+                        price:
+                            $ref: "#/components/schemas/Money"
+                        deposit_returned:
+                            allOf:
+                                - $ref: "#/components/schemas/Money"
+                            nullable: true
+                            description: "Amount of the deposit returned after the rent is completed (can be partial)"
+                        status:
+                            $ref: "#/components/schemas/RentStatus"
+
+                RentListResponse:
+                    type: object
+                    properties:
+                        data:
+                            type: array
+                            items:
+                                $ref: "#/components/schemas/Rent"
+                        total:
+                            type: integer
+                            description: "Total number of matching rents"
+                            example: 5
+                        page:
+                            type: integer
+                            description: "Current page number"
+                            example: 1
+                        perPage:
+                            type: integer
+                            description: "Number of items per page"
+                            example: 10

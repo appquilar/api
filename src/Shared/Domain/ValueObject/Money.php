@@ -63,4 +63,9 @@ class Money
             $data['currency']
         );
     }
+
+    public static function zero(): self
+    {
+        return new self(0, self::EUR);
+    }
 }

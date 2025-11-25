@@ -46,6 +46,13 @@ enum RoutePermission: string
     case PRODUCT_UNPUBLISH = 'product_unpublish';
     case PRODUCT_GET_BY_ID = 'product_get_product_by_id';
 
+    /** RENT */
+    case RENT_CREATE = 'rent_create';
+    case RENT_UPDATE = 'rent_update';
+    case RENT_STATUS_UPDATE = 'rent_status_update';
+    case RENT_GET_BY_ID = 'rent_get_product_by_id';
+    case RENT_SEARCH = 'rent_search';
+
     /**
      * @return UserRole[]
      */
@@ -72,6 +79,11 @@ enum RoutePermission: string
             self::PRODUCT_PUBLISH,
             self::PRODUCT_UNPUBLISH,
             self::PRODUCT_GET_BY_ID,
+            self::RENT_CREATE,
+            self::RENT_UPDATE,
+            self::RENT_STATUS_UPDATE,
+            self::RENT_GET_BY_ID,
+            self::RENT_SEARCH,
                 => [UserRole::REGULAR_USER],
             self::CATEGORY_CREATE,
             self::CATEGORY_UPDATE,

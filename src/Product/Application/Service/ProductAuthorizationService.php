@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Product\Domain\Service;
+namespace App\Product\Application\Service;
 
-use App\Product\Application\Service\ProductAuthorizationServiceInterface;
 use App\Product\Domain\Entity\Product;
+use App\Product\Domain\Service\CompanyUserServiceInterface;
+use App\Product\Domain\Service\ProductAuthorizationServiceInterface;
 use App\Shared\Application\Context\UserGranted;
 use App\Shared\Application\Exception\Unauthorized\UnauthorizedException;
-use App\Shared\Infrastructure\Security\UserRole;
 use App\User\Domain\Entity\User;
 use Symfony\Component\Uid\Uuid;
 
